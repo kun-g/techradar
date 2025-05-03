@@ -26,14 +26,14 @@ export default function RadarVisualization({
 
   useEffect(() => {
     const updateDimensions = () => {
-      if (containerRef.current) {
-        const { width, height } = containerRef.current.getBoundingClientRect()
+    if (containerRef.current) {
+      const { width, height } = containerRef.current.getBoundingClientRect()
         // Only update if dimensions have actually changed
         if (width !== dimensions.width || height !== dimensions.height) {
-          setDimensions({
-            width,
-            height,
-          })
+      setDimensions({
+        width,
+        height,
+      })
         }
       }
     }
@@ -90,15 +90,7 @@ export default function RadarVisualization({
                 cy={center}
                 r={radius}
                 fill="none"
-                stroke={
-                  ring.id === "adopt"
-                    ? "#10b981"
-                    : ring.id === "trial"
-                      ? "#3b82f6"
-                      : ring.id === "assess"
-                        ? "#eab308"
-                        : "#ef4444"
-                }
+                stroke={ring.stroke}
                 strokeWidth="1.5"
                 strokeOpacity="0.6"
               />
