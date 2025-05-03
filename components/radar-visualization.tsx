@@ -5,7 +5,7 @@ import { motion } from "framer-motion"
 import type { Blip, Quadrant, Ring } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { updateBlipPositions } from "@/lib/radar_distribution"
-import { ringRatios, getRingStroke } from "@/lib/data"
+import { ringRatios } from "@/lib/data"
 
 interface RadarVisualizationProps {
   blips: Blip[]
@@ -131,7 +131,7 @@ export default function RadarVisualization({
                   cy={center}
                   r={radius}
                   fill="none"
-                  stroke={getRingStroke(ring.id)}
+                  stroke={ring.stroke}
                   strokeWidth="4"
                   strokeDasharray="4 4"
                 />
