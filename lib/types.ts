@@ -5,6 +5,10 @@ export interface Blip {
   ring: string
   description: string
   rationale?: string
+  position?: {
+    x: number
+    y: number
+  }
 }
 
 export interface Quadrant {

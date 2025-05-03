@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 import type { Blip, Quadrant, Ring } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { calculateOptimalPositions, BlipPosition } from "@/lib/radar_distribution"
+import { ringRatios } from "@/lib/data"
 
 interface RadarVisualizationProps {
   blips: Blip[]
@@ -86,33 +87,19 @@ export default function RadarVisualization({
     setBlipPositions(optimalPositions)
   }, [blips, size, center, quadrants, rings])
 
-  // Get blip position from the calculated positions
-  const getBlipPosition = (blip: Blip) => {
-    const position = blipPositions.find((p) => p.id === blip.id)
-    if (position) {
-      return { x: position.x, y: position.y }
-    }
-
-    // Fallback to a simple calculation if position not found
-    const quadrantIndex = quadrants.findIndex((q) => q.id === blip.quadrant)
-    const ringIndex = rings.findIndex((r) => r.id === blip.ring)
-
-    const angle = (quadrantIndex * Math.PI) / 2 + Math.PI / 4
-    const ringWidth = center / rings.length
-    const radius = ringWidth * (ringIndex + 0.5)
-
-    return {
-      x: center + radius * Math.cos(angle),
-      y: center + radius * Math.sin(angle),
-    }
-  }
-
   if (size <= 0) {
     return <div ref={containerRef} className="w-full h-full" />
   }
 
+  // 计算每个环的半径
+  const calculateRingRadius = (index: number) => {
+    const ringWidthes = [0.4, 0.3, 0.2, 0.1]
+    return center * ringWidthes.slice(0, index + 1).reduce((sum, w) => sum + w, 0)
+  }
+
   return (
     <div ref={containerRef} className="w-full h-full relative">
+      {/* 绘制雷达图 */}
       <svg
         width={size}
         height={size}
@@ -121,11 +108,11 @@ export default function RadarVisualization({
       >
         {/* Render rings with labels */}
         {rings.map((ring, index) => {
-          const ringWidth = center / rings.length
-          const radius = ringWidth * (index + 1)
+          const radius = calculateRingRadius(index)
 
           return (
             <g key={ring.id}>
+              {/* 绘制环 */}
               <circle
                 cx={center}
                 cy={center}
@@ -159,8 +146,7 @@ export default function RadarVisualization({
         {/* Debug mode: show ring boundaries */}
         {props.showDebugMode &&
           rings.map((ring, index) => {
-            const ringWidth = center / rings.length
-            const radius = ringWidth * (rings.length - index)
+            const radius = calculateRingRadius(index)
 
             return (
               <g key={`debug-${ring.id}`}>
@@ -232,7 +218,7 @@ export default function RadarVisualization({
         style={{ width: size, height: size }}
       >
         {blips.map((blip) => {
-          const { x, y } = getBlipPosition(blip)
+          const { x, y } = blip.position || { x: 0, y: 0 }
           const blipId = blip.id.split("-")[0]
 
           return (
@@ -253,14 +239,17 @@ export default function RadarVisualization({
             >
               <div
                 className={cn(
-                  "w-6 h-6 rounded-full cursor-pointer flex items-center justify-center text-white text-xs font-bold transition-all border-2 border-white shadow-md",
+                  "w-6 h-6 rounded-full cursor-pointer flex items-center justify-center text-white text-xs font-bold transition-all border-2 border-white shadow-md origin-center",
                   getRingColor(blip.ring),
-                  hoveredBlip === blip.id ? "scale-150 z-10" : "",
                 )}
+                style={{
+                  transform: hoveredBlip === blip.id ? "scale(1.5) translate(-25%, -25%)" : "translate(-50%, -50%)",
+                }}
               >
                 {blipId}
               </div>
 
+              {/* 悬浮显示blip信息 */}
               {hoveredBlip === blip.id && (
                 <div className="absolute left-1/2 -translate-x-1/2 top-7 bg-white shadow-lg rounded-md px-3 py-2 text-xs whitespace-nowrap z-[200] min-w-[120px] pointer-events-none">
                   <div className="font-bold">{blip.name}</div>

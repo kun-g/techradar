@@ -1,4 +1,5 @@
 import type { Blip, Quadrant, Ring } from "@/lib/types"
+import { ringRatios } from "@/lib/data"
 
 // Interface for blip position information
 export interface BlipPosition {
@@ -74,14 +75,10 @@ export function calculateOptimalPositions(
   const positions: BlipPosition[] = []
   const groups = groupBlips(blips, quadrants, rings)
 
-  // 每个环的宽度
-  const ringWidthes = [0.4, 0.3, 0.2, 0.1]
-  
   groups.forEach((group) => {
     const { quadrantId, ringId, blips: groupBlips } = group
     const quadrantIndex = quadrants.findIndex((q) => q.id === quadrantId)
     const ringIndex = rings.findIndex((r) => r.id === ringId)
-    const ringWidth = center * ringWidthes[ringIndex]
     
     // 计算该象限的角度范围
     const quadrantStartAngle = (quadrantIndex * Math.PI) / 2
@@ -94,9 +91,8 @@ export function calculateOptimalPositions(
     const effectiveAngleRange = effectiveEndAngle - effectiveStartAngle
 
     // 计算环的半径范围
-    const innerRadius = ringWidth * ringIndex + (ringIndex > 0 ? 10 : 0)
-    const outerRadius = ringWidth * (ringIndex + 1) - 10
-    const radiusRange = outerRadius - innerRadius
+    const innerRadius = center * ringRatios.slice(0, ringIndex).reduce((sum, w) => sum + w, 0)
+    const radiusRange = center * ringRatios[ringIndex]
 
     // 确保每个blip唯一排序，保证位置确定性
     const sortedBlips = [...groupBlips].sort((a, b) => {
@@ -119,20 +115,17 @@ export function calculateOptimalPositions(
       const angle = effectiveStartAngle + normalizedIndex * effectiveAngleRange + angleOffset
       
       // 添加基于ID的随机半径变化，使分布更自然
-      const radialFactor = 0.2 + 0.8 * random() // 20%-100%的半径范围
+      const radialFactor = 0.2 + 0.7 * random() // 20%-90%的半径范围
       const radius = innerRadius + radiusRange * radialFactor
 
       // 计算笛卡尔坐标
       const x = center + radius * Math.cos(angle)
       const y = center + radius * Math.sin(angle)
-
-      positions.push({
-        id: blip.id,
+      
+      blip.position = {
         x,
         y,
-        quadrant: quadrantId,
-        ring: ringId,
-      })
+      }
     })
   })
 

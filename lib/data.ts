@@ -1,5 +1,6 @@
 import type { RadarData } from "./types"
 
+export const ringRatios = [0.4, 0.3, 0.2, 0.1];
 // This function would normally fetch data from an API or Google Sheet
 // For this example, we'll use mock data
 export async function fetchRadarData(): Promise<RadarData> {
