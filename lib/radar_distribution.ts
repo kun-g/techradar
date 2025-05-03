@@ -1,15 +1,6 @@
 import type { Blip, Quadrant, Ring } from "@/lib/types"
 import { ringRatios } from "@/lib/data"
 
-// Interface for blip position information
-export interface BlipPosition {
-  id: string
-  x: number
-  y: number
-  quadrant: string
-  ring: string
-}
-
 // Group structure to organize blips by quadrant and ring
 interface BlipGroup {
   quadrantId: string
@@ -66,13 +57,12 @@ function seededRandom(seed: string) {
 /**
  * 计算所有点的最优位置，使用扇形分布策略
  */
-export function calculateOptimalPositions(
+export function updateBlipPositions(
   blips: Blip[],
   quadrants: Quadrant[],
   rings: Ring[],
   center: number
-): BlipPosition[] {
-  const positions: BlipPosition[] = []
+) {
   const groups = groupBlips(blips, quadrants, rings)
 
   groups.forEach((group) => {
@@ -128,6 +118,4 @@ export function calculateOptimalPositions(
       }
     })
   })
-
-  return positions
 } 

@@ -4,8 +4,8 @@ import { useRef, useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import type { Blip, Quadrant, Ring } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { calculateOptimalPositions, BlipPosition } from "@/lib/radar_distribution"
-import { ringRatios } from "@/lib/data"
+import { updateBlipPositions } from "@/lib/radar_distribution"
+import { ringRatios, getRingStroke } from "@/lib/data"
 
 interface RadarVisualizationProps {
   blips: Blip[]
@@ -25,7 +25,6 @@ export default function RadarVisualization({
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 600, height: 600 }) // Default size for initial render
   const [hoveredBlip, setHoveredBlip] = useState<string | null>(null)
-  const [blipPositions, setBlipPositions] = useState<BlipPosition[]>([])
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -62,39 +61,16 @@ export default function RadarVisualization({
   const size = Math.max(100, Math.min(dimensions.width, dimensions.height) - 40) // Ensure minimum size
   const center = size / 2
 
-  // Get color for a ring
-  const getRingColor = (ringId: string) => {
-    switch (ringId) {
-      case "adopt":
-        return "bg-green-500"
-      case "trial":
-        return "bg-blue-500"
-      case "assess":
-        return "bg-yellow-500"
-      case "hold":
-        return "bg-red-500"
-      default:
-        return "bg-gray-500"
-    }
-  }
+  
 
-  // Calculate optimal positions for all blips using a holistic approach
   useEffect(() => {
     if (size <= 0 || blips.length === 0) return
 
-    // Apply the holistic positioning algorithm
-    const optimalPositions = calculateOptimalPositions(blips, quadrants, rings, center)
-    setBlipPositions(optimalPositions)
+    updateBlipPositions(blips, quadrants, rings, center)
   }, [blips, size, center, quadrants, rings])
 
   if (size <= 0) {
     return <div ref={containerRef} className="w-full h-full" />
-  }
-
-  // 计算每个环的半径
-  const calculateRingRadius = (index: number) => {
-    const ringWidthes = [0.4, 0.3, 0.2, 0.1]
-    return center * ringWidthes.slice(0, index + 1).reduce((sum, w) => sum + w, 0)
   }
 
   return (
@@ -108,7 +84,7 @@ export default function RadarVisualization({
       >
         {/* Render rings with labels */}
         {rings.map((ring, index) => {
-          const radius = calculateRingRadius(index)
+          const radius = center * ringRatios.slice(0, index + 1).reduce((sum, w) => sum + w, 0)
 
           return (
             <g key={ring.id}>
@@ -146,7 +122,7 @@ export default function RadarVisualization({
         {/* Debug mode: show ring boundaries */}
         {props.showDebugMode &&
           rings.map((ring, index) => {
-            const radius = calculateRingRadius(index)
+            const radius = center * ringRatios.slice(0, index + 1).reduce((sum, w) => sum + w, 0)
 
             return (
               <g key={`debug-${ring.id}`}>
@@ -155,30 +131,14 @@ export default function RadarVisualization({
                   cy={center}
                   r={radius}
                   fill="none"
-                  stroke={
-                    ring.id === "adopt"
-                      ? "rgba(16, 185, 129, 0.7)"
-                      : ring.id === "trial"
-                        ? "rgba(59, 130, 246, 0.7)"
-                        : ring.id === "assess"
-                          ? "rgba(234, 179, 8, 0.7)"
-                          : "rgba(239, 68, 68, 0.7)"
-                  }
+                  stroke={getRingStroke(ring.id)}
                   strokeWidth="4"
                   strokeDasharray="4 4"
                 />
                 <text
                   x={center + 5}
                   y={center - radius + 5}
-                  className={`fill-${
-                    ring.id === "adopt"
-                      ? "green"
-                      : ring.id === "trial"
-                        ? "blue"
-                        : ring.id === "assess"
-                          ? "yellow"
-                          : "red"
-                  }-600 text-xs font-bold`}
+                  className={`fill-${ring.color}-600 text-xs font-bold`}
                 >
                   {ring.name} boundary
                 </text>
@@ -240,7 +200,7 @@ export default function RadarVisualization({
               <div
                 className={cn(
                   "w-6 h-6 rounded-full cursor-pointer flex items-center justify-center text-white text-xs font-bold transition-all border-2 border-white shadow-md origin-center",
-                  getRingColor(blip.ring),
+                  `bg-${rings.find((r) => r.id === blip.ring)?.color}-500`,
                 )}
                 style={{
                   transform: hoveredBlip === blip.id ? "scale(1.5) translate(-25%, -25%)" : "translate(-50%, -50%)",

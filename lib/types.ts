@@ -21,6 +21,8 @@ export interface Ring {
   id: string
   name: string
   order: number
+  color: string
+  stroke: string
 }
 
 export interface RadarData {
