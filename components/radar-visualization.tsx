@@ -1,11 +1,10 @@
 "use client"
 
 import { useRef, useEffect, useState } from "react"
-import { motion } from "framer-motion"
 import type { Blip, Quadrant, Ring } from "@/lib/types"
-import { cn } from "@/lib/utils"
 import { updateBlipPositions } from "@/lib/radar_distribution"
 import { ringRatios } from "@/lib/data"
+import RadarBlips from "./radar-blips"
 
 interface RadarVisualizationProps {
   blips: Blip[]
@@ -24,7 +23,6 @@ export default function RadarVisualization({
 }: RadarVisualizationProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 600, height: 600 }) // Default size for initial render
-  const [hoveredBlip, setHoveredBlip] = useState<string | null>(null)
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -60,8 +58,6 @@ export default function RadarVisualization({
 
   const size = Math.max(100, Math.min(dimensions.width, dimensions.height) - 40) // Ensure minimum size
   const center = size / 2
-
-  
 
   useEffect(() => {
     if (size <= 0 || blips.length === 0) return
@@ -172,56 +168,13 @@ export default function RadarVisualization({
         })}
       </svg>
 
-      {/* Render blips */}
-      <div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-        style={{ width: size, height: size }}
-      >
-        {blips.map((blip) => {
-          const { x, y } = blip.position || { x: 0, y: 0 }
-          const blipId = blip.id.split("-")[0]
-
-          return (
-            <motion.div
-              key={blip.id}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-              className="absolute transform -translate-x-1/2 -translate-y-1/2"
-              style={{
-                left: x,
-                top: y,
-                zIndex: hoveredBlip === blip.id ? 100 : 1,
-              }}
-              onMouseEnter={() => setHoveredBlip(blip.id)}
-              onMouseLeave={() => setHoveredBlip(null)}
-              onClick={() => onBlipClick(blip)}
-            >
-              <div
-                className={cn(
-                  "w-6 h-6 rounded-full cursor-pointer flex items-center justify-center text-white text-xs font-bold transition-all border-2 border-white shadow-md origin-center",
-                  `bg-${rings.find((r) => r.id === blip.ring)?.color}-500`,
-                )}
-                style={{
-                  transform: hoveredBlip === blip.id ? "scale(1.5) translate(-25%, -25%)" : "translate(-50%, -50%)",
-                }}
-              >
-                {blipId}
-              </div>
-
-              {/* 悬浮显示blip信息 */}
-              {hoveredBlip === blip.id && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-7 bg-white shadow-lg rounded-md px-3 py-2 text-xs whitespace-nowrap z-[200] min-w-[120px] pointer-events-none">
-                  <div className="font-bold">{blip.name}</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {rings.find((r) => r.id === blip.ring)?.name}
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          )
-        })}
-      </div>
+      {/* 绘制技术点 */}
+      <RadarBlips 
+        blips={blips} 
+        rings={rings} 
+        size={size} 
+        onBlipClick={onBlipClick} 
+      />
     </div>
   )
 }
