@@ -16,22 +16,87 @@ export async function syncDatabase() {
   const logs = await queryDatabase(process.env.NOTION_LOGS_DATABASE_ID);
 
   for (const l of logs) {
+    if (l.Processed == "Done") {
+      continue;
+    }
     if (l.BlipID == "") {
       console.log("To be processed: ", l);
       // 向Notion添加Blip
       const blip = await createBlip(l);
-      await updateLog(l.notion_page_id, {
-        Processed: {
-          status: {
-            name: "Done",
+      await notion.pages.update({
+        page_id: l.notion_page_id,
+        properties: {
+          Processed: {
+            status: {
+              name: "Done",
+            }
+          },
+          BlipID: {
+            rich_text: [
+              { text: { content: parsePageProperties((blip as any).properties).ID } }
+            ]
           }
-        },
-        BlipID: {
-          rich_text: [
-            { text: { content: parsePageProperties((blip as any).properties).ID } }
-          ]
         }
       });
+    } else {
+      let matchedBlip = blips.find((b) => b.ID == l.BlipID);
+      if (!matchedBlip) {
+        console.error("Blip not found: ", l);
+        continue;
+      }
+      let changed = false;
+      let changedProperties: any = {
+          LastChange: {
+            rich_text: [
+              { text: { content: String(l.ID) } }
+            ]
+          },
+          updated: {
+            date: {
+              start: l.created
+            }
+          }
+      };
+      if (l.Ring != matchedBlip.Ring) {
+        changedProperties.Ring = {
+          select: {
+            name: l.Ring
+          }
+        }
+        changed = true;
+      }
+      if (l.Description && l.Description != matchedBlip.Description) {
+        changedProperties.Description = {
+          rich_text: [
+            { text: { content: l.Description } }
+          ]
+        }
+        changed = true;
+      }
+      if (changed) {
+        console.log("To be updated: ", l);
+        console.log(changedProperties);
+        console.log(matchedBlip);
+        await notion.pages.update({
+          page_id: matchedBlip.notion_page_id,
+          properties: changedProperties
+        });
+        await notion.pages.update({
+          page_id: l.notion_page_id,
+          properties: {
+            Processed: {
+              status: {
+                name: "Done",
+              }
+            },
+            PreviousRecord: {
+              rich_text: [
+                { text: { content: matchedBlip.LastChange } }
+              ]
+            }
+          }
+        });
+      }
     }
   }
 
@@ -43,16 +108,6 @@ export async function syncDatabase() {
     blips,
     logs
   };
-}
-
-async function updateLog(logId: string, properties: any) {
-  if (!process.env.NOTION_LOGS_DATABASE_ID || !process.env.NOTION_BLIPS_DATABASE_ID) {
-    throw new Error('Notion数据库ID未设置');
-  }
-  await notion.pages.update({
-    page_id: logId,
-    properties,
-  });
 }
 
 async function createBlip(log: any) {
