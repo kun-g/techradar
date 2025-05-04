@@ -2,9 +2,26 @@ import React from "react"
 import type { Ring } from "@/lib/types"
 import { ringRatios } from "@/lib/data"
 
+/**
+ * 雷达图环组件
+ * 
+ * 该组件用于渲染技术雷达图的同心环，表示不同的采用阶段（如采用、评估等）。
+ * 
+ * @example
+ * ```jsx
+ * <RadarRings 
+ *   rings={techData.rings} 
+ *   center={300} 
+ *   size={600} 
+ * />
+ * ```
+ */
 interface RadarRingsProps {
+  /** 环定义数组，包含ID、名称和样式 */
   rings: Ring[]
+  /** 雷达图中心点坐标 */
   center: number
+  /** 雷达图总尺寸 */
   size: number
 }
 

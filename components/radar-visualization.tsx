@@ -6,11 +6,32 @@ import { updateBlipPositions } from "@/lib/radar_distribution"
 import RadarBlips from "./radar/radar-blips"
 import RadarRings from "./radar/radar-rings"
 
+/**
+ * 技术雷达可视化组件
+ * 
+ * 该组件是技术雷达的核心可视化部分，结合了环形、象限和数据点的渲染。
+ * 支持响应式布局，会自动适应容器大小。
+ * 
+ * @example
+ * ```jsx
+ * <RadarVisualization
+ *   blips={techData.blips}
+ *   quadrants={techData.quadrants}
+ *   rings={techData.rings}
+ *   onBlipClick={(blip) => setSelectedBlip(blip)}
+ * />
+ * ```
+ */
 interface RadarVisualizationProps {
+  /** 要显示的技术数据点 */
   blips: Blip[]
+  /** 象限定义（工具、技术等） */
   quadrants: Quadrant[]
+  /** 环定义（采用、评估等） */
   rings: Ring[]
+  /** 点击数据点时的回调函数 */
   onBlipClick: (blip: Blip) => void
+  /** 是否显示调试模式 */
   showDebugMode?: boolean
 }
 
