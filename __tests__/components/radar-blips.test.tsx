@@ -20,6 +20,11 @@ jest.mock('framer-motion', () => {
         </div>
       ),
     },
+    useMotionValue: (initial: any) => ({
+      get: () => initial,
+      set: jest.fn(),
+    }),
+    useTransform: jest.fn().mockImplementation(() => 0),
   };
 });
 
@@ -36,7 +41,8 @@ const mockBlips: Blip[] = [
     quadrant: 'quadrant1', 
     ring: 'ring1',
     description: 'A JavaScript library for building user interfaces',
-    position: { x: 100, y: 100 }
+    position: { x: 100, y: 100 },
+    last_change: '2023-01-01'
   },
   { 
     id: 'blip2-456', 
@@ -44,7 +50,8 @@ const mockBlips: Blip[] = [
     quadrant: 'quadrant1', 
     ring: 'ring2',
     description: 'TypeScript is a typed superset of JavaScript',
-    position: { x: 150, y: 150 }
+    position: { x: 150, y: 150 },
+    last_change: '2023-01-01'
   }
 ];
 

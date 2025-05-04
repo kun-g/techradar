@@ -22,6 +22,7 @@ const mockBlip: Blip = {
   ring: "adopt",
   description: "这是一个测试技术点的描述。",
   position: { x: 50, y: 50 },
+  last_change: "2023-01-01",
 };
 
 // 数据点的故事
