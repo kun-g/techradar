@@ -3,8 +3,8 @@
 import { useRef, useEffect, useState } from "react"
 import type { Blip, Quadrant, Ring } from "@/lib/types"
 import { updateBlipPositions } from "@/lib/radar_distribution"
-import { ringRatios } from "@/lib/data"
-import RadarBlips from "./radar-blips"
+import RadarBlips from "./radar/radar-blips"
+import RadarRings from "./radar/radar-rings"
 
 interface RadarVisualizationProps {
   blips: Blip[]
@@ -78,61 +78,12 @@ export default function RadarVisualization({
         viewBox={`0 0 ${size} ${size}`}
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
       >
-        {/* Render rings with labels */}
-        {rings.map((ring, index) => {
-          const radius = center * ringRatios.slice(0, index + 1).reduce((sum, w) => sum + w, 0)
-
-          return (
-            <g key={ring.id}>
-              {/* 绘制环 */}
-              <circle
-                cx={center}
-                cy={center}
-                r={radius}
-                fill="none"
-                stroke={ring.stroke}
-                strokeWidth="1.5"
-                strokeOpacity="0.6"
-              />
-              {/* Add subtle ring labels */}
-              <text
-                x={center}
-                y={center - radius + 15}
-                textAnchor="middle"
-                className="fill-gray-400 text-xs font-medium"
-              >
-                {ring.name}
-              </text>
-            </g>
-          )
-        })}
-
-        {/* Debug mode: show ring boundaries */}
-        {props.showDebugMode &&
-          rings.map((ring, index) => {
-            const radius = center * ringRatios.slice(0, index + 1).reduce((sum, w) => sum + w, 0)
-
-            return (
-              <g key={`debug-${ring.id}`}>
-                <circle
-                  cx={center}
-                  cy={center}
-                  r={radius}
-                  fill="none"
-                  stroke={ring.stroke}
-                  strokeWidth="4"
-                  strokeDasharray="4 4"
-                />
-                <text
-                  x={center + 5}
-                  y={center - radius + 5}
-                  className={`fill-${ring.color}-600 text-xs font-bold`}
-                >
-                  {ring.name} boundary
-                </text>
-              </g>
-            )
-          })}
+        {/* 使用拆分出的环形组件 */}
+        <RadarRings 
+          rings={rings} 
+          center={center} 
+          size={size} 
+        />
 
         {/* Render quadrant dividers */}
         <line x1={center} y1="0" x2={center} y2={size} stroke="#e5e7eb" strokeWidth="1" />

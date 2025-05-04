@@ -29,6 +29,7 @@ export default function RadarBlips({
       {blips.map((blip) => {
         const { x, y } = blip.position || { x: 0, y: 0 }
         const blipId = blip.id.split("-")[0]
+        const blipSize = 6
 
         return (
           <motion.div
@@ -48,11 +49,13 @@ export default function RadarBlips({
           >
             <div
               className={cn(
-                "w-6 h-6 rounded-full cursor-pointer flex items-center justify-center text-white text-xs font-bold transition-all border-2 border-white shadow-md origin-center",
+                `w-${blipSize} h-${blipSize}`,
+                `-translate-x-1/2 -translate-y-1/2`,
+                "rounded-full cursor-pointer flex items-center justify-center text-white text-xs font-bold transition-all border-2 border-white shadow-md origin-center",
                 `bg-${rings.find((r) => r.id === blip.ring)?.color}-500`,
               )}
               style={{
-                transform: hoveredBlip === blip.id ? "scale(1.5) translate(-25%, -25%)" : "translate(-50%, -50%)",
+                transform: hoveredBlip === blip.id ? "scale(1.5) translate(-25%, -25%)" : "",
               }}
             >
               {blipId}

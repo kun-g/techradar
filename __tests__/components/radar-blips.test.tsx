@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import RadarBlips from '@/components/radar-blips';
+import RadarBlips from '@/components/radar/radar-blips';
 import { Blip, Ring } from '@/lib/types';
 
 // 模拟framer-motion
@@ -153,5 +153,39 @@ describe('RadarBlips', () => {
     
     // 应该使用默认位置(0,0)渲染
     expect(screen.getByText('blip3')).toBeInTheDocument();
+  });
+
+  test('处理在圆心的blip', () => {
+    const size = 600;
+    const centerPosition = size / 2;
+    const blipsAtCenter = [
+      { 
+        id: 'blip3-789', 
+        name: 'Angular', 
+        quadrant: 'quadrant1', 
+        ring: 'ring1',
+        description: 'A platform for building mobile and desktop web applications',
+        position: { x: centerPosition, y: centerPosition }
+      }
+    ] as Blip[];
+
+    act(() => {
+      render(
+        <RadarBlips blips={blipsAtCenter} rings={mockRings} size={size} onBlipClick={mockOnBlipClick} />
+      );
+    });
+    
+    // 检查blip是否被渲染
+    const blipText = screen.getByText('blip3');
+    const blipContainer = blipText.closest('div');
+    const blipElement = blipContainer?.parentElement;
+    
+    // 验证元素的位置样式
+    expect(blipElement).toHaveStyle(`left: ${centerPosition}px; top: ${centerPosition}px;`);
+    
+    // 验证元素使用了transform来实现视觉上的居中
+    expect(blipElement).toHaveClass('transform');
+    expect(blipElement).toHaveClass('-translate-x-1/2');
+    expect(blipElement).toHaveClass('-translate-y-1/2');
   });
 }); 
