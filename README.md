@@ -24,6 +24,7 @@
 - **Tailwind CSS**：实现灵活的样式管理
 - **Recharts**：数据可视化库
 - **Jest**：单元测试框架
+- **Ladle**：组件开发和测试工具
 
 ## 开发指南
 
@@ -46,12 +47,73 @@ npm run test
 pnpm test
 ```
 
+### 使用 Ladle 进行组件开发
+
+[Ladle](https://ladle.dev/) 是一个轻量级的组件开发和测试工具，类似于 Storybook。它可以帮助您独立开发、测试和文档化组件。
+
+#### 启动 Ladle 服务
+
+```bash
+# 启动 Ladle 开发服务器
+npm run ladle:serve
+# 或
+pnpm ladle:serve
+```
+
+此命令会启动一个本地服务器（默认端口：61001），您可以在浏览器中访问 http://localhost:61001/ 查看组件库。
+
+#### 构建静态组件库
+
+```bash
+# 构建 Ladle 静态站点
+npm run ladle:build
+# 或
+pnpm ladle:build
+```
+
+此命令会在 `build` 目录下生成静态文件，可以部署到任何静态网站托管服务。
+
+#### 创建组件故事
+
+在组件目录中创建以 `.stories.tsx` 结尾的文件：
+
+```tsx
+// components/my-component/my-component.stories.tsx
+import type { Story } from "@ladle/react";
+import MyComponent from "./my-component";
+
+export const Basic: Story = () => <MyComponent text="Hello World" />;
+
+export const WithCustomColor: Story = () => (
+  <MyComponent text="Custom Color" color="blue" />
+);
+```
+
+#### 特殊组件功能
+
+雷达图组件支持以下特殊功能：
+
+- **数据点朝向**：通过 `factTo` 属性控制数据点弧线的朝向
+- **数据点状态**：通过 `movement` 属性展示数据点的状态变化（移入、移出、新增、不变）
+
+```tsx
+<RadarBlip 
+  blip={techBlip} 
+  rings={ringData}
+  onBlipClick={handleClick}
+  factTo={{ x: 200, y: 300 }} // 指定弧线朝向坐标
+/>
+```
+
 ### 项目结构
 
 ```
 techradar/
 ├── app/             # Next.js应用页面
 ├── components/      # React组件
+│   └── radar/       # 雷达图相关组件
+│       └── *.stories.tsx  # 组件故事文件
+├── .ladle/          # Ladle 配置文件
 ├── lib/            # 通用库和工具函数
 ├── public/         # 静态资源
 ├── styles/         # 全局样式
