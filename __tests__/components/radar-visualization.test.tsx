@@ -174,8 +174,10 @@ describe('RadarVisualization', () => {
       })
     });
 
-    // 触发resize事件
-    window.dispatchEvent(new Event('resize'));
+    // 触发resize事件，使用act()包裹
+    act(() => {
+      window.dispatchEvent(new Event('resize'));
+    });
     
     // 重新渲染组件
     rerender(
