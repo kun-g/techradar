@@ -26,19 +26,18 @@ export default function RadarVisualization({
 
   useEffect(() => {
     const updateDimensions = () => {
-    if (containerRef.current) {
-      const { width, height } = containerRef.current.getBoundingClientRect()
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect()
         // Only update if dimensions have actually changed
         if (width !== dimensions.width || height !== dimensions.height) {
-      setDimensions({
-        width,
-        height,
-      })
+          setDimensions({
+            width,
+            height,
+          })
         }
       }
     }
 
-    // Initial update
     updateDimensions()
 
     // Set up resize observer for more reliable dimension tracking
