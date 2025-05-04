@@ -39,4 +39,5 @@ export interface RadarData {
   blips: Blip[]
   quadrants: Quadrant[]
   rings: Ring[]
+  logs: RecordChangeLog[]
 }

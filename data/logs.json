@@ -1,0 +1,62 @@
+[
+  {
+    "Processed": "Done",
+    "BlipID": "5",
+    "Description": "多年来，我们一直采用 金丝雀发布 的方法，鼓励用户对新软件版本提供早期反馈，同时通过逐步向选定用户推 出更新来降低风险。1% 金丝雀是一种有效的技术，我们将新功能推出给一个非常小的用户群体（比如说 1%）， 这些用户是从不同类别中精心挑选的。这使团队能够快速获取用户反馈，并观察新版本对性能、稳定性等方面 的影响，必要时进行学习和调整。这一技术在团队向移动应用程序或一系列设备（如边缘计算设备或软件定义 汽车）推出软件更新时尤为重要。通过适当的可观察性和早期反馈，它能够在生产环境中遇到意外情况时限制 影响范围。虽然金丝雀发布有助于更快地获取用户反馈，但我们认为从小部分用户开始测试是必要的，以降低 大规模功能发布的风险并控制其影响。",
+    "ID": "5",
+    "created": "2025-05-04",
+    "Quadrant": "技术",
+    "PreviousRecord": "",
+    "Ring": "评估",
+    "Name": "1%金丝雀",
+    "notion_page_id": "1e90aea5-43e6-803d-8959-f5ec567ac676"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "4",
+    "Description": "D3 是一个基于数据驱动文档的 JavaScript 库，用于构建动态、交互式的数据可视化图表，支持高度定制与 DOM 操作。",
+    "ID": "4",
+    "created": "2025-05-04",
+    "Quadrant": "语言",
+    "PreviousRecord": "",
+    "Ring": "评估",
+    "Name": "D3",
+    "notion_page_id": "1e90aea5-43e6-805f-b5ef-f798f06b0c09"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "3",
+    "Description": "- D2 是一个开源的图表即代码工具，帮助用户通过文本创建和定制图表。它引入了 D2 图表脚本语言，以简单的声明式语法优先保证可读性而非紧凑性。\n- Icon for D2",
+    "ID": "3",
+    "created": "2025-05-04",
+    "Quadrant": "工具",
+    "PreviousRecord": "",
+    "Ring": "评估",
+    "Name": "D2",
+    "notion_page_id": "1e90aea5-43e6-800d-9444-d2fae59bb191"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "2",
+    "Description": "React 是一个用于构建用户界面的 JavaScript 库，具备组件化、声明式和高效渲染的特点，广泛用于开发 Web 应用。",
+    "ID": "2",
+    "created": "2025-05-04",
+    "Quadrant": "语言",
+    "PreviousRecord": "",
+    "Ring": "评估",
+    "Name": "React",
+    "notion_page_id": "1e90aea5-43e6-800d-868a-f8059bf89022"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "1",
+    "Description": "技术雷达是一种技术管理工具，用于跟踪、评估和可视化团队采用新技术的状态与演进过程。",
+    "ID": "1",
+    "created": "2025-05-04",
+    "Quadrant": "技术",
+    "PreviousRecord": "",
+    "Ring": "评估",
+    "Name": "技术雷达",
+    "notion_page_id": "1e90aea5-43e6-80c0-b8af-fb3dcd1e41b6"
+  }
+]
