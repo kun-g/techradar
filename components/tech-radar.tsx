@@ -92,82 +92,20 @@ export default function TechRadar({ initialData }: TechRadarProps) {
   return (
     <div className="w-full max-w-6xl">
       <div className="flex flex-col md:flex-row gap-6">
-        {/* Left sidebar with filters */}
-        <div className="w-full md:w-64 space-y-6">
-          <div className="space-y-2">
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search technologies..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8"
-              />
-              {searchQuery && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-1 top-1.5 h-7 w-7"
-                  onClick={() => setSearchQuery("")}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {(selectedQuadrants.length > 0 || selectedRings.length > 0 || searchQuery) && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="flex items-center gap-1 text-xs">
-              <Filter className="h-3 w-3" />
-              Clear filters
-            </Button>
-          )}
-
-          <div className="pt-4">
-            <p className="text-sm text-muted-foreground mb-2">
-              Showing {filteredBlips.length} of {data.blips.length} technologies
-            </p>
-          </div>
-        </div>
 
         {/* Main content area */}
         <div className="flex-1">
           <Tabs defaultValue="radar" onValueChange={(value) => setViewMode(value as "radar" | "list")}>
-            <div className="flex justify-between items-center mb-4">
+
+            <div className="flex justify-center items-center mb-4">
               <TabsList>
                 <TabsTrigger value="radar">Radar View</TabsTrigger>
                 <TabsTrigger value="list">List View</TabsTrigger>
               </TabsList>
             </div>
 
-            {showHelp && (
-              <div className="bg-muted/30 p-4 rounded-md mb-4 text-sm">
-                <h3 className="font-medium mb-2">How to read the radar</h3>
-                <p className="mb-2">
-                  The radar is divided into four quadrants: Techniques, Tools, Platforms, and Languages & Frameworks.
-                  Each blip represents a technology and is positioned in one of four rings:
-                </p>
-                <ul className="list-disc pl-5 space-y-1">
-                  <li>
-                    <span className="text-green-600 font-medium">Adopt</span> — Technologies we strongly recommend.
-                  </li>
-                  <li>
-                    <span className="text-blue-600 font-medium">Trial</span> — Technologies worth pursuing. Understand
-                    how they affect your project.
-                  </li>
-                  <li>
-                    <span className="text-yellow-600 font-medium">Assess</span> — Worth exploring to understand how it
-                    will affect your project.
-                  </li>
-                  <li>
-                    <span className="text-red-600 font-medium">Hold</span> — Proceed with caution.
-                  </li>
-                </ul>
-              </div>
-            )}
-
             <TabsContent value="radar" className="mt-0">
-              <div className="bg-white rounded-lg p-4 h-[600px] relative">
+              <div className="bg-white rounded-lg h-[600px] relative">
                 <RadarVisualization
                   blips={filteredBlips}
                   quadrants={data.quadrants}
@@ -250,12 +188,6 @@ export default function TechRadar({ initialData }: TechRadarProps) {
                 <CardContent>
                   <div className="prose prose-sm max-w-none">
                     <p>{selectedBlip.description}</p>
-                    {selectedBlip.rationale && (
-                      <>
-                        <h3 className="text-lg font-medium mt-4">Rationale</h3>
-                        <p>{selectedBlip.rationale}</p>
-                      </>
-                    )}
                   </div>
                 </CardContent>
               </Card>

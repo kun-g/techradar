@@ -49,7 +49,6 @@ export default function RadarVisualization({
     const updateDimensions = () => {
       if (containerRef.current) {
         const { width, height } = containerRef.current.getBoundingClientRect()
-        // Only update if dimensions have actually changed
         if (width !== dimensions.width || height !== dimensions.height) {
           setDimensions({
             width,
@@ -76,7 +75,7 @@ export default function RadarVisualization({
     }
   }, [])
 
-  const size = Math.max(100, Math.min(dimensions.width, dimensions.height) - 40) // Ensure minimum size
+  const size = Math.min(dimensions.width, dimensions.height)
   const center = size / 2
 
   useEffect(() => {

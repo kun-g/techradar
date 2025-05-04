@@ -4,12 +4,21 @@ export interface Blip {
   quadrant: string
   ring: string
   description: string
-  rationale?: string
+  last_change: string
   movement?: 'new' | 'moved-in' | 'moved-out' | 'unchanged'
   position?: {
     x: number
     y: number
   }
+}
+
+export interface RecordChangeLog {
+  id: string
+  blipId: string
+  previousRecord: string
+  name: string
+  ring: string
+  description: string
 }
 
 export interface Quadrant {

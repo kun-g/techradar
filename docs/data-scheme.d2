@@ -1,0 +1,58 @@
+direction: right
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+Blip: {
+  shape: sql_table
+
+  last_change: string {constraint: [foreign_key]}
+  id: string {constraint: [primary_key; unique]}
+  name: string
+  quadrant: string
+  ring: string
+  description: string
+  movement: string
+  created_at: timestamp
+}
+
+RecordChangeLog: {
+  shape: sql_table
+
+  id: string {constraint: [primary_key; unique]}
+  blipId: string {constraint: foreign_key}
+  previousRecord: string
+  name: string
+  quadrant: string
+  ring: string
+  description: string
+  created_at: timestamp
+}
+
+Blip.id -> RecordChangeLog.blipId {
+    source-arrowhead.label: 1
+    target-arrowhead: * {
+        shape: diamond
+    }
+}
+
+Blip.last_change -> RecordChangeLog.id {
+    source-arrowhead.label: 1
+    target-arrowhead: 1 
+}
+
+时序图: {
+    shape: sequence_diagram
+    u: User
+    log: Record Change Log
+    blip: Blip
+    u -> log.check_input {
+        icon: https://icons.terrastruct.com/essentials%2F111-idea.svg
+    }
+
+    log.check_input -> log.check_input: 检查 name/link  唯一性
+    log.check_input -> u: 👌
+    log.check_input -> blip: 更新Blip
+}
