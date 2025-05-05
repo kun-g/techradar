@@ -3,8 +3,8 @@
 import { useRef, useEffect, useState } from "react"
 import type { Blip, Quadrant, Ring } from "@/lib/types"
 import { updateBlipPositions } from "@/lib/radar_distribution"
-import RadarBlips from "./radar/radar-blips"
 import RadarRings from "./radar/radar-rings"
+import RadarBlip from "./radar/radar-blip"
 
 /**
  * 技术雷达可视化组件
@@ -131,12 +131,20 @@ export default function RadarVisualization({
       </svg>
 
       {/* 绘制技术点 */}
-      <RadarBlips 
-        blips={blips} 
-        rings={rings} 
-        size={size} 
-        onBlipClick={onBlipClick} 
-      />
+      <div
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        style={{ width: size, height: size }}
+      >
+        {blips.map((blip) => (
+          <RadarBlip
+            key={blip.id}
+            blip={blip}
+            rings={rings}
+            factTo={{ x: size/2, y: size/2 }}
+            onBlipClick={onBlipClick}
+          />
+        ))}
+      </div>
     </div>
   )
 }
