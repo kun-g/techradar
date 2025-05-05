@@ -194,18 +194,6 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
           <CardContent>
             {!isEditMode ? (
               <div className="space-y-4">
-                {/* 标签和别名显示区域 */}
-                {(blip.tags && blip.tags.length > 0) && (
-                  <div className="space-y-1">
-                    <h3 className="text-sm font-medium">标签</h3>
-                    <div className="flex flex-wrap gap-1">
-                      {blip.tags.map(tag => (
-                        <Badge key={tag} variant="secondary">{tag}</Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
                 {(blip.aliases && blip.aliases.length > 0) && (
                   <div className="space-y-1">
                     <h3 className="text-sm font-medium">别名</h3>

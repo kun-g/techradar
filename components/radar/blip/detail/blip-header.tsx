@@ -32,8 +32,6 @@ export function BlipHeader({ blip, quadrants, rings, isEditMode, onEdit, onClose
               {blip.id.split("-")[0]}
             </div>
             {blip.name}
-          </CardTitle>
-          <CardDescription className="flex items-center gap-2 mt-1">
             <Badge variant="outline">
               {quadrants.find((q) => q.id === blip.quadrant)?.name}
             </Badge>
@@ -49,6 +47,15 @@ export function BlipHeader({ blip, quadrants, rings, isEditMode, onEdit, onClose
               >
                 {rings.find((r) => r.id === blip.ring)?.name}
               </Badge>
+            )}
+          </CardTitle>
+          <CardDescription className="flex items-center gap-2 mt-1">
+            {!isEditMode && blip.tags && blip.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {blip.tags.map(tag => (
+                  <Badge key={tag} variant="secondary">{tag}</Badge>
+                ))}
+              </div>
             )}
           </CardDescription>
         </div>

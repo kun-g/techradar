@@ -28,10 +28,10 @@
 - [x] 实现历史数据对比功能
 - [x] Toast
 - [ ] 支持更多象限
-- [ ] 增加Tag
+- [x] 增加Tag
 - [ ] 实现Blip间的关联关系
     - [ ] 为 Blip  生成详情页
-        - [ ] 实现 Alias
+        - [x] 实现 Alias
 - [ ] 为Notion模块写单元测试
 - [x] Prompt 迭代流程
 
