@@ -541,3 +541,84 @@ export async function addLogEntry(logData: {
     throw error;
   }
 }
+
+/**
+ * 创建Blip的修改记录并更新日志
+ * @param blipData - 包含Blip修改数据的对象
+ * @returns 创建的Log条目信息
+ */
+export async function createBlipEditLog(blipData: {
+  blipId: string;          // 要编辑的Blip ID
+  name: string;            // Blip名称
+  quadrant: string;        // Blip象限
+  ring: string;            // 新的环状态
+  description: string;     // 新的描述
+  prevRing?: string;       // 之前的环状态
+  prevDescription?: string;// 之前的描述
+}) {
+  if (!process.env.NOTION_LOGS_DATABASE_ID) {
+    throw new Error('Notion数据库ID未设置');
+  }
+
+  try {
+    // 检查是否有实际变化
+    const hasRingChange = blipData.prevRing && blipData.ring !== blipData.prevRing;
+    const hasDescriptionChange = blipData.prevDescription && blipData.description !== blipData.prevDescription;
+    
+    if (!hasRingChange && !hasDescriptionChange) {
+      throw new Error('没有检测到任何变化，请至少修改一项内容');
+    }
+
+    // 创建修改记录到Logs数据库
+    const response = await notion.pages.create({
+      parent: {
+        database_id: process.env.NOTION_LOGS_DATABASE_ID,
+      },
+      properties: {
+        Name: {
+          title: [
+            { text: { content: blipData.name } }
+          ]
+        },
+        Quadrant: {
+          select: {
+            name: blipData.quadrant
+          }
+        },
+        Ring: {
+          select: {
+            name: blipData.ring
+          }
+        },
+        Description: {
+          rich_text: [
+            { text: { content: blipData.description } }
+          ]
+        },
+        BlipID: {
+          rich_text: [
+            { text: { content: blipData.blipId } }
+          ]
+        },
+        Processed: {
+          status: {
+            name: "Not started"
+          }
+        },
+        created: {
+          date: {
+            start: new Date().toISOString()
+          }
+        },
+      }
+    });
+
+    // 解析并返回创建的Log信息
+    const createdLog = parsePage(response);
+    
+    return createdLog;
+  } catch (error) {
+    console.error('创建Blip编辑记录时出错:', error);
+    throw error;
+  }
+}

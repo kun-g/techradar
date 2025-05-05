@@ -1,5 +1,15 @@
 [
   {
+    "updated": "2025-05-05T02:39:00.000+00:00",
+    "Quadrant": "平台",
+    "Description": "大多数用于构建购物网站的电子商务解决方案通常会陷入 80/20 陷阱，即我们可以轻松构建 出 80% 的需求，但对于剩下的 20% 却无能为力。Medusa 提供了一个良好的平衡。它是一个高度可定制的 开源商业平台，允许开发人员创建独特且量身定制的购物体验，可以自我托管或运行在 Medusa 的平台上。 Medusa 基于 Next.js 和 PostgreSQL 构建，通过提供从基本购物车和订单管理到高级功能（如礼品卡模块和 不同地区的税收计算）的全面模块，加快了开发过程。\n[World's most flexible commerce platform](https://medusajs.com/)",
+    "ID": "9",
+    "LastChange": "10",
+    "Ring": "assess",
+    "Name": "Medusa",
+    "notion_page_id": "1ea0aea5-43e6-814e-8845-d94442f3617a"
+  },
+  {
     "updated": "2025-05-05T01:53:00.000+00:00",
     "Quadrant": "语言与框架",
     "Description": "Lenis 是一个为现代浏览器设计的轻量且强大的平滑滚动库。 它能够实现流畅的滚动体验，例如 WebGL 滚动同步和视差效果，这使其非常适合那些需要构建流畅、无缝滚动交互页面的团队。它提供了一种精简高效的方式来创建平滑滚动效果。然而，该库在无障碍性方面可能存在一些问题，特别是在处理垂直和水平滚动交互时，可能会让残障用户感到困惑。虽然它在视觉上很吸引人，但在实现时仍然需要仔细考虑无障碍性\n[Lenis – Get smooth or die trying](https://lenis.darkroom.engineering/)\n",

@@ -1,7 +1,20 @@
 [
   {
     "Processed": "Not started",
-    "BlipID": "",
+    "BlipID": "2",
+    "LLMResult": "",
+    "Description": "React普及率非常高,不少AI编程平台都默认使用React(v0, Firebase Studio)",
+    "ID": "11",
+    "created": "2025-05-05T03:23:00.000+00:00",
+    "Quadrant": "语言与框架",
+    "PreviousRecord": "",
+    "Ring": "trial",
+    "Name": "React",
+    "notion_page_id": "1ea0aea5-43e6-81ce-82f8-e47be3cf1c63"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "9",
     "LLMResult": "```json\n{\n  \"象限\": \"平台\",\n  \"理由\": \"Medusa 是一个用于构建和运行电子商务网站的开源商业平台，提供基础设施和运行环境支持。\"\n}\n```",
     "Description": "大多数用于构建购物网站的电子商务解决方案通常会陷入 80/20 陷阱，即我们可以轻松构建 出 80% 的需求，但对于剩下的 20% 却无能为力。Medusa 提供了一个良好的平衡。它是一个高度可定制的 开源商业平台，允许开发人员创建独特且量身定制的购物体验，可以自我托管或运行在 Medusa 的平台上。 Medusa 基于 Next.js 和 PostgreSQL 构建，通过提供从基本购物车和订单管理到高级功能（如礼品卡模块和 不同地区的税收计算）的全面模块，加快了开发过程。\n[World's most flexible commerce platform](https://medusajs.com/)",
     "ID": "10",
