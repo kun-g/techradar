@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Filter, X, Edit, Save, ArrowLeft } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { X, Edit, Save, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
@@ -15,7 +14,6 @@ import { toast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import RadarVisualization from "./radar-visualization"
 import BlipList from "./blip-list"
-import { EditBlipForm } from "./edit-blip-form"
 import type { Blip, RadarData } from "@/lib/types"
 
 interface TechRadarProps {
@@ -30,7 +28,6 @@ export default function TechRadar({ initialData }: TechRadarProps) {
   const [selectedRings, setSelectedRings] = useState<string[]>([])
   const [selectedBlip, setSelectedBlip] = useState<Blip | null>(null)
   const [viewMode, setViewMode] = useState<"radar" | "list">("radar")
-  const [showHelp, setShowHelp] = useState(false)
   const [showDebugMode, setShowDebugMode] = useState(false)
   const [isEditMode, setIsEditMode] = useState(false)
   const [editFormData, setEditFormData] = useState({
@@ -61,20 +58,6 @@ export default function TechRadar({ initialData }: TechRadarProps) {
 
     setFilteredBlips(filtered)
   }, [searchQuery, selectedQuadrants, selectedRings, data])
-
-  const toggleQuadrant = (quadrant: string) => {
-    setSelectedQuadrants((prev) => (prev.includes(quadrant) ? prev.filter((q) => q !== quadrant) : [...prev, quadrant]))
-  }
-
-  const toggleRing = (ring: string) => {
-    setSelectedRings((prev) => (prev.includes(ring) ? prev.filter((r) => r !== ring) : [...prev, ring]))
-  }
-
-  const clearFilters = () => {
-    setSearchQuery("")
-    setSelectedQuadrants([])
-    setSelectedRings([])
-  }
 
   const handleBlipClick = (blip: Blip) => {
     setSelectedBlip(blip)
@@ -196,22 +179,6 @@ export default function TechRadar({ initialData }: TechRadarProps) {
       setIsSubmitting(false);
     }
   };
-
-  // Get ring color class
-  const getRingColorClass = (ringId: string) => {
-    switch (ringId) {
-      case "adopt":
-        return "border-green-200 bg-green-100 text-green-800"
-      case "trial":
-        return "border-blue-200 bg-blue-100 text-blue-800"
-      case "assess":
-        return "border-yellow-200 bg-yellow-100 text-yellow-800"
-      case "hold":
-        return "border-red-200 bg-red-100 text-red-800"
-      default:
-        return ""
-    }
-  }
 
   return (
     <div className="w-full max-w-6xl">

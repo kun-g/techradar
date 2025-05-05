@@ -1,13 +1,26 @@
 [
   {
-    "Processed": "Not started",
+    "Processed": "Done",
+    "BlipID": "10",
+    "LLMResult": "```json\n{\n  \"象限\": \"技术\",\n  \"理由\": \"模糊测试是一种测试技术，属于软件开发中的方法论或实践方式。\"\n}\n```",
+    "Description": "**Fuzz 测试** ，或称模糊测试，是一种已经存在很长时间但仍然较少被广泛了解的测试技术。其目标是向软件系统输入各种无效数据并观察其行为。例如，对于一个 HTTP 端点，错误的请求通常应返回 4_xx_ 错误，但 fuzz 测试往往会引发 5_xx_ 错误甚至更严重的问题。随着工具的完善以及文档支持的增强，fuzz 测试在如今显得尤为重要，尤其是在更多 AI 生成代码和[自满于 AI 生成的代码](https://www.thoughtworks.com/zh-cn/radar/techniques/complacency-with-ai-generated-code)的背景下。因此，现在是采用 fuzz 测试的好时机，以确保代码的健壮性和安全性。",
+    "ID": "12",
+    "created": "2025-05-05T03:36:00.000+00:00",
+    "Quadrant": "技术",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "模糊测试",
+    "notion_page_id": "1ea0aea5-43e6-811f-a314-c31ba87f1a0d"
+  },
+  {
+    "Processed": "Done",
     "BlipID": "2",
     "LLMResult": "",
     "Description": "React普及率非常高,不少AI编程平台都默认使用React(v0, Firebase Studio)",
     "ID": "11",
     "created": "2025-05-05T03:23:00.000+00:00",
     "Quadrant": "语言与框架",
-    "PreviousRecord": "",
+    "PreviousRecord": "2",
     "Ring": "trial",
     "Name": "React",
     "notion_page_id": "1ea0aea5-43e6-81ce-82f8-e47be3cf1c63"
