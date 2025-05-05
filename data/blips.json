@@ -1,5 +1,15 @@
 [
   {
+    "updated": "2025-05-05T05:15:00.000+00:00",
+    "Quadrant": "平台",
+    "Description": "Edge Functions\n通过内容交付网络（CDNs）进行去中心化代码执行的可用性和使用量正在增长。诸如 Cloudflare Workers 或 Amazon CloudFront Edge Functions 这样的服务提供了一种机制，可以在靠近客户地理位置的地方执行无服务器代码片段。 边缘函数不仅可以在边缘生成响应时提供更低的延迟，还可以在请求和响应从区域服务器出发和返回的途中，以特定位置的方式重写它们。例如，你可能会重写请求的 URL， 以路由到一个特定服务器，该服务器拥有与请求正文中找到的字段相关的本地数据。这种方法最适合于短暂、快 速运行的无状态处理，因为边缘的计算能力是有限的。\n[Edge Functions](https://aws.amazon.com/developer/application-security-performance/articles/cloudfront-edge-functions/)\n[Cloudflare Workers \\| Technology Radar \\| Thoughtworks China](https://www.thoughtworks.com/cn/radar/platforms/cloudflare-workers)\n",
+    "ID": "16",
+    "LastChange": "19",
+    "Ring": "assess",
+    "Name": "边缘函数",
+    "notion_page_id": "1ea0aea5-43e6-8196-9b2d-c8cf15d32a89"
+  },
+  {
     "updated": "2025-05-05T05:13:00.000+00:00",
     "Quadrant": "技术",
     "Description": "我们遗憾地发现，人们很少使用[特性开关](https://martinfowler.com/articles/feature-toggles.html)，且经常混淆其类型和使用场景。为了从[持续集成](https://martinfowler.com/articles/continuousIntegration.html)中受益，一些团队会使用 [LaunchDarkly](https://launchdarkly.com/) 等重量级平台来实现特性切换（包括发布切换），即使他们所需要的仅仅是简单地 if/else 条件控制。 因此，除非你需要 A/B 测试、[金丝雀发布](https://martinfowler.com/bliki/CanaryRelease.html)或将特性发布的职责交给业务人员，我们建议使用 **最简特性开关** 来代替不必要的复杂的特性切换框架。",

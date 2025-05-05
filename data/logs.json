@@ -1,7 +1,7 @@
 [
   {
-    "Processed": "Not started",
-    "BlipID": "",
+    "Processed": "Done",
+    "BlipID": "16",
     "LLMResult": "```json\n{\n  \"象限\": \"平台\",\n  \"理由\": \"边缘函数（Edge Functions）是一种在内容交付网络（CDNs）上运行的无服务器代码执行环境，属于基础设施或运行环境范畴。\"\n}\n```",
     "Description": "Edge Functions\n通过内容交付网络（CDNs）进行去中心化代码执行的可用性和使用量正在增长。诸如 Cloudflare Workers 或 Amazon CloudFront Edge Functions 这样的服务提供了一种机制，可以在靠近客户地理位置的地方执行无服务器代码片段。 边缘函数不仅可以在边缘生成响应时提供更低的延迟，还可以在请求和响应从区域服务器出发和返回的途中，以特定位置的方式重写它们。例如，你可能会重写请求的 URL， 以路由到一个特定服务器，该服务器拥有与请求正文中找到的字段相关的本地数据。这种方法最适合于短暂、快 速运行的无状态处理，因为边缘的计算能力是有限的。\n[Edge Functions](https://aws.amazon.com/developer/application-security-performance/articles/cloudfront-edge-functions/)\n[Cloudflare Workers \\| Technology Radar \\| Thoughtworks China](https://www.thoughtworks.com/cn/radar/platforms/cloudflare-workers)\n",
     "ID": "19",

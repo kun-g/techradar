@@ -333,58 +333,69 @@ export default function BlipDetailModal({ blip, quadrants, rings, onClose, onDat
                 <div className="w-full mt-2 border-t pt-3">
                   <h4 className="text-sm font-medium mb-2">修改历史</h4>
                   <div className="space-y-4">
-                    {historyData.map((record, idx) => (
-                      <div key={idx} className="bg-gray-50 p-3 rounded-md text-sm">
-                        <div className="flex justify-between items-center mb-2">
-                          <div className="font-medium">{record.name}</div>
-                          <div className="text-xs text-muted-foreground">{formatDate(record.created)}</div>
-                        </div>
-                        <div className="space-y-2">
-                          {record.ring !== blip.ring && (
-                            <div className="pb-2 border-b border-gray-200">
-                              <div className="flex gap-3 items-center">
-                                <div className="flex-1">
-                                  <span className="line-through text-muted-foreground">
-                                    {rings.find(r => r.id === record.ring)?.name || record.ring}
-                                  </span>
-                                </div>
-                                <div className="text-gray-500">→</div>
-                                <div className="flex-1">
-                                  <span className="text-blue-600">
-                                    {rings.find(r => r.id === blip.ring)?.name || blip.ring}
-                                  </span>
+                    {historyData.map((record, idx) => {
+                      // 获取后一条记录（如果有的话）
+                      const nextRecord = idx < historyData.length - 1 ? historyData[idx + 1] : null;
+                      // 判断环是否有变化（与下一次记录比较）
+                      const ringChanged = nextRecord && record.ring !== nextRecord.ring;
+                      // 获取新的环名称（如果变化了）
+                      const newRingName = ringChanged 
+                        ? rings.find(r => r.id === nextRecord?.ring)?.name || nextRecord?.ring
+                        : null;
+                      
+                      return (
+                        <div key={idx} className="bg-gray-50 p-3 rounded-md text-sm">
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="font-medium">{record.name}</div>
+                            <div className="text-xs text-muted-foreground">{formatDate(record.created)}</div>
+                          </div>
+                          <div className="space-y-2">
+                            {ringChanged && (
+                              <div className="pb-2 border-b border-gray-200">
+                                <div className="flex gap-3 items-center">
+                                  <div className="flex-1">
+                                    <span className="line-through text-muted-foreground">
+                                      {rings.find(r => r.id === record.ring)?.name || record.ring}
+                                    </span>
+                                  </div>
+                                  <div className="text-gray-500">→</div>
+                                  <div className="flex-1">
+                                    <span className="text-blue-600">
+                                      {newRingName}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          )}
-                          {record.description && (
-                            <div className="px-3 py-2 bg-gray-100 rounded-md prose prose-sm max-w-none">
-                              <ReactMarkdown 
-                                remarkPlugins={[remarkGfm, remarkBreaks]}
-                                components={{
-                                  p: ({node, ...props}) => <p className="mb-2" {...props} />,
-                                  a: ({node, ...props}) => <a className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
-                                  h1: ({node, ...props}) => <h1 className="text-lg font-bold mb-2" {...props} />,
-                                  h2: ({node, ...props}) => <h2 className="text-base font-bold mb-2" {...props} />,
-                                  h3: ({node, ...props}) => <h3 className="text-sm font-bold mb-1" {...props} />,
-                                  ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2" {...props} />,
-                                  ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2" {...props} />,
-                                  li: ({node, ...props}) => <li className="mb-1" {...props} />,
-                                  blockquote: ({node, ...props}) => <blockquote className="border-l-2 border-gray-300 pl-2 italic my-2" {...props} />,
-                                  code: ({inline, className, children, ...props}: any) => {
-                                    return inline 
-                                      ? <code className="bg-gray-200 px-1 py-0.5 rounded text-xs" {...props}>{children}</code>
-                                      : <pre className="bg-gray-200 p-2 rounded overflow-x-auto text-xs"><code {...props}>{children}</code></pre>
-                                  }
-                                }}
-                              >
-                                {record.description}
-                              </ReactMarkdown>
-                            </div>
-                          )}
+                            )}
+                            {record.description && (
+                              <div className="px-3 py-2 bg-gray-100 rounded-md prose prose-sm max-w-none">
+                                <ReactMarkdown 
+                                  remarkPlugins={[remarkGfm, remarkBreaks]}
+                                  components={{
+                                    p: ({node, ...props}) => <p className="mb-2" {...props} />,
+                                    a: ({node, ...props}) => <a className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                                    h1: ({node, ...props}) => <h1 className="text-lg font-bold mb-2" {...props} />,
+                                    h2: ({node, ...props}) => <h2 className="text-base font-bold mb-2" {...props} />,
+                                    h3: ({node, ...props}) => <h3 className="text-sm font-bold mb-1" {...props} />,
+                                    ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2" {...props} />,
+                                    ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2" {...props} />,
+                                    li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                                    blockquote: ({node, ...props}) => <blockquote className="border-l-2 border-gray-300 pl-2 italic my-2" {...props} />,
+                                    code: ({inline, className, children, ...props}: any) => {
+                                      return inline 
+                                        ? <code className="bg-gray-200 px-1 py-0.5 rounded text-xs" {...props}>{children}</code>
+                                        : <pre className="bg-gray-200 p-2 rounded overflow-x-auto text-xs"><code {...props}>{children}</code></pre>
+                                    }
+                                  }}
+                                >
+                                  {record.description}
+                                </ReactMarkdown>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}

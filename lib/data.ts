@@ -133,7 +133,8 @@ export async function fetchRadarData(): Promise<RadarData> {
     description: blip.Description,
     last_change: blip.LastChange,
     updated: blip.updated,
-    history: blipLogsMap.get(blip.ID) || [],
+    // 按创建时间降序排序
+    history: blipLogsMap.get(blip.ID)?.sort((a, b) => new Date(b.created || '').getTime() - new Date(a.created || '').getTime()) || [],
   }))
 
   const processedBlips = calculateBlipMovements(finalBlips);
