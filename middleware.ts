@@ -5,6 +5,7 @@ import type { NextRequest } from 'next/server';
 const PROTECTED_PATHS = [
   '/api/notion/blip',   // 添加技术点
   '/api/notion/sync',   // 同步数据
+  '/api/prompt/export', // 导出Prompt数据
 ];
 
 // 此函数可以被标记为 `async`，如果需要等待Promise

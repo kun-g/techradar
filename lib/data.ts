@@ -111,6 +111,7 @@ function buildBlipLogsMap(): Map<string, RecordChangeLog[]> {
     ring: log.Ring,
     description: log.Description,
     created: log.created,
+    llmResult: log.LLMResult,
   }))
   
   // 按blipId对日志进行分组

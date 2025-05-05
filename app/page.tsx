@@ -9,6 +9,7 @@ import { RefreshCw } from "lucide-react"
 import type { RadarData } from "@/lib/types"
 import { useAuth } from "@/lib/auth"
 import { AdminAuthDialog } from "@/components/admin/auth-dialog";
+import { PromptExportButton } from "@/components/admin/prompt-export-button";
 import { toast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/api-helpers";
 
@@ -85,6 +86,7 @@ export default function Home() {
       <div className="w-full max-w-6xl mb-8 flex justify-end gap-2">
         {isAdmin && (
           <>
+            <PromptExportButton />
             <Button 
               onClick={handleSync} 
               disabled={isSyncing}

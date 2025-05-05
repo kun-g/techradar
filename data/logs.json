@@ -1,6 +1,45 @@
 [
   {
     "Processed": "Done",
+    "BlipID": "35",
+    "LLMResult": "```json\n{\n  \"象限\": \"工具\",\n  \"理由\": \"Ladle 是一个用于开发和测试 React 组件的工具，支持多种功能和格式，属于开发过程中的辅助工具。\"\n}\n```",
+    "Description": "Develop and test your React stories faster.\n\nLadle is compatible with the Component Story Format and Controls. It supports links, themes, right-to-left, source code, a11y (axe), typescript and flow out of the box.",
+    "ID": "38",
+    "created": "2025-05-05T09:10:00.000+00:00",
+    "Quadrant": "工具",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "Ladle",
+    "notion_page_id": "1ea0aea5-43e6-81c3-b806-d09abaf812f5"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "34",
+    "LLMResult": "```json\n{\n  \"象限\": \"工具\",\n  \"理由\": \"Firebase Studio 是一个提供开发支持的软件工具，用于加速整个开发生命周期，包括构建后端、前端和移动应用。\"\n}\n```",
+    "Description": "https://firebase.studio/\n\nFirebase Studio accelerates your entire development lifecycle with AI agents. Build backends, front ends, and mobile apps, all in one place.",
+    "ID": "37",
+    "created": "2025-05-05T09:08:00.000+00:00",
+    "Quadrant": "工具",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "Firebase Studio",
+    "notion_page_id": "1ea0aea5-43e6-8198-9fee-c62fa67e0865"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "33",
+    "LLMResult": "```json\n{\n  \"象限\": \"平台\",\n  \"理由\": \"Firebase 是一个综合性平台，用于构建和运行移动和Web应用，并提供多种服务如 App Distribution 和 Remote Config，因此归类为平台。\"\n}\n```",
+    "Description": "谷歌的**[Firebase](https://firebase.google.com/)**自2016年被我们纳入[无服务器架构](https://www.thoughtworks.com/zh-cn/radar/techniques/serverless-architecture)以来，发生了重大的演变。 Firebase 是一个综合性平台，可用于构建移动和Web应用，并运行在谷歌可伸缩基础设施上。我们尤其喜欢 Firebase App Distribution 和 Firebase Remote Config。前者可通过持续部署流水线，轻松发布应用程序的测试版本。而后者可以将配置更改，动态地推送给应用程序，而无须重新发布应用程序。",
+    "ID": "36",
+    "created": "2025-05-05T09:07:00.000+00:00",
+    "Quadrant": "平台",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "FireBase",
+    "notion_page_id": "1ea0aea5-43e6-819a-bf93-f3e2bf24b915"
+  },
+  {
+    "Processed": "Done",
     "BlipID": "32",
     "LLMResult": "```json\n{\n  \"象限\": \"技术\",\n  \"理由\": \"基础设施即代码是一种方法论，强调将软件开发中的良好实践应用于基础设施管理，属于技术实践范畴。\"\n}\n```",
     "Description": "尽管 **基础设施即代码** 是一种相对旧的技术（我们早在2011年的技术雷达中就已经介绍过它），但在现代云时代，构建基础设施的行为已经成为了将配置指令传递到云平台的重要组成部分，因此它变得非常重要。当我们说“即代码”时，是指我们在软件领域学到的所有良好实践都应应用于基础设施。使用源代码控制，遵守 [DRY原则](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)、模块化、可维护性以及使用自动化测试和部署都是关键的实践。我们当中具有深厚软件和基础设施背景的人，需要体谅和支持那些没有做过这些的同事。仅仅说“像对待代码一样处理基础设施”还不够，我们需要确保从软件世界学到的来之不易的经验教训，也能够同样应用到整个基础设施领域。",

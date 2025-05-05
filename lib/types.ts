@@ -22,6 +22,7 @@ export interface RecordChangeLog {
   ring: string
   description: string
   created?: string
+  llmResult?: string
 }
 
 export interface Quadrant {
