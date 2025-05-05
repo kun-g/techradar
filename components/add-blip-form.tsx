@@ -157,48 +157,6 @@ export function AddBlipForm() {
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="quadrant" className="text-right">
-                  象限
-                </Label>
-                <div className="col-span-3">
-                  <Select
-                    value={formData.quadrant}
-                    onValueChange={(value) => handleSelectChange("quadrant", value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="选择象限" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {QUADRANTS.map((quadrant) => (
-                        <SelectItem key={quadrant} value={quadrant}>
-                          {quadrant}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="ring" className="text-right">
-                  环
-                </Label>
-                <Select
-                  value={formData.ring}
-                  onValueChange={(value) => handleSelectChange("ring", value)}
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="选择环" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {RINGS.map((ring) => (
-                      <SelectItem key={ring} value={ring}>
-                        {ring}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="description" className="text-right">
                   描述
                 </Label>

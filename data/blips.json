@@ -70,11 +70,11 @@
     "notion_page_id": "1e90aea5-43e6-813d-87e3-f9e8408a9300"
   },
   {
-    "updated": "2025-05-04",
+    "updated": "2025-05-05T03:39:00.000+00:00",
     "Quadrant": "工具",
-    "Description": "- D2 是一个开源的图表即代码工具，帮助用户通过文本创建和定制图表。它引入了 D2 图表脚本语言，以简单的声明式语法优先保证可读性而非紧凑性。\n- Icon for D2",
+    "Description": "- [**D2**](https://github.com/terrastruct/d2) 是一个开源的[图表即代码](https://www.thoughtworks.com/zh-cn/radar/techniques/diagrams-as-code)工具，帮助用户通过文本创建和定制图表。它引入了 [D2 图表脚本语言](https://d2lang.com/tour/intro)，以简单的声明式语法优先保证可读性而非紧凑性。\n- [Icon for D2](https://icons.terrastruct.com/)\n\n",
     "ID": "3",
-    "LastChange": "3",
+    "LastChange": "13",
     "Ring": "assess",
     "Name": "D2",
     "notion_page_id": "1e90aea5-43e6-8157-895a-e1efda176091"

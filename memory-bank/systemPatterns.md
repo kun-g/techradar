@@ -70,3 +70,20 @@ export function distributeBlips(
 - **过滤和搜索** - 通过quadrant和ring过滤数据点
 - **视图切换** - 雷达视图和列表视图的切换
 - **无障碍设计** - 键盘导航和屏幕阅读器支持 
+
+## 测试最佳实践
+
+### 组件测试策略
+- **使用data-testid属性** - 为UI元素添加唯一标识符，便于测试中稳定地定位元素
+  ```jsx
+  <Button variant="ghost" size="icon" onClick={toggleEditMode} data-testid="edit-button">
+    <Edit className="h-4 w-4" />
+  </Button>
+  ```
+- **使用screen.getByTestId** - 在测试中通过testid查找元素，避免依赖于易变的文本内容或DOM结构
+  ```jsx
+  const editButton = screen.getByTestId('edit-button');
+  fireEvent.click(editButton);
+  ```
+- **组件隔离测试** - 将复杂组件分解为较小的组件，并单独测试，提高测试的可维护性和可靠性
+- **模拟事件和回调** - 使用jest.fn()模拟事件处理函数和回调，验证它们是否被正确调用 

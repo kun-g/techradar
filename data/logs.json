@@ -1,5 +1,31 @@
 [
   {
+    "Processed": "Not started",
+    "BlipID": "",
+    "LLMResult": "```json\n{\n  \"象限\": \"语言与框架\",\n  \"理由\": \"MDX 是一种将 JSX 嵌入 Markdown 的语法扩展，属于用于构建内容的开发框架。\"\n}\n```",
+    "Description": "https://mdxjs.com/\nMDX lets you use JSX in your markdown content. You can import components, such as interactive charts or alerts, and embed them within your content. This makes writing long-form content with components a blast.",
+    "ID": "14",
+    "created": "2025-05-05T03:45:00.000+00:00",
+    "Quadrant": "语言与框架",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "MDX",
+    "notion_page_id": "1ea0aea5-43e6-817a-be26-ea789ca385dd"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "3",
+    "LLMResult": "",
+    "Description": "- [**D2**](https://github.com/terrastruct/d2) 是一个开源的[图表即代码](https://www.thoughtworks.com/zh-cn/radar/techniques/diagrams-as-code)工具，帮助用户通过文本创建和定制图表。它引入了 [D2 图表脚本语言](https://d2lang.com/tour/intro)，以简单的声明式语法优先保证可读性而非紧凑性。\n- [Icon for D2](https://icons.terrastruct.com/)\n\n",
+    "ID": "13",
+    "created": "2025-05-05T03:39:00.000+00:00",
+    "Quadrant": "工具",
+    "PreviousRecord": "3",
+    "Ring": "assess",
+    "Name": "D2",
+    "notion_page_id": "1ea0aea5-43e6-8107-b979-c535d94b6a72"
+  },
+  {
     "Processed": "Done",
     "BlipID": "10",
     "LLMResult": "```json\n{\n  \"象限\": \"技术\",\n  \"理由\": \"模糊测试是一种测试技术，属于软件开发中的方法论或实践方式。\"\n}\n```",
