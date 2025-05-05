@@ -401,6 +401,22 @@ export async function addLogEntry(logData: {
   }
 
   try {
+    // 查询是否已存在相同名称的条目
+    const existingEntries = await queryDatabase(
+      process.env.NOTION_LOGS_DATABASE_ID,
+      {
+        property: "Name",
+        title: {
+          equals: logData.name
+        }
+      }
+    );
+
+    // 如果存在相同名称的条目，返回错误
+    if (existingEntries && existingEntries.length > 0) {
+      throw new Error(`已存在名称为 "${logData.name}" 的记录`);
+    }
+
     // 创建新的Log条目
     const response = await notion.pages.create({
       parent: {
@@ -447,7 +463,7 @@ export async function addLogEntry(logData: {
 
     // 解析并返回创建的Log信息
     const createdLog = parsePage(response);
-
+    
     return createdLog;
   } catch (error) {
     console.error('创建新Log条目时出错:', error);

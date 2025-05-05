@@ -22,14 +22,30 @@ export async function POST(request: Request) {
       description: data.description || '',
     };
     
-    // 调用添加Log条目函数
-    const result = await addLogEntry(logData);
-    
-    return NextResponse.json({ success: true, data: result });
+    try {
+      // 调用添加Log条目函数
+      const result = await addLogEntry(logData);
+      return NextResponse.json({ success: true, data: result });
+    } catch (err) {
+      // 捕获并处理重复记录错误
+      const errorMessage = err instanceof Error ? err.message : '添加记录时出错';
+      
+      if (errorMessage.includes('已存在名称为')) {
+        return NextResponse.json(
+          { error: errorMessage },
+          { status: 409 } // 409 Conflict 状态码表示资源冲突
+        );
+      }
+      
+      // 其他错误
+      throw err;
+    }
   } catch (error) {
     console.error('添加技术雷达节点API错误:', error);
+    const errorMessage = error instanceof Error ? error.message : '处理请求时出错';
+    
     return NextResponse.json(
-      { error: '处理请求时出错' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

@@ -7,11 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
 // 象限和环的选项
-const QUADRANTS = ["技术", "平台", "工具", "语言和框架"];
+const QUADRANTS = ["技术", "平台", "工具", "语言"];
 const RINGS = ["adopt", "trial", "assess", "hold"];
 
 export function AddBlipForm() {
@@ -100,11 +100,22 @@ export function AddBlipForm() {
         console.error("同步数据库失败", syncError);
       }
     } catch (error) {
-      toast({
-        title: "添加失败",
-        description: error instanceof Error ? error.message : "发生未知错误",
-        variant: "destructive",
-      });
+      const errorMessage = error instanceof Error ? error.message : "发生未知错误";
+      
+      // 判断是否是重复记录错误
+      if (errorMessage.includes("已存在名称为")) {
+        toast({
+          title: "重复记录",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "添加失败",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
