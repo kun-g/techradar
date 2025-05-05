@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { syncDatabase } from '@/lib/notion';
-import { getRadarConfigById } from '@/lib/data';
 
 export async function GET(request: Request) {
   try {

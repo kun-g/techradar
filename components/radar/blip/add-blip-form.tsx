@@ -103,7 +103,7 @@ export function AddBlipForm({ radarId, quadrants = [] }: AddBlipFormProps) {
       // 可选：同步Notion数据库
       try {
         // 使用 apiRequest 同步数据，忽略未授权错误提示
-        await apiRequest("/api/notion/sync", 
+        await apiRequest("/api/notion/sync?radar_id=" + radarId, 
           { method: "GET" },
           { showUnauthorizedToast: false }
         );

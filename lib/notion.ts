@@ -28,7 +28,7 @@ export async function syncDatabase(radarId: string) {
     if (l.BlipID == "") {
       console.log("To be processed: ", l);
       // 向Notion添加Blip
-      const blip = await createBlip(l);
+      const blip = await createBlip(l, radarConfig);
       await notion.pages.update({
         page_id: l.notion_page_id,
         properties: {
@@ -82,7 +82,9 @@ export async function syncDatabase(radarId: string) {
       // 处理Tags字段的更新
       if (l.Tags && JSON.stringify(l.Tags) !== JSON.stringify(matchedBlip.Tags)) {
         // 过滤掉不在预定义标签列表中的标签
-        const validTags = l.Tags.filter((tag: string) => TAGS.includes(tag));
+        const validTags = l.Tags.filter((tag: string) => 
+          radarConfig.tags && radarConfig.tags.includes(tag)
+        );
         changedProperties.Tags = {
           multi_select: validTags.map((tag: string) => ({ name: tag }))
         }
@@ -134,17 +136,24 @@ export async function syncDatabase(radarId: string) {
   };
 }
 
-async function createBlip(log: any) {
-  if (!process.env.NOTION_LOGS_DATABASE_ID || !process.env.NOTION_BLIPS_DATABASE_ID) {
-    throw new Error('Notion数据库ID未设置');
+/**
+ * 创建Blip记录
+ * @param log 日志记录
+ * @param radarConfig 雷达配置
+ */
+async function createBlip(log: any, radarConfig: any) {
+  if (!radarConfig || !radarConfig.blip_db) {
+    throw new Error('雷达配置错误或数据库ID未设置');
   }
   
-  // 过滤掉不在预定义标签列表中的标签
-  const validTags = log.Tags ? log.Tags.filter((tag: string) => TAGS.includes(tag)) : [];
+  // 使用雷达配置中的标签列表
+  const validTags = log.Tags ? log.Tags.filter((tag: string) => 
+    radarConfig.tags && radarConfig.tags.includes(tag)
+  ) : [];
   
   return await notion.pages.create({
     parent: {
-      database_id: process.env.NOTION_BLIPS_DATABASE_ID,
+      database_id: radarConfig.blip_db,
     },
     properties: {
       Name: {
@@ -187,7 +196,6 @@ async function createBlip(log: any) {
       }
     }
   });
-  
 }
 
 /**
@@ -424,6 +432,7 @@ export function parseDatabaseItems(response: any) {
 /**
  * 向Logs数据库添加新的条目
  * @param logData - 包含新Log条目数据的对象
+ * @param radarConfig - 雷达配置
  * @returns 创建的Log条目信息
  */
 export async function addLogEntry(logData: {
@@ -432,15 +441,15 @@ export async function addLogEntry(logData: {
   ring: string;
   description: string;
   llmResult?: string;
-}) {
-  if (!process.env.NOTION_LOGS_DATABASE_ID) {
-    throw new Error('Notion数据库ID未设置');
+}, radarConfig: any) {
+  if (!radarConfig || !radarConfig.log_db) {
+    throw new Error('雷达配置错误或数据库ID未设置');
   }
 
   try {
     // 查询是否已存在相同名称的条目
     const existingEntries = await queryDatabase(
-      process.env.NOTION_LOGS_DATABASE_ID,
+      radarConfig.log_db,
       {
         property: "Name",
         title: {
@@ -527,7 +536,7 @@ export async function addLogEntry(logData: {
     // 创建新的Log条目
     const response = await notion.pages.create({
       parent: {
-        database_id: process.env.NOTION_LOGS_DATABASE_ID,
+        database_id: radarConfig.log_db,
       },
       properties: properties
     });
@@ -545,6 +554,7 @@ export async function addLogEntry(logData: {
 /**
  * 创建Blip的修改记录并更新日志
  * @param blipData - 包含Blip修改数据的对象
+ * @param radarConfig - 雷达配置
  * @returns 创建的Log条目信息
  */
 export async function createBlipEditLog(blipData: {
@@ -559,14 +569,16 @@ export async function createBlipEditLog(blipData: {
   prevTags?: string[];     // 之前的标签
   aliases?: string[];      // 别名
   prevAliases?: string[];  // 之前的别名
-}) {
-  if (!process.env.NOTION_LOGS_DATABASE_ID) {
-    throw new Error('Notion数据库ID未设置');
+}, radarConfig: any) {
+  if (!radarConfig || !radarConfig.log_db) {
+    throw new Error('雷达配置错误或数据库ID未设置');
   }
 
   try {
     // 过滤掉不在预定义标签列表中的标签
-    const validTags = blipData.tags?.filter(tag => TAGS.includes(tag)) || [];
+    const validTags = blipData.tags?.filter(tag => 
+      radarConfig.tags && radarConfig.tags.includes(tag)
+    ) || [];
     
     // 检查是否有实际变化
     const hasRingChange = blipData.prevRing && blipData.ring !== blipData.prevRing;
@@ -635,7 +647,7 @@ export async function createBlipEditLog(blipData: {
 
     const response = await notion.pages.create({
       parent: {
-        database_id: process.env.NOTION_LOGS_DATABASE_ID,
+        database_id: radarConfig.log_db,
       },
       properties: properties
     });

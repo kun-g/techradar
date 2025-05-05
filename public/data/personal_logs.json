@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "Aliases": "",
+    "Processed": "Done",
+    "BlipID": "1",
+    "LLMResult": "",
+    "Description": "",
+    "Tags": [],
+    "ID": "1",
+    "created": "2025-05-05T15:43:00.000+00:00",
+    "Quadrant": "技能能力",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "写作",
+    "notion_page_id": "1ea0aea5-43e6-81df-bc76-e719c27fba5a"
+  }
+]
