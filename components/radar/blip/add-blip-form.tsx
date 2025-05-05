@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { apiRequest } from "@/lib/api-helpers";
 
 // 象限和环的选项
 const QUADRANTS = ["技术", "平台", "工具", "语言与框架"];
@@ -66,20 +67,11 @@ export function AddBlipForm() {
     try {
       setIsLoading(true);
       
-      // 发送请求到API
-      const response = await fetch("/api/notion/blip", {
+      // 使用 apiRequest 发送请求到API
+      await apiRequest("/api/notion/blip", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(formData),
       });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || "添加失败");
-      }
       
       // 成功后关闭对话框并重置表单
       toast({
@@ -101,28 +93,39 @@ export function AddBlipForm() {
       
       // 可选：同步Notion数据库
       try {
-        await fetch("/api/notion/sync", {
-          method: "GET",
-        });
-      } catch (syncError) {
-        console.error("同步数据库失败", syncError);
+        // 使用 apiRequest 同步数据，忽略未授权错误提示
+        await apiRequest("/api/notion/sync", 
+          { method: "GET" },
+          { showUnauthorizedToast: false }
+        );
+      } catch (error) {
+        // 忽略未授权错误，其他错误记录日志
+        if (!(error instanceof Error && error.message === "未授权访问")) {
+          console.error("同步数据库失败", error);
+        }
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "发生未知错误";
-      
-      // 判断是否是重复记录错误
-      if (errorMessage.includes("已存在名称为")) {
-        toast({
-          title: "重复记录",
-          description: errorMessage,
-          variant: "destructive",
-        });
+      // 如果是未授权错误，apiRequest已经处理了提示和登出逻辑
+      if (!(error instanceof Error && error.message === "未授权访问")) {
+        const errorMessage = error instanceof Error ? error.message : "发生未知错误";
+        
+        // 判断是否是重复记录错误
+        if (errorMessage.includes("已存在名称为")) {
+          toast({
+            title: "重复记录",
+            description: errorMessage,
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "添加失败",
+            description: errorMessage,
+            variant: "destructive",
+          });
+        }
       } else {
-        toast({
-          title: "添加失败",
-          description: errorMessage,
-          variant: "destructive",
-        });
+        // 未授权时关闭对话框
+        setOpen(false);
       }
     } finally {
       setIsLoading(false);

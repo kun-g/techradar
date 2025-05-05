@@ -9,6 +9,8 @@ import { RefreshCw } from "lucide-react"
 import type { RadarData } from "@/lib/types"
 import { useAuth } from "@/lib/auth"
 import { AdminAuthDialog } from "@/components/admin/auth-dialog";
+import { toast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/api-helpers";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -38,12 +40,28 @@ export default function Home() {
     
     try {
       setIsSyncing(true);
-      await fetch("/api/notion/sync");
-      // 同步成功后刷新页面
+      
+      // 使用 apiRequest 调用同步接口
+      await apiRequest("/api/notion/sync", { method: "GET" });
+      
+      // 同步成功
+      toast({
+        title: "同步成功",
+        description: "数据已成功同步",
+      });
+      
+      // 刷新页面
       window.location.reload();
     } catch (error) {
-      console.error("同步失败:", error);
-      alert("同步失败");
+      // 如果是未授权错误，apiRequest已经处理了提示和登出逻辑
+      if (!(error instanceof Error && error.message === "未授权访问")) {
+        console.error("同步失败:", error);
+        toast({
+          title: "同步失败",
+          description: error instanceof Error ? error.message : "未知错误",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSyncing(false);
     }

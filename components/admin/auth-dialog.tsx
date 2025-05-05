@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@/lib/auth";
 import { LockIcon, LogOutIcon } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/api-helpers";
 
 export function AdminAuthDialog() {
   const [open, setOpen] = useState(false);
@@ -21,26 +23,36 @@ export function AdminAuthDialog() {
   const { isAdmin, setAdminStatus, logout } = useAuth();
 
   const handleVerify = async () => {
+    if (!key.trim()) return;
+    
     try {
       setIsVerifying(true);
       setError(false);
       
-      // 调用API验证密钥
-      const response = await fetch('/api/admin/verify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // 使用apiRequest函数处理API请求
+      const response = await apiRequest<{ success: boolean }>(
+        '/api/admin/verify',
+        {
+          method: 'POST',
+          body: JSON.stringify({ key }),
         },
-        body: JSON.stringify({ key }),
-      });
+        {
+          // 这里不需要显示未授权提示，因为是验证过程
+          showUnauthorizedToast: false
+        }
+      );
       
-      const data = await response.json();
-      
-      if (data.success) {
+      if (response.success) {
         // 验证成功，设置管理员状态
         setAdminStatus(true);
         setKey("");
         setOpen(false);
+        
+        // 显示成功提示
+        toast({
+          title: "验证成功",
+          description: "您现在可以使用管理员功能"
+        });
       } else {
         // 验证失败
         setError(true);

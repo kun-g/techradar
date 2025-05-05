@@ -464,7 +464,6 @@ export async function addLogEntry(logData: {
         quadrant = classification.quadrant;
         llmResult = classification.rawResponse;
         
-        console.log(`AI分类结果: ${logData.name} -> ${quadrant} (${classification.reason})`);
       } catch (aiError) {
         console.error('AI分类错误，使用默认分类:', aiError);
         // AI分类失败时不阻止流程，继续使用空白,之后sync时会自动分类

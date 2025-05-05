@@ -14,6 +14,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: '密钥不正确' }, { status: 401 });
     }
     
+    // 简单返回成功响应，前端会通过zustand存储状态
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('验证管理员密钥时出错:', error);

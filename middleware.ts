@@ -13,20 +13,12 @@ export function middleware(request: NextRequest) {
   
   // 如果是受保护的路径，但不是验证路径本身
   if (PROTECTED_PATHS.some(path => pathname.startsWith(path))) {
-    // 获取cookie中的管理员状态
-    const adminAuthCookie = request.cookies.get('admin-auth');
+    // 只检查请求头中的X-Admin-Auth
+    const headerAuth = request.headers.get('X-Admin-Auth');
     
-    try {
-      if (adminAuthCookie) {
-        const cookieValue = JSON.parse(decodeURIComponent(adminAuthCookie.value));
-        // 检查cookie中的isAdmin状态
-        if (cookieValue.state?.isAdmin === true) {
-          // 用户已验证为管理员，允许访问
-          return NextResponse.next();
-        }
-      }
-    } catch (error) {
-      console.error('解析管理员cookie失败:', error);
+    // 如果认证头为true，允许访问
+    if (headerAuth === 'true') {
+      return NextResponse.next();
     }
     
     // 未验证为管理员，返回未授权错误
