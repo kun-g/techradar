@@ -20,6 +20,7 @@ export interface RecordChangeLog {
   name: string
   ring: string
   description: string
+  created?: string
 }
 
 export interface Quadrant {

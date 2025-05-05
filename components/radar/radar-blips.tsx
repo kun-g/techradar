@@ -46,6 +46,7 @@ export default function RadarBlips({
           key={blip.id}
           blip={blip}
           rings={rings}
+          factTo={{ x: size/2, y: size/2 }}
           onBlipClick={onBlipClick}
         />
       ))}

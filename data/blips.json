@@ -1,5 +1,25 @@
 [
   {
+    "updated": "2025-05-05T05:13:00.000+00:00",
+    "Quadrant": "技术",
+    "Description": "我们遗憾地发现，人们很少使用[特性开关](https://martinfowler.com/articles/feature-toggles.html)，且经常混淆其类型和使用场景。为了从[持续集成](https://martinfowler.com/articles/continuousIntegration.html)中受益，一些团队会使用 [LaunchDarkly](https://launchdarkly.com/) 等重量级平台来实现特性切换（包括发布切换），即使他们所需要的仅仅是简单地 if/else 条件控制。 因此，除非你需要 A/B 测试、[金丝雀发布](https://martinfowler.com/bliki/CanaryRelease.html)或将特性发布的职责交给业务人员，我们建议使用 **最简特性开关** 来代替不必要的复杂的特性切换框架。",
+    "ID": "15",
+    "LastChange": "18",
+    "Ring": "assess",
+    "Name": "最简特性开关",
+    "notion_page_id": "1ea0aea5-43e6-81c4-8963-fb5339537771"
+  },
+  {
+    "updated": "2025-05-05T04:33:00.000+00:00",
+    "Quadrant": "技术",
+    "Description": "引入[微服务](https://martinfowler.com/articles/microservices.html)令我们受益匪浅，使用微服务，团队可以扩展那些独立部署及维护的服务的交付。遗憾的是，我们也看到许多团队创建了单体前端——一个建立在后端服务之上的大而混乱的浏览器应用程序——这在很大程度上抵消了微服务带来的好处。自从问世以来， **微前端** 持续变得流行。我们已经看到，许多团队采用这种架构的某种形式，来管理多开发人员和多团队的复杂性，以提供相同的用户体验。在去年的六月份，这个技术的发起人之一，发表了一篇[介绍性的文章](https://martinfowler.com/articles/micro-frontends.html)，可以起到微前端参考文献的作用。它展示了这种设计是如何通过各种Web编程机制实现的，以及使用[React.js](https://www.thoughtworks.com/zh-cn/radar/languages-and-frameworks/react-js)构建了一个示例应用程序。我们有理由相信，随着大型组织尝试在跨多团队中分解UI开发，这种风格将越来越流行。\n\n-- Via Thought Works",
+    "ID": "14",
+    "LastChange": "17",
+    "Ring": "assess",
+    "Name": "微前端",
+    "notion_page_id": "1ea0aea5-43e6-8113-aef1-eb8d2e14df22"
+  },
+  {
     "updated": "2025-05-05T04:32:00.000+00:00",
     "Quadrant": "技术",
     "Description": "在迭代速度快、用户需求不断演进的产品开发环境中，设计是一个不断变化的领域。这意味着对设计决策输入需求会一直持续下去。借鉴了用 ADR（架构决策记录）记录软件架构决策的思路，采用类似的格式，以设计系统决策记录来记录设计系统决策以及相应的依据、研究洞见和实验结果，这有效地传达了设计系统决策似乎已成为产品开发团队新的需求。这种轻量级的方式也被 zeroheight 推荐。这一方法可以减少新人上手时间，推动讨论的进行。\n[Capturing your design system decisions](https://zeroheight.com/blog/capturing-your-design-system-decisions/)",
