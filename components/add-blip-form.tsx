@@ -11,7 +11,7 @@ import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
 // 象限和环的选项
-const QUADRANTS = ["技术", "平台", "工具", "语言"];
+const QUADRANTS = ["技术", "平台", "工具", "语言与框架"];
 const RINGS = ["adopt", "trial", "assess", "hold"];
 
 export function AddBlipForm() {
@@ -39,17 +39,25 @@ export function AddBlipForm() {
   // 点击打开对话框
   const handleOpenDialog = () => {
     setOpen(true);
+    
+    // 重置表单
+    setFormData({
+      name: "",
+      quadrant: "",
+      ring: "assess",
+      description: ""
+    });
   };
 
   // 提交表单
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 验证表单
-    if (!formData.name || !formData.quadrant) {
+    // 验证表单（只验证名称，象限现在是可选的）
+    if (!formData.name) {
       toast({
         title: "表单错误",
-        description: "请填写必填字段：名称和象限",
+        description: "请填写必填字段：名称",
         variant: "destructive",
       });
       return;
@@ -130,7 +138,7 @@ export function AddBlipForm() {
           <DialogHeader>
             <DialogTitle>添加新技术雷达节点</DialogTitle>
             <DialogDescription>
-              填写以下信息添加新的技术或工具到技术雷达。
+              填写以下信息添加新的技术或工具到技术雷达。AI将自动推荐象限。
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit}>
@@ -150,24 +158,25 @@ export function AddBlipForm() {
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="quadrant" className="text-right">
-                  象限 *
+                  象限
                 </Label>
-                <Select
-                  value={formData.quadrant}
-                  onValueChange={(value) => handleSelectChange("quadrant", value)}
-                  required
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="选择象限" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {QUADRANTS.map((quadrant) => (
-                      <SelectItem key={quadrant} value={quadrant}>
-                        {quadrant}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="col-span-3">
+                  <Select
+                    value={formData.quadrant}
+                    onValueChange={(value) => handleSelectChange("quadrant", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择象限" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {QUADRANTS.map((quadrant) => (
+                        <SelectItem key={quadrant} value={quadrant}>
+                          {quadrant}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="ring" className="text-right">

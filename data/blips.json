@@ -1,7 +1,17 @@
 [
   {
+    "updated": "2025-05-05T01:53:00.000+00:00",
+    "Quadrant": "语言与框架",
+    "Description": "Lenis 是一个为现代浏览器设计的轻量且强大的平滑滚动库。 它能够实现流畅的滚动体验，例如 WebGL 滚动同步和视差效果，这使其非常适合那些需要构建流畅、无缝滚动交互页面的团队。它提供了一种精简高效的方式来创建平滑滚动效果。然而，该库在无障碍性方面可能存在一些问题，特别是在处理垂直和水平滚动交互时，可能会让残障用户感到困惑。虽然它在视觉上很吸引人，但在实现时仍然需要仔细考虑无障碍性\n[Lenis – Get smooth or die trying](https://lenis.darkroom.engineering/)\n",
+    "ID": "8",
+    "LastChange": "9",
+    "Ring": "assess",
+    "Name": "Lenis",
+    "notion_page_id": "1ea0aea5-43e6-81c4-ac93-ca503b356cc2"
+  },
+  {
     "updated": "2025-05-05T01:16:00.000+00:00",
-    "Quadrant": "语言",
+    "Quadrant": "语言与框架",
     "Description": "shadcn 通过提供可重用的、可直接复制粘贴的组件，挑战了传统组件库的概念。这种方法让团队拥有完整的控制权和所有权，更加容易进行定制和扩展，而这是更受欢迎的传统库如 MUI 和 Chakra UI 往往不足的地方。 shadcn 使用 Radix UI 和 Tailwind CSS 构建，能够无缝集成到任何基于 React 的应用程序中，非常适合优先 考虑控制和可扩展性的项目。它还提供一个 CLI，帮助将组件复制并粘贴到项目中。其优点还包括减少隐藏依 赖关系，避免紧耦合的实现，因此对于寻求更加自主且可适应的前端开发方法的团队来说，shadcn 正在成为一 个引人注目的替代方案。\n\n[Build your component library - shadcn/ui](https://ui.shadcn.com/)",
     "ID": "7",
     "LastChange": "8",
@@ -31,7 +41,7 @@
   },
   {
     "updated": "2025-05-04",
-    "Quadrant": "语言",
+    "Quadrant": "语言与框架",
     "Description": "D3 是一个基于数据驱动文档的 JavaScript 库，用于构建动态、交互式的数据可视化图表，支持高度定制与 DOM 操作。",
     "ID": "4",
     "LastChange": "4",
@@ -51,7 +61,7 @@
   },
   {
     "updated": "2025-05-04",
-    "Quadrant": "语言",
+    "Quadrant": "语言与框架",
     "Description": "React 是一个用于构建用户界面的 JavaScript 库，具备组件化、声明式和高效渲染的特点，广泛用于开发 Web 应用。",
     "ID": "2",
     "LastChange": "2",

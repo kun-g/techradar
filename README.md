@@ -8,13 +8,15 @@
 - **采用阶段**：从内到外分为试验、采用、评估和暂缓四个阶段
 - **数据点可视化**：每个技术项目以点的形式展示在雷达图上
 - **交互式体验**：支持点击和悬停查看详细信息
+- **AI辅助分类**：使用AI自动判断技术项目的象限分类
 
 ## 使用方法
 
 1. 在雷达图上查看当前技术分布
 2. 点击数据点查看详细信息
 3. 使用筛选功能关注特定象限或阶段
-4. 定期更新雷达图以反映技术趋势变化
+4. 添加新技术时，AI自动推荐适合的象限分类
+5. 定期更新雷达图以反映技术趋势变化
 
 ## 技术实现
 
@@ -29,6 +31,20 @@
 ## 开发指南
 
 ### 环境设置
+
+创建一个名为`.env.local`的文件在项目根目录，并添加以下环境变量：
+
+```bash
+# Notion API密钥和数据库ID
+NOTION_API_KEY=your_notion_api_key
+NOTION_BLIPS_DATABASE_ID=your_notion_blips_database_id
+NOTION_LOGS_DATABASE_ID=your_notion_logs_database_id
+
+# DeepSeek API密钥用于自动分类
+DEEPSEEK_API_KEY=your_deepseek_api_key
+```
+
+然后安装依赖并启动开发服务器：
 
 ```bash
 # 安装依赖

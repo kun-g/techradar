@@ -7,10 +7,10 @@ export async function fetchRadarData(): Promise<RadarData> {
 
   return {
     quadrants: [
-      { id: "语言", name: "Languages & Frameworks", order: 0 },
-      { id: "平台", name: "Platforms", order: 1 },
-      { id: "工具", name: "Tools", order: 2 },
-      { id: "技术", name: "Techniques", order: 3 },
+      { id: "语言与框架", name: "语言与框架", order: 0 },
+      { id: "平台", name: "平台", order: 1 },
+      { id: "工具", name: "工具", order: 2 },
+      { id: "技术", name: "技术", order: 3 },
     ],
     rings: [
       { id: "adopt", name: "Adopt", order: 0, color: "green", stroke: "rgba(16, 185, 129, 0.7)" },

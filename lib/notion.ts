@@ -1,5 +1,6 @@
 import { Client } from '@notionhq/client';
 import fs from 'fs';
+import { classifyWithAI } from './ai-classifier';
 
 // 初始化Notion客户端
 const notion = new Client({
@@ -392,9 +393,10 @@ export function parseDatabaseItems(response: any) {
  */
 export async function addLogEntry(logData: {
   name: string;
-  quadrant: string;
+  quadrant?: string;
   ring: string;
   description: string;
+  llmResult?: string;
 }) {
   if (!process.env.NOTION_LOGS_DATABASE_ID) {
     throw new Error('Notion数据库ID未设置');
@@ -417,6 +419,25 @@ export async function addLogEntry(logData: {
       throw new Error(`已存在名称为 "${logData.name}" 的记录`);
     }
 
+    // 如果未提供象限，尝试使用AI进行分类
+    let quadrant = logData.quadrant;
+    let llmResult = logData.llmResult;
+
+    if (!quadrant && process.env.DEEPSEEK_API_KEY) {
+      try {
+        // 调用AI进行分类
+        const classification = await classifyWithAI(logData.name, logData.description || '');
+        quadrant = classification.quadrant;
+        llmResult = classification.rawResponse;
+        
+        console.log(`AI分类结果: ${logData.name} -> ${quadrant} (${classification.reason})`);
+      } catch (aiError) {
+        console.error('AI分类错误，使用默认分类:', aiError);
+        // AI分类失败时不阻止流程，继续使用空白,之后sync时会自动分类
+        quadrant = "";
+      }
+    }
+
     // 创建新的Log条目
     const response = await notion.pages.create({
       parent: {
@@ -430,7 +451,7 @@ export async function addLogEntry(logData: {
         },
         Quadrant: {
           select: {
-            name: logData.quadrant
+            name: quadrant || "技术" // 使用AI分类结果或默认值
           }
         },
         Ring: {
@@ -457,7 +478,15 @@ export async function addLogEntry(logData: {
           date: {
             start: new Date().toISOString()
           }
-        }
+        },
+        // 如果有LLM响应，添加到记录中
+        ...(llmResult ? {
+          LLMResult: {
+            rich_text: [
+              { text: { content: llmResult } }
+            ]
+          }
+        } : {})
       }
     });
 
