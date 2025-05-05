@@ -1,5 +1,4 @@
 import { calculateFreshness, getFreshnessOpacity, calculateBlipMovements, ringRatios, fetchRadarData, RING_ORDER, calculateSingleBlipMovement, MAX_AGE_DAYS } from '@/lib/data';
-import type { Blip, RecordChangeLog } from '@/lib/types';
 
 // 我们改用jest.mock直接模拟函数
 jest.mock('../../lib/data', () => {
@@ -152,7 +151,7 @@ describe('calculateBlipMovements', () => {
   });
   
   test('应处理空的blips和logs数组', () => {
-    expect(calculateBlipMovements([], [])).toEqual([]);
+    expect(calculateBlipMovements([])).toEqual([]);
   });
 });
 
