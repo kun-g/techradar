@@ -17,6 +17,40 @@ export async function syncDatabase() {
   const logs = await queryDatabase(process.env.NOTION_LOGS_DATABASE_ID);
 
   for (const l of logs) {
+    // 处理空白象限的记录
+    if ((!l.Quadrant || l.Quadrant === "") && process.env.DEEPSEEK_API_KEY) {
+      try {
+        console.log(`发现空白象限记录，尝试使用LLM分类: ${l.Name}`);
+        // 调用AI进行分类
+        const classification = await classifyWithAI(l.Name, l.Description || '');
+        
+        // 更新Quadrant字段
+        await notion.pages.update({
+          page_id: l.notion_page_id,
+          properties: {
+            Quadrant: {
+              select: {
+                name: classification.quadrant
+              }
+            },
+            LLMResult: {
+              rich_text: [
+                { text: { content: classification.rawResponse } }
+              ]
+            }
+          }
+        });
+        
+        // 更新本地记录
+        l.Quadrant = classification.quadrant;
+        console.log(`已更新记录象限: ${l.Name} -> ${classification.quadrant}`);
+      } catch (aiError) {
+        console.error(`LLM分类失败: ${l.Name}`, aiError);
+        // 如果分类失败，跳过此记录继续处理
+        continue;
+      }
+    }
+
     if (l.Processed == "Done") {
       continue;
     }
@@ -438,56 +472,64 @@ export async function addLogEntry(logData: {
       }
     }
 
+    // 准备Notion属性对象
+    const properties: any = {
+      Name: {
+        title: [
+          { text: { content: logData.name } }
+        ]
+      },
+      Ring: {
+        select: {
+          name: logData.ring
+        }
+      },
+      Description: {
+        rich_text: [
+          { text: { content: logData.description } }
+        ]
+      },
+      BlipID: {
+        rich_text: [
+          { text: { content: "" } }
+        ]
+      },
+      Processed: {
+        status: {
+          name: "Not started"
+        }
+      },
+      created: {
+        date: {
+          start: new Date().toISOString()
+        }
+      }
+    };
+
+    // 如果有象限，添加到属性中
+    if (quadrant && quadrant !== "") {
+      properties.Quadrant = {
+        select: {
+          name: quadrant
+        }
+      };
+    }
+
+    // 如果有LLM响应，添加到记录中
+    if (llmResult) {
+      properties.LLMResult = {
+        rich_text: [
+          { text: { content: llmResult } }
+        ]
+      };
+    }
+
     // 创建新的Log条目
     const response = await notion.pages.create({
       parent: {
         database_id: process.env.NOTION_LOGS_DATABASE_ID,
       },
-      properties: {
-        Name: {
-          title: [
-            { text: { content: logData.name } }
-          ]
-        },
-        Quadrant: {
-          select: {
-            name: quadrant || "技术" // 使用AI分类结果或默认值
-          }
-        },
-        Ring: {
-          select: {
-            name: logData.ring
-          }
-        },
-        Description: {
-          rich_text: [
-            { text: { content: logData.description } }
-          ]
-        },
-        BlipID: {
-          rich_text: [
-            { text: { content: "" } }
-          ]
-        },
-        Processed: {
-          status: {
-            name: "Not started"
-          }
-        },
-        created: {
-          date: {
-            start: new Date().toISOString()
-          }
-        },
-        // 如果有LLM响应，添加到记录中
-        ...(llmResult ? {
-          LLMResult: {
-            rich_text: [
-              { text: { content: llmResult } }
-            ]
-          }
-        } : {})
-      }
+      properties: properties
     });
 
     // 解析并返回创建的Log信息
