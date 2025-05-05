@@ -5,7 +5,7 @@ import TechRadar from "@/components/tech-radar"
 import { AddBlipForm } from "@/components/radar/blip/add-blip-form"
 import { fetchRadarData, fetchAvailableRadars } from "@/lib/data"
 import { Button } from "@/components/ui/button"
-import { RefreshCw } from "lucide-react"
+import { RefreshCw, ChevronDown } from "lucide-react"
 import type { RadarData } from "@/lib/types"
 import { useAuth } from "@/lib/auth"
 import { AdminAuthDialog } from "@/components/admin/auth-dialog";
@@ -116,27 +116,22 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-4 md:p-8">
       <header className="w-full max-w-6xl mb-8 text-center relative">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">{data.radarName}</h1>
-        <p className="text-muted-foreground">An opinionated guide to technology frontiers</p>
-        <div className="absolute right-0 top-0">
-          <AdminAuthDialog />
-        </div>
-      </header>
-
-      <div className="w-full max-w-6xl mb-4">
-        <div className="flex justify-end">
+        <div className="inline-block mb-2">
           <Select value={selectedRadarId} onValueChange={handleRadarChange}>
-            <SelectTrigger className="w-[250px]">
-              <SelectValue placeholder="选择雷达" />
+            <SelectTrigger className="border-none shadow-none text-3xl md:text-4xl font-bold focus:ring-0 focus:ring-offset-0 px-1 -mx-1 h-auto py-0 bg-transparent min-w-[280px] sm:min-w-[320px] md:min-w-[400px] justify-center">
+              <SelectValue placeholder="选择雷达" className="text-center" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent align="center" className="min-w-[280px] sm:min-w-[320px] md:min-w-[400px]">
               {availableRadars.map((radar) => (
-                <SelectItem key={radar.id} value={radar.id}>{radar.name}</SelectItem>
+                <SelectItem key={radar.id} value={radar.id} className="text-center justify-center">{radar.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-      </div>
+        <div className="absolute right-0 top-0">
+          <AdminAuthDialog />
+        </div>
+      </header>
 
       <TechRadar initialData={data} />
       <div className="w-full max-w-6xl mb-8 flex justify-end gap-2">
