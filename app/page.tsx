@@ -80,27 +80,47 @@ export default function Home() {
   const handleSync = async () => {
     if (isSyncing) return;
     
+    // 确保有选择雷达ID
+    if (!selectedRadarId) {
+      toast({
+        title: "无法同步",
+        description: "请先选择一个雷达",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
       setIsSyncing(true);
       
-      // 使用 apiRequest 调用同步接口
-      await apiRequest("/api/notion/sync", { method: "GET" });
+      // 使用 apiRequest 调用同步接口，传递当前选择的雷达ID
+      await apiRequest(`/api/notion/sync?radar_id=${selectedRadarId}`, { method: "GET" });
       
       // 同步成功
       toast({
         title: "同步成功",
-        description: "数据已成功同步",
+        description: `已成功同步"${availableRadars.find(r => r.id === selectedRadarId)?.name || '雷达'}"数据`,
       });
       
-      // 刷新页面
-      window.location.reload();
+      // 重新加载当前雷达数据而不是刷新整个页面
+      const refreshedData = await fetchRadarData(selectedRadarId);
+      setData(refreshedData);
     } catch (error) {
       // 如果是未授权错误，apiRequest已经处理了提示和登出逻辑
       if (!(error instanceof Error && error.message === "未授权访问")) {
         console.error("同步失败:", error);
+        
+        // 提取API返回的错误信息
+        let errorMessage = "未知错误";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (typeof error === 'object' && error !== null && 'error' in error) {
+          errorMessage = String(error.error);
+        }
+        
         toast({
           title: "同步失败",
-          description: error instanceof Error ? error.message : "未知错误",
+          description: errorMessage,
           variant: "destructive",
         });
       }

@@ -1,57 +1,27 @@
 import { Client } from '@notionhq/client';
 import fs from 'fs';
 import { classifyWithAI } from './ai-classifier';
-import { TAGS } from './data';
-
+import { getRadarConfigById, getDefaultRadarConfig } from './data';
 // 初始化Notion客户端
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
 });
 
-
-export async function syncDatabase() {
-  if (!process.env.NOTION_LOGS_DATABASE_ID || !process.env.NOTION_BLIPS_DATABASE_ID) {
-    throw new Error('Notion数据库ID未设置');
+/**
+ * 同步指定雷达的Notion数据库
+ * @param radarId 雷达ID，不提供则使用默认雷达
+ */
+export async function syncDatabase(radarId: string) {
+  const radarConfig = getRadarConfigById(radarId);
+  
+  if (!radarConfig) {
+    throw new Error(`未找到ID为 ${radarId} 的雷达配置`);
   }
 
-  const blips = await queryDatabase(process.env.NOTION_BLIPS_DATABASE_ID);
-  const logs = await queryDatabase(process.env.NOTION_LOGS_DATABASE_ID);
+  const blips = await queryDatabase(radarConfig.blip_db);
+  const logs = await queryDatabase(radarConfig.log_db);
 
   for (const l of logs) {
-    // 处理空白象限的记录
-    if ((!l.Quadrant || l.Quadrant === "") && process.env.DEEPSEEK_API_KEY) {
-      try {
-        console.log(`发现空白象限记录，尝试使用LLM分类: ${l.Name}`);
-        // 调用AI进行分类
-        const classification = await classifyWithAI(l.Name, l.Description || '');
-        
-        // 更新Quadrant字段
-        await notion.pages.update({
-          page_id: l.notion_page_id,
-          properties: {
-            Quadrant: {
-              select: {
-                name: classification.quadrant
-              }
-            },
-            LLMResult: {
-              rich_text: [
-                { text: { content: classification.rawResponse } }
-              ]
-            }
-          }
-        });
-        
-        // 更新本地记录
-        l.Quadrant = classification.quadrant;
-        console.log(`已更新记录象限: ${l.Name} -> ${classification.quadrant}`);
-      } catch (aiError) {
-        console.error(`LLM分类失败: ${l.Name}`, aiError);
-        // 如果分类失败，跳过此记录继续处理
-        continue;
-      }
-    }
-
     if (l.Processed == "Done") {
       continue;
     }
@@ -153,10 +123,10 @@ export async function syncDatabase() {
       }
     }
   }
-
-  // 保存到本地文件
-  fs.writeFileSync('./data/blips.json', JSON.stringify(blips, null, 2));
-  fs.writeFileSync('./data/logs.json', JSON.stringify(logs, null, 2));
+  
+  // 写入雷达特定的文件
+  fs.writeFileSync(`./public/data/${radarConfig.id}_blips.json`, JSON.stringify(blips, null, 2));
+  fs.writeFileSync(`./public/data/${radarConfig.id}_logs.json`, JSON.stringify(logs, null, 2));
 
   return {
     blips,

@@ -73,7 +73,7 @@
   },
   {
     "updated": "2025-05-05T11:56:00.000+00:00",
-    "Quadrant": "工具",
+    "Quadrant": "平台",
     "Description": "LLM（大型语言模型）像黑箱一样运作，非常难以确定它的行为。可观察性对于打开这个黑箱并理解 LLM 应用程序在生产环境中的运作至关重要。我们团队在使用 [Langfuse](https://github.com/langfuse/langfuse) 方面有过积极的体验，我们曾用它来观察、监控和评估基于 LLM 的应用程序。它的追踪、分析和评估能力使我们能够分析完成性能和准确性，管理成本和延迟，并理解生产使用模式，从而促进持续的数据驱动改进。仪器数据提供了请求-响应流和中间步骤的完整可追溯性，这可以作为测试数据，在部署新变更之前验证应用程序。我们已将 Langfuse 与 [RAG（检索增强生成）](https://www.thoughtworks.com/zh-cn/radar/techniques/retrieval-augmented-generation-rag) 等 LLM 架构，以及 [大语言模型驱动的自主代理](https://www.thoughtworks.com/zh-cn/radar/techniques/llm-powered-autonomous-agents) 一起使用。 例如，在基于 RAG 的应用程序中，分析低评分的对话追踪有助于识别架构的哪个部分（如预检索、检索或生成）需要改进。当然，在这一领域，另一个值得考虑的选项是 [Langsmith](https://www.langchain.com/langsmith)。\n\n--- Via Thought Works",
     "Tags": [],
     "ID": "40",
