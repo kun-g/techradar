@@ -47,12 +47,9 @@ var radar_data = [
 				"items": [
 					{ name: 'Service Mesh', stage: "Assess" },
 					{ name: "Architecture Decision Records", stage: "Trial", "url": "https://github.com/npryce/adr-tools" },
-					{ name: "Clean Code", stage:'Assess' },
 					{ name: "Zookeeper for App Config", stage:'Assess' },
 					{ name: "Code Reviews", stage: "Trial" },
 					{ name: "Dependency Injection", stage: "Assess" },
-					{"name":"Swift", stage: "Assess" },
-					{"name":"C", stage: "Assess" },
 					{ name: '树梅派', stage: "Assess"  },
 					{ name: 'Arduino', stage: "Assess"  },
 				]

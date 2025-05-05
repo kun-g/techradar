@@ -1,13 +1,37 @@
 [
   {
+    "Processed": "Not started",
+    "BlipID": "",
+    "Description": "shadcn 通过提供可重用的、可直接复制粘贴的组件，挑战了传统组件库的概念。这种方法让团队拥有完整的控制权和所有权，更加容易进行定制和扩展，而这是更受欢迎的传统库如 MUI 和 Chakra UI 往往不足的地方。 shadcn 使用 Radix UI 和 Tailwind CSS 构建，能够无缝集成到任何基于 React 的应用程序中，非常适合优先 考虑控制和可扩展性的项目。它还提供一个 CLI，帮助将组件复制并粘贴到项目中。其优点还包括减少隐藏依 赖关系，避免紧耦合的实现，因此对于寻求更加自主且可适应的前端开发方法的团队来说，shadcn 正在成为一 个引人注目的替代方案。\n\n[Build your component library - shadcn/ui](https://ui.shadcn.com/)",
+    "ID": "8",
+    "created": "2025-05-05T01:16:00.000+00:00",
+    "Quadrant": "语言和框架",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "shadcn",
+    "notion_page_id": "1ea0aea5-43e6-81d4-8194-e5d96048c082"
+  },
+  {
+    "Processed": "Done",
+    "BlipID": "6",
+    "Description": "Kubernetes 是一个开源容器编排平台，用于自动部署、扩展和管理容器化应用，支持高可用与弹性伸缩。",
+    "ID": "7",
+    "created": "2025-05-05",
+    "Quadrant": "平台",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "Kubernetes",
+    "notion_page_id": "1e90aea5-43e6-8079-aede-d23e83cc0722"
+  },
+  {
     "Processed": "Done",
     "BlipID": "1",
     "Description": "",
     "ID": "6",
     "created": "2025-05-05",
     "Quadrant": "技术",
-    "PreviousRecord": "",
-    "Ring": "尝试",
+    "PreviousRecord": "1",
+    "Ring": "trial",
     "Name": "技术雷达",
     "notion_page_id": "1e90aea5-43e6-8083-99ab-cf907c23b446"
   },
@@ -19,7 +43,7 @@
     "created": "2025-05-04",
     "Quadrant": "技术",
     "PreviousRecord": "",
-    "Ring": "评估",
+    "Ring": "assess",
     "Name": "1%金丝雀",
     "notion_page_id": "1e90aea5-43e6-803d-8959-f5ec567ac676"
   },
@@ -31,7 +55,7 @@
     "created": "2025-05-04",
     "Quadrant": "语言",
     "PreviousRecord": "",
-    "Ring": "评估",
+    "Ring": "assess",
     "Name": "D3",
     "notion_page_id": "1e90aea5-43e6-805f-b5ef-f798f06b0c09"
   },
@@ -43,7 +67,7 @@
     "created": "2025-05-04",
     "Quadrant": "工具",
     "PreviousRecord": "",
-    "Ring": "评估",
+    "Ring": "assess",
     "Name": "D2",
     "notion_page_id": "1e90aea5-43e6-800d-9444-d2fae59bb191"
   },
@@ -55,7 +79,7 @@
     "created": "2025-05-04",
     "Quadrant": "语言",
     "PreviousRecord": "",
-    "Ring": "评估",
+    "Ring": "assess",
     "Name": "React",
     "notion_page_id": "1e90aea5-43e6-800d-868a-f8059bf89022"
   },
@@ -67,7 +91,7 @@
     "created": "2025-05-04",
     "Quadrant": "技术",
     "PreviousRecord": "",
-    "Ring": "评估",
+    "Ring": "assess",
     "Name": "技术雷达",
     "notion_page_id": "1e90aea5-43e6-80c0-b8af-fb3dcd1e41b6"
   }

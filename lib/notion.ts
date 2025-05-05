@@ -383,4 +383,74 @@ export function parseDatabaseItems(response: any) {
     has_more: response.has_more || false,
     next_cursor: response.next_cursor || null
   };
-} 
+}
+
+/**
+ * 向Logs数据库添加新的条目
+ * @param logData - 包含新Log条目数据的对象
+ * @returns 创建的Log条目信息
+ */
+export async function addLogEntry(logData: {
+  name: string;
+  quadrant: string;
+  ring: string;
+  description: string;
+}) {
+  if (!process.env.NOTION_LOGS_DATABASE_ID) {
+    throw new Error('Notion数据库ID未设置');
+  }
+
+  try {
+    // 创建新的Log条目
+    const response = await notion.pages.create({
+      parent: {
+        database_id: process.env.NOTION_LOGS_DATABASE_ID,
+      },
+      properties: {
+        Name: {
+          title: [
+            { text: { content: logData.name } }
+          ]
+        },
+        Quadrant: {
+          select: {
+            name: logData.quadrant
+          }
+        },
+        Ring: {
+          select: {
+            name: logData.ring
+          }
+        },
+        Description: {
+          rich_text: [
+            { text: { content: logData.description } }
+          ]
+        },
+        BlipID: {
+          rich_text: [
+            { text: { content: "" } }
+          ]
+        },
+        Processed: {
+          status: {
+            name: "Not started"
+          }
+        },
+        created: {
+          date: {
+            start: new Date().toISOString()
+          }
+        }
+      }
+    });
+
+    // 解析并返回创建的Log信息
+    const createdLog = parsePage(response);
+
+    return createdLog;
+  } catch (error) {
+    console.error('创建新Log条目时出错:', error);
+    throw error;
+  }
+}

@@ -1,4 +1,5 @@
 import TechRadar from "@/components/tech-radar"
+import { AddBlipForm } from "@/components/add-blip-form"
 import { fetchRadarData } from "@/lib/data"
 
 export default async function Home() {
@@ -11,7 +12,11 @@ export default async function Home() {
         <p className="text-muted-foreground">An opinionated guide to technology frontiers</p>
       </header>
 
+
       <TechRadar initialData={data} />
+      <div className="w-full max-w-6xl mb-8 flex justify-end">
+        <AddBlipForm />
+      </div>
     </main>
   )
 }
