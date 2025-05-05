@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import type { Story } from "@ladle/react";
 import RadarBlip from "./blip/radar-blip";
-import type { Blip, Ring } from "@/lib/types";
+import { BlipDetailModal } from "@/components/radar/blip/detail";
+import type { Blip, Ring, RecordChangeLog } from "@/lib/types";
 import { toast } from "sonner";
 import { calculateFreshness, getFreshnessOpacity } from "@/lib/data";
 
@@ -226,3 +227,104 @@ export const FreshnessBlips: Story = () => {
   );
 };
 FreshnessBlips.storyName = "数据新鲜度";
+
+// BlipDetailModal 故事
+export const DetailModal: Story = () => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [selectedBlip, setSelectedBlip] = useState<Blip | null>(null);
+  
+  // 模拟象限数据
+  const mockQuadrants = [
+    { id: "techniques", name: "技术", order: 0 },
+    { id: "platforms", name: "平台", order: 1 },
+    { id: "tools", name: "工具", order: 2 },
+    { id: "languages", name: "语言与框架", order: 3 },
+  ];
+  
+  // 模拟历史记录
+  const createMockHistory = (): RecordChangeLog[] => [
+    {
+      id: "hist-1",
+      blipId: "detail-demo",
+      previousRecord: "",
+      name: "React Native",
+      ring: "trial",
+      description: "React Native 是 Facebook 开发的一款开源跨平台移动应用开发框架。\n\n它允许开发者使用 JavaScript 和 React 来开发 iOS 和 Android 应用，同时保持接近原生的性能和外观。",
+      created: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      id: "hist-2",
+      blipId: "detail-demo",
+      previousRecord: "hist-1",
+      name: "React Native",
+      ring: "adopt",
+      description: "React Native 是 Facebook 开发的一款开源跨平台移动应用开发框架。\n\n它允许开发者使用 JavaScript 和 React 来开发 iOS 和 Android 应用，同时保持接近原生的性能和外观。\n\n### 核心优势\n- 跨平台：一套代码同时适用于 iOS 和 Android\n- 热重载：实时查看代码变更结果\n- JavaScript 驱动：使用熟悉的 Web 技术栈",
+      created: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).toISOString()
+    }
+  ];
+  
+  // 创建详细的样例 blip
+  const detailBlip: Blip = {
+    id: "detail-demo",
+    name: "React Native",
+    quadrant: "languages",
+    ring: "adopt",
+    description: "React Native 是 Facebook 开发的一款开源跨平台移动应用开发框架。\n\n它允许开发者使用 JavaScript 和 React 来开发 iOS 和 Android 应用，同时保持接近原生的性能和外观。\n\n### 核心优势\n- 跨平台：一套代码同时适用于 iOS 和 Android\n- 热重载：实时查看代码变更结果\n- JavaScript 驱动：使用熟悉的 Web 技术栈\n- 原生组件：直接使用平台原生 UI 组件\n- 活跃社区：大量第三方库和插件\n\n### 适用场景\n- 需要同时开发 iOS 和 Android 应用\n- 团队已有 React/JavaScript 经验\n- 对性能有一定要求但非极致\n- 快速迭代和原型验证",
+    position: { x: 100, y: 100 },
+    last_change: "2023-05-01",
+    history: createMockHistory()
+  };
+  
+  useEffect(() => {
+    // 初始化时设置样例 blip
+    setSelectedBlip(detailBlip);
+  }, []);
+  
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    // 2秒后重新打开，便于查看演示
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 2000);
+  };
+  
+  const handleDataUpdate = (blips: any) => {
+    console.log("数据已更新:", blips);
+    // 在实际应用中，这里会更新整个雷达的数据
+  };
+  
+  return (
+    <div className="flex flex-col gap-4 p-4">
+      <h3 className="text-xl font-bold">详情窗口演示</h3>
+      <p className="text-gray-600">
+        下面展示了技术雷达项目的详情窗口，包括查看内容、历史记录和编辑功能。
+        <br />
+        <span className="text-sm">(窗口会在关闭后2秒重新打开，以便于演示)</span>
+      </p>
+      
+      {isOpen && (
+        <BlipDetailModal
+          blip={selectedBlip}
+          quadrants={mockQuadrants}
+          rings={mockRings}
+          onClose={handleCloseModal}
+          onDataUpdate={handleDataUpdate}
+        />
+      )}
+      
+      <div className="mt-4">
+        <h4 className="font-medium mb-2">其他操作按钮演示：</h4>
+        <div className="flex gap-2">
+          <button 
+            className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+            onClick={() => setIsOpen(true)}
+          >
+            打开详情窗口
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+DetailModal.storyName = "详情窗口";
