@@ -2,11 +2,19 @@ import type { RadarData, RecordChangeLog, Blip } from "./types"
 import blips from "../data/blips.json"
 import logs from "../data/logs.json"
 
+// 明确声明导入的JSON数据类型
+type BlipJson = any;
+type LogJson = any;
+
 export const ringRatios = [0.4, 0.3, 0.2, 0.1];
 
 // 圈环顺序，从内到外
 export const RING_ORDER = ['adopt', 'trial', 'assess', 'hold'];
 export const MAX_AGE_DAYS = 30;
+export const TAGS = [
+  "AI", "AI辅助开发", "前端", "后端", "DevOps/运维",
+  "自动化", "数据可视化", "测试与质量", "交付效能", "架构模式"
+];
 
 /**
  * 计算数据新鲜度，返回0-1之间的值
@@ -103,7 +111,7 @@ export function calculateBlipMovements(blips: Blip[]): Blip[] {
 function buildBlipLogsMap(): Map<string, RecordChangeLog[]> {
   // 创建一个映射表以便快速查找日志
   const blipLogsMap = new Map<string, RecordChangeLog[]>();
-  const finalLogs = logs.map((log) => ({
+  const finalLogs = (logs as LogJson[]).map((log) => ({
     id: log.ID,
     blipId: log.BlipID,
     previousRecord: log.PreviousRecord,
@@ -112,6 +120,10 @@ function buildBlipLogsMap(): Map<string, RecordChangeLog[]> {
     description: log.Description,
     created: log.created,
     llmResult: log.LLMResult,
+    tags: log.Tags || [],
+    aliases: log.Aliases ? (typeof log.Aliases === 'string' 
+      ? log.Aliases.split(',').map((s: string) => s.trim()).filter(Boolean) 
+      : log.Aliases) : []
   }))
   
   // 按blipId对日志进行分组
@@ -126,7 +138,7 @@ function buildBlipLogsMap(): Map<string, RecordChangeLog[]> {
 
 export async function fetchRadarData(): Promise<RadarData> {
   const blipLogsMap = buildBlipLogsMap();
-  const finalBlips = blips.map((blip) => ({
+  const finalBlips = (blips as BlipJson[]).map((blip) => ({
     id: blip.ID,
     name: blip.Name,
     quadrant: blip.Quadrant,
@@ -134,6 +146,10 @@ export async function fetchRadarData(): Promise<RadarData> {
     description: blip.Description,
     last_change: blip.LastChange,
     updated: blip.updated,
+    tags: blip.Tags || [],
+    aliases: blip.Aliases ? (typeof blip.Aliases === 'string' 
+      ? blip.Aliases.split(',').map((s: string) => s.trim()).filter(Boolean) 
+      : blip.Aliases) : [],
     // 按创建时间降序排序
     history: blipLogsMap.get(blip.ID)?.sort((a, b) => new Date(b.created || '').getTime() - new Date(a.created || '').getTime()) || [],
   }))

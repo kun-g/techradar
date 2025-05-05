@@ -23,7 +23,12 @@ export async function POST(request: Request) {
     }
 
     // 验证是否有变化
-    if (data.prevRing === data.ring && data.prevDescription === data.description) {
+    const hasRingChange = data.prevRing !== data.ring;
+    const hasDescriptionChange = data.prevDescription !== data.description;
+    const hasTagsChange = data.tags && JSON.stringify(data.prevTags) !== JSON.stringify(data.tags);
+    const hasAliasesChange = data.aliases && JSON.stringify(data.prevAliases) !== JSON.stringify(data.aliases);
+    
+    if (!hasRingChange && !hasDescriptionChange && !hasTagsChange && !hasAliasesChange) {
       return NextResponse.json(
         { error: '没有检测到任何变化，请至少修改一项内容' },
         { status: 400 }
@@ -38,7 +43,11 @@ export async function POST(request: Request) {
       ring: data.ring,
       description: data.description || '',
       prevRing: data.prevRing,
-      prevDescription: data.prevDescription
+      prevDescription: data.prevDescription,
+      tags: data.tags || [],
+      prevTags: data.prevTags || [],
+      aliases: data.aliases || [],
+      prevAliases: data.prevAliases || []
     };
     
     // 调用创建Blip编辑记录函数
@@ -73,7 +82,11 @@ export async function GET() {
         ring: '环名称（必填）',
         description: '描述（可选）',
         prevRing: '之前的环名称',
-        prevDescription: '之前的描述'
+        prevDescription: '之前的描述',
+        tags: '标签数组（可选）',
+        prevTags: '之前的标签数组',
+        aliases: '别名数组（可选）',
+        prevAliases: '之前的别名数组'
       },
       example: {
         request: {
@@ -83,7 +96,11 @@ export async function GET() {
           ring: "adopt",
           description: "一个用于React应用的服务端渲染框架",
           prevRing: "trial",
-          prevDescription: "一个用于构建React应用的框架"
+          prevDescription: "一个用于构建React应用的框架",
+          tags: ["React", "SSR", "框架"],
+          prevTags: ["React", "框架"],
+          aliases: ["NextJS", "Next"],
+          prevAliases: ["NextJS"]
         }
       }
     }

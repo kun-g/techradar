@@ -1,6 +1,7 @@
 import { Client } from '@notionhq/client';
 import fs from 'fs';
 import { classifyWithAI } from './ai-classifier';
+import { TAGS } from './data';
 
 // 初始化Notion客户端
 const notion = new Client({
@@ -108,6 +109,24 @@ export async function syncDatabase() {
         }
         changed = true;
       }
+      // 处理Tags字段的更新
+      if (l.Tags && JSON.stringify(l.Tags) !== JSON.stringify(matchedBlip.Tags)) {
+        // 过滤掉不在预定义标签列表中的标签
+        const validTags = l.Tags.filter((tag: string) => TAGS.includes(tag));
+        changedProperties.Tags = {
+          multi_select: validTags.map((tag: string) => ({ name: tag }))
+        }
+        changed = true;
+      }
+      // 处理Aliases字段的更新
+      if (l.Aliases && l.Aliases.join(', ') !== (matchedBlip.Aliases || []).join(', ')) {
+        changedProperties.Aliases = {
+          rich_text: [
+            { text: { content: l.Aliases.join(', ') } }
+          ]
+        }
+        changed = true;
+      }
       if (changed) {
         console.log("To be updated: ", l);
         console.log(changedProperties);
@@ -149,6 +168,10 @@ async function createBlip(log: any) {
   if (!process.env.NOTION_LOGS_DATABASE_ID || !process.env.NOTION_BLIPS_DATABASE_ID) {
     throw new Error('Notion数据库ID未设置');
   }
+  
+  // 过滤掉不在预定义标签列表中的标签
+  const validTags = log.Tags ? log.Tags.filter((tag: string) => TAGS.includes(tag)) : [];
+  
   return await notion.pages.create({
     parent: {
       database_id: process.env.NOTION_BLIPS_DATABASE_ID,
@@ -183,6 +206,14 @@ async function createBlip(log: any) {
         date: {
           start: log.created
         }
+      },
+      Tags: {
+        multi_select: validTags.map((tag: string) => ({ name: tag }))
+      },
+      Aliases: {
+        rich_text: [
+          { text: { content: log.Aliases ? log.Aliases.join(', ') : '' } }
+        ]
       }
     }
   });
@@ -554,62 +585,89 @@ export async function createBlipEditLog(blipData: {
   description: string;     // 新的描述
   prevRing?: string;       // 之前的环状态
   prevDescription?: string;// 之前的描述
+  tags?: string[];         // 标签
+  prevTags?: string[];     // 之前的标签
+  aliases?: string[];      // 别名
+  prevAliases?: string[];  // 之前的别名
 }) {
   if (!process.env.NOTION_LOGS_DATABASE_ID) {
     throw new Error('Notion数据库ID未设置');
   }
 
   try {
+    // 过滤掉不在预定义标签列表中的标签
+    const validTags = blipData.tags?.filter(tag => TAGS.includes(tag)) || [];
+    
     // 检查是否有实际变化
     const hasRingChange = blipData.prevRing && blipData.ring !== blipData.prevRing;
     const hasDescriptionChange = blipData.prevDescription && blipData.description !== blipData.prevDescription;
+    const hasTagsChange = blipData.prevTags && JSON.stringify(validTags) !== JSON.stringify(blipData.prevTags);
+    const hasAliasesChange = blipData.prevAliases && JSON.stringify(blipData.aliases) !== JSON.stringify(blipData.prevAliases);
     
-    if (!hasRingChange && !hasDescriptionChange) {
+    if (!hasRingChange && !hasDescriptionChange && !hasTagsChange && !hasAliasesChange) {
       throw new Error('没有检测到任何变化，请至少修改一项内容');
     }
 
     // 创建修改记录到Logs数据库
+    const properties: any = {
+      Name: {
+        title: [
+          { text: { content: blipData.name } }
+        ]
+      },
+      Quadrant: {
+        select: {
+          name: blipData.quadrant
+        }
+      },
+      Ring: {
+        select: {
+          name: blipData.ring
+        }
+      },
+      Description: {
+        rich_text: [
+          { text: { content: blipData.description } }
+        ]
+      },
+      BlipID: {
+        rich_text: [
+          { text: { content: blipData.blipId } }
+        ]
+      },
+      Processed: {
+        status: {
+          name: "Not started"
+        }
+      },
+      created: {
+        date: {
+          start: new Date().toISOString()
+        }
+      }
+    };
+
+    // 添加Tags字段（如果有）- 仅使用有效标签
+    if (validTags.length > 0) {
+      properties.Tags = {
+        multi_select: validTags.map(tag => ({ name: tag }))
+      };
+    }
+
+    // 添加Aliases字段（如果有）
+    if (blipData.aliases && blipData.aliases.length > 0) {
+      properties.Aliases = {
+        rich_text: [
+          { text: { content: blipData.aliases.join(', ') } }
+        ]
+      };
+    }
+
     const response = await notion.pages.create({
       parent: {
         database_id: process.env.NOTION_LOGS_DATABASE_ID,
       },
-      properties: {
-        Name: {
-          title: [
-            { text: { content: blipData.name } }
-          ]
-        },
-        Quadrant: {
-          select: {
-            name: blipData.quadrant
-          }
-        },
-        Ring: {
-          select: {
-            name: blipData.ring
-          }
-        },
-        Description: {
-          rich_text: [
-            { text: { content: blipData.description } }
-          ]
-        },
-        BlipID: {
-          rich_text: [
-            { text: { content: blipData.blipId } }
-          ]
-        },
-        Processed: {
-          status: {
-            name: "Not started"
-          }
-        },
-        created: {
-          date: {
-            start: new Date().toISOString()
-          }
-        },
-      }
+      properties: properties
     });
 
     // 解析并返回创建的Log信息

@@ -12,6 +12,8 @@ export interface Blip {
     x: number
     y: number
   }
+  tags?: string[]
+  aliases?: string[]
 }
 
 export interface RecordChangeLog {
@@ -23,6 +25,8 @@ export interface RecordChangeLog {
   description: string
   created?: string
   llmResult?: string
+  tags?: string[]
+  aliases?: string[]
 }
 
 export interface Quadrant {

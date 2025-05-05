@@ -19,11 +19,14 @@
 - **Git** - 代码版本控制系统
 
 ### 开发工具
-- **VS Code / WebStorm** - 代码编辑器
+- **Cursor** - 代码编辑器
 - **Chrome DevTools** - 浏览器调试工具
-- **npm / pnpm** - 包管理工具
+- **pnpm** - 包管理工具
 
 ## 技术约束
+
+### 数据流
+用户只能修改 Logs ，然后通过一些流程，触发同步逻辑，来更新 Blips
 
 ### 兼容性
 - 现代浏览器支持(Chrome, Firefox, Safari, Edge)

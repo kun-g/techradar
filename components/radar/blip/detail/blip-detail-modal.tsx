@@ -7,6 +7,8 @@ import { BlipHeader } from "./blip-header"
 import { BlipForm } from "./blip-form"
 import { BlipHistory } from "./blip-history"
 import { MarkdownContent } from "./blip-markdown-content"
+import { Badge } from "@/components/ui/badge"
+import { apiRequest } from "@/lib/api-helpers"
 
 interface BlipDetailModalProps {
   blip: Blip | null
@@ -20,7 +22,9 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
   const [isEditMode, setIsEditMode] = useState(false)
   const [editFormData, setEditFormData] = useState({
     ring: "",
-    description: ""
+    description: "",
+    tags: [] as string[],
+    aliases: [] as string[]
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [historyData, setHistoryData] = useState<RecordChangeLog[]>([])
@@ -32,7 +36,9 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
       if (!isEditMode) {
         setEditFormData({
           ring: blip.ring,
-          description: ""
+          description: "",
+          tags: blip.tags || [],
+          aliases: blip.aliases || []
         });
       }
     }
@@ -54,18 +60,30 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
     setEditFormData(prev => ({ ...prev, [name]: value }));
   }
 
+  // 处理标签变化
+  const handleTagsChange = (tags: string[]) => {
+    setEditFormData(prev => ({ ...prev, tags }));
+  }
+
+  // 处理别名变化
+  const handleAliasesChange = (aliases: string[]) => {
+    setEditFormData(prev => ({ ...prev, aliases }));
+  }
+
   // 提交编辑表单
   const handleSubmitEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!blip) return;
     
-    // 检查是否有变化 - 对空字符串特殊处理
+    // 检查是否有变化
     const descriptionChanged = editFormData.description !== "" && 
                               editFormData.description !== blip.description;
     const ringChanged = editFormData.ring !== blip.ring;
+    const tagsChanged = JSON.stringify(editFormData.tags) !== JSON.stringify(blip.tags || []);
+    const aliasesChanged = JSON.stringify(editFormData.aliases) !== JSON.stringify(blip.aliases || []);
     
-    if (!ringChanged && !descriptionChanged) {
+    if (!ringChanged && !descriptionChanged && !tagsChanged && !aliasesChanged) {
       toast({
         title: "无变化",
         description: "请至少修改一项内容后再提交",
@@ -77,28 +95,23 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
     try {
       setIsSubmitting(true);
       
-      // 发送请求到API
-      const response = await fetch("/api/notion/blip/edit", {
+      // 使用apiRequest替代fetch
+      const responseData = await apiRequest<{success: boolean, data: any}>("/api/notion/blip/edit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           blipId: blip.id,
           name: blip.name,
           quadrant: quadrants.find((q) => q.id === blip.quadrant)?.name || "",
           ring: editFormData.ring,
-          description: editFormData.description,
+          description: editFormData.description || blip.description,
           prevRing: blip.ring,
-          prevDescription: blip.description
+          prevDescription: blip.description,
+          tags: editFormData.tags,
+          prevTags: blip.tags || [],
+          aliases: editFormData.aliases,
+          prevAliases: blip.aliases || []
         }),
       });
-      
-      const responseData = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(responseData.error || "编辑失败");
-      }
       
       // 显示成功提示
       toast({
@@ -110,15 +123,15 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
       setIsEditMode(false);
       onClose();
       
-      // 重新加载数据
-      fetch('/api/notion/sync')
-        .then(response => response.json())
-        .then(newData => {
-          if (newData.blips && newData.blips.length > 0 && onDataUpdate) {
-            onDataUpdate(newData.blips);
-          }
-        })
-        .catch(error => console.error('同步数据失败:', error));
+      // 重新加载数据 - 也使用apiRequest
+      try {
+        const syncData = await apiRequest<{blips: any, logs: any}>('/api/notion/sync');
+        if (syncData.blips && syncData.blips.length > 0 && onDataUpdate) {
+          onDataUpdate(syncData.blips);
+        }
+      } catch (syncError) {
+        console.error('同步数据失败:', syncError);
+      }
         
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "发生未知错误";
@@ -180,8 +193,34 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
 
           <CardContent>
             {!isEditMode ? (
-              <div className="prose prose-sm max-w-none">
-                <MarkdownContent content={blip.description} />
+              <div className="space-y-4">
+                {/* 标签和别名显示区域 */}
+                {(blip.tags && blip.tags.length > 0) && (
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-medium">标签</h3>
+                    <div className="flex flex-wrap gap-1">
+                      {blip.tags.map(tag => (
+                        <Badge key={tag} variant="secondary">{tag}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {(blip.aliases && blip.aliases.length > 0) && (
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-medium">别名</h3>
+                    <div className="flex flex-wrap gap-1">
+                      {blip.aliases.map(alias => (
+                        <Badge key={alias} variant="outline">{alias}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* 描述区域 */}
+                <div className="prose prose-sm max-w-none">
+                  <MarkdownContent content={blip.description} />
+                </div>
               </div>
             ) : (
               <BlipForm 
@@ -191,6 +230,8 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
                 isSubmitting={isSubmitting}
                 onFormChange={handleFormChange}
                 onSelectChange={handleSelectChange}
+                onTagsChange={handleTagsChange}
+                onAliasesChange={handleAliasesChange}
                 onSubmit={handleSubmitEdit}
               />
             )}
