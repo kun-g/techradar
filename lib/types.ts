@@ -7,6 +7,7 @@ export interface Blip {
   last_change: string
   updated?: string
   movement?: 'new' | 'moved-in' | 'moved-out' | 'unchanged'
+  history?: RecordChangeLog[]
   position?: {
     x: number
     y: number
@@ -41,5 +42,4 @@ export interface RadarData {
   blips: Blip[]
   quadrants: Quadrant[]
   rings: Ring[]
-  logs: RecordChangeLog[]
 }

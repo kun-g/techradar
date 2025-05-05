@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import BlipDetailModal from './blip-detail-modal'
+import BlipDetailModal from '@/components/radar/blip/blip-detail-modal'
 import { toast } from '@/hooks/use-toast'
 import { AnimatePresence } from 'framer-motion'
 import type { Blip, Quadrant, Ring } from '@/lib/types'

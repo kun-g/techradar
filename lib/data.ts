@@ -93,46 +93,50 @@ export function calculateSingleBlipMovement(blip: Blip, logs: RecordChangeLog[])
  * @param logs 变更日志数据
  * @returns 添加了movement属性的雷达点数据
  */
-export function calculateBlipMovements(blips: Blip[], logs: RecordChangeLog[]): Blip[] {
+export function calculateBlipMovements(blips: Blip[]): Blip[] {
+  // 计算每个雷达点的移动状态
+  return blips.map(blip => {
+    return calculateSingleBlipMovement(blip, blip.history || []);
+  });
+}
+
+function buildBlipLogsMap(): Map<string, RecordChangeLog[]> {
   // 创建一个映射表以便快速查找日志
   const blipLogsMap = new Map<string, RecordChangeLog[]>();
+  const finalLogs = logs.map((log) => ({
+    id: log.ID,
+    blipId: log.BlipID,
+    previousRecord: log.PreviousRecord,
+    name: log.Name,
+    ring: log.Ring,
+    description: log.Description,
+    created: log.created,
+  }))
   
   // 按blipId对日志进行分组
-  logs.forEach(log => {
+  finalLogs.forEach(log => {
     if (!blipLogsMap.has(log.blipId)) {
       blipLogsMap.set(log.blipId, []);
     }
     blipLogsMap.get(log.blipId)?.push(log);
   });
-  
-  // 计算每个雷达点的移动状态
-  return blips.map(blip => {
-    const blipLogs = blipLogsMap.get(blip.id) || [];
-    return calculateSingleBlipMovement(blip, blipLogs);
-  });
+  return blipLogsMap;
 }
 
 export async function fetchRadarData(): Promise<RadarData> {
-  const processedBlips = calculateBlipMovements(
-    blips.map((blip) => ({
-      id: blip.ID,
-      name: blip.Name,
-      quadrant: blip.Quadrant,
-      ring: blip.Ring,
-      description: blip.Description,
-      last_change: blip.LastChange,
-      updated: blip.updated,
-    })),
-    logs.map((log) => ({
-      id: log.ID,
-      blipId: log.BlipID,
-      previousRecord: log.PreviousRecord,
-      name: log.Name,
-      ring: log.Ring,
-      description: log.Description,
-      created: log.created,
-    }))
-  );
+  const blipLogsMap = buildBlipLogsMap();
+  const finalBlips = blips.map((blip) => ({
+    id: blip.ID,
+    name: blip.Name,
+    quadrant: blip.Quadrant,
+    ring: blip.Ring,
+    description: blip.Description,
+    last_change: blip.LastChange,
+    updated: blip.updated,
+    history: blipLogsMap.get(blip.ID) || [],
+  }))
+
+  const processedBlips = calculateBlipMovements(finalBlips);
 
   return {
     quadrants: [
@@ -148,13 +152,5 @@ export async function fetchRadarData(): Promise<RadarData> {
       { id: "hold", name: "Hold", order: 3, color: "red", stroke: "rgba(239, 68, 68, 0.7)" },
     ],
     blips: processedBlips,
-    logs: logs.map((log) => ({
-      id: log.ID,
-      blipId: log.BlipID,
-      previousRecord: log.PreviousRecord,
-      name: log.Name,
-      ring: log.Ring,
-      description: log.Description,
-    })),
   }
 }

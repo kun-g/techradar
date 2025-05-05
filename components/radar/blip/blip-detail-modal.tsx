@@ -1,15 +1,15 @@
 import { motion } from "framer-motion"
-import { X, Edit, Save, ArrowLeft } from "lucide-react"
+import { X, Edit, Save, ArrowLeft, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
-import type { Blip, Quadrant, Ring } from "@/lib/types"
-import { useState } from "react"
+import type { Blip, Quadrant, Ring, RecordChangeLog } from "@/lib/types"
+import { useState, useEffect } from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import remarkBreaks from "remark-breaks"
@@ -18,6 +18,7 @@ interface BlipDetailModalProps {
   blip: Blip | null
   quadrants: Quadrant[]
   rings: Ring[]
+  logs?: RecordChangeLog[]
   onClose: () => void
   onDataUpdate?: (blips: any) => void
 }
@@ -29,6 +30,16 @@ export default function BlipDetailModal({ blip, quadrants, rings, onClose, onDat
     description: ""
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
+  const [historyData, setHistoryData] = useState<RecordChangeLog[]>([])
+
+  // 当 blip 或 logs 改变时更新历史数据
+  useEffect(() => {
+    if (blip) {
+      setHistoryData(blip.history || []);
+    }
+    console.log(blip)
+  }, [blip]);
 
   // 切换到编辑模式
   const toggleEditMode = () => {
@@ -50,6 +61,11 @@ export default function BlipDetailModal({ blip, quadrants, rings, onClose, onDat
   // 处理选择字段变化
   const handleSelectChange = (name: string, value: string) => {
     setEditFormData(prev => ({ ...prev, [name]: value }));
+  }
+
+  // 切换历史记录显示
+  const toggleHistory = () => {
+    setShowHistory(!showHistory);
   }
 
   // 提交编辑表单
@@ -128,6 +144,24 @@ export default function BlipDetailModal({ blip, quadrants, rings, onClose, onDat
       });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // 格式化历史记录日期
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '未知时间';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('zh-CN', { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return dateString;
     }
   };
 
@@ -283,6 +317,79 @@ export default function BlipDetailModal({ blip, quadrants, rings, onClose, onDat
               </form>
             )}
           </CardContent>
+          {!isEditMode && (
+            <CardFooter className="flex flex-col items-center pt-0">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs flex items-center gap-1 text-muted-foreground"
+                onClick={toggleHistory}
+              >
+                <ChevronDown className={cn("h-4 w-4 transition-transform", showHistory && "transform rotate-180")} />
+                {historyData.length > 0 ? "查看历史记录" : "暂无历史记录"}
+              </Button>
+              
+              {showHistory && historyData.length > 0 && (
+                <div className="w-full mt-2 border-t pt-3">
+                  <h4 className="text-sm font-medium mb-2">修改历史</h4>
+                  <div className="space-y-4">
+                    {historyData.map((record, idx) => (
+                      <div key={idx} className="bg-gray-50 p-3 rounded-md text-sm">
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="font-medium">{record.name}</div>
+                          <div className="text-xs text-muted-foreground">{formatDate(record.created)}</div>
+                        </div>
+                        <div className="space-y-2">
+                          {record.ring !== blip.ring && (
+                            <div className="pb-2 border-b border-gray-200">
+                              <div className="flex gap-3 items-center">
+                                <div className="flex-1">
+                                  <span className="line-through text-muted-foreground">
+                                    {rings.find(r => r.id === record.ring)?.name || record.ring}
+                                  </span>
+                                </div>
+                                <div className="text-gray-500">→</div>
+                                <div className="flex-1">
+                                  <span className="text-blue-600">
+                                    {rings.find(r => r.id === blip.ring)?.name || blip.ring}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {record.description && (
+                            <div className="px-3 py-2 bg-gray-100 rounded-md prose prose-sm max-w-none">
+                              <ReactMarkdown 
+                                remarkPlugins={[remarkGfm, remarkBreaks]}
+                                components={{
+                                  p: ({node, ...props}) => <p className="mb-2" {...props} />,
+                                  a: ({node, ...props}) => <a className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                                  h1: ({node, ...props}) => <h1 className="text-lg font-bold mb-2" {...props} />,
+                                  h2: ({node, ...props}) => <h2 className="text-base font-bold mb-2" {...props} />,
+                                  h3: ({node, ...props}) => <h3 className="text-sm font-bold mb-1" {...props} />,
+                                  ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2" {...props} />,
+                                  ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2" {...props} />,
+                                  li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                                  blockquote: ({node, ...props}) => <blockquote className="border-l-2 border-gray-300 pl-2 italic my-2" {...props} />,
+                                  code: ({inline, className, children, ...props}: any) => {
+                                    return inline 
+                                      ? <code className="bg-gray-200 px-1 py-0.5 rounded text-xs" {...props}>{children}</code>
+                                      : <pre className="bg-gray-200 p-2 rounded overflow-x-auto text-xs"><code {...props}>{children}</code></pre>
+                                  }
+                                }}
+                              >
+                                {record.description}
+                              </ReactMarkdown>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardFooter>
+          )}
         </Card>
       </motion.div>
     </motion.div>

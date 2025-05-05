@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Story } from "@ladle/react";
-import RadarBlip from "./radar-blip";
+import RadarBlip from "./blip/radar-blip";
 import type { Blip, Ring } from "@/lib/types";
 import { toast } from "sonner";
 import { calculateFreshness, getFreshnessOpacity } from "@/lib/data";

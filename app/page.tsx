@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import TechRadar from "@/components/tech-radar"
-import { AddBlipForm } from "@/components/add-blip-form"
+import { AddBlipForm } from "@/components/radar/blip/add-blip-form"
 import { fetchRadarData } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"

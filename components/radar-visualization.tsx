@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react"
 import type { Blip, Quadrant, Ring } from "@/lib/types"
 import { updateBlipPositions } from "@/lib/radar_distribution"
 import RadarRings from "./radar/radar-rings"
-import RadarBlip from "./radar/radar-blip"
+import RadarBlip from "./radar/blip/radar-blip"
 
 /**
  * 技术雷达可视化组件
