@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { toast } from "@/hooks/use-toast"
-import type { Blip, Quadrant, Ring, RecordChangeLog } from "@/lib/types"
+import type { Blip, Quadrant, Ring, RecordChangeLog, RadarData } from "@/lib/types"
 import { useState, useEffect } from "react"
 import { BlipHeader } from "./blip-header"
 import { BlipForm } from "./blip-form"
@@ -14,11 +14,19 @@ interface BlipDetailModalProps {
   blip: Blip | null
   quadrants: Quadrant[]
   rings: Ring[]
+  availableTags?: string[]
   onClose: () => void
   onDataUpdate?: (blips: any) => void
 }
 
-export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate }: BlipDetailModalProps) {
+export function BlipDetailModal({ 
+  blip, 
+  quadrants, 
+  rings, 
+  availableTags = [],
+  onClose, 
+  onDataUpdate 
+}: BlipDetailModalProps) {
   const [isEditMode, setIsEditMode] = useState(false)
   const [editFormData, setEditFormData] = useState({
     ring: "",
@@ -215,6 +223,7 @@ export function BlipDetailModal({ blip, quadrants, rings, onClose, onDataUpdate 
                 formData={editFormData}
                 rings={rings}
                 blip={blip}
+                availableTags={availableTags}
                 isSubmitting={isSubmitting}
                 onFormChange={handleFormChange}
                 onSelectChange={handleSelectChange}

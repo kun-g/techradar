@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import TechRadar from "@/components/tech-radar"
 import { AddBlipForm } from "@/components/radar/blip/add-blip-form"
-import { fetchRadarData } from "@/lib/data"
+import { fetchRadarData, fetchAvailableRadars } from "@/lib/data"
 import { Button } from "@/components/ui/button"
 import { RefreshCw } from "lucide-react"
 import type { RadarData } from "@/lib/types"
@@ -12,28 +12,69 @@ import { AdminAuthDialog } from "@/components/admin/auth-dialog";
 import { PromptExportButton } from "@/components/admin/prompt-export-button";
 import { toast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/api-helpers";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<RadarData | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [availableRadars, setAvailableRadars] = useState<{id: string, name: string}[]>([]);
+  const [selectedRadarId, setSelectedRadarId] = useState<string>("");
   const { isAdmin } = useAuth();
 
-  // 获取初始数据
+  // 获取可用的雷达列表
+  useEffect(() => {
+    async function loadAvailableRadars() {
+      try {
+        const radars = await fetchAvailableRadars();
+        setAvailableRadars(radars);
+        if (radars.length > 0 && !selectedRadarId) {
+          setSelectedRadarId(radars[0].id);
+        }
+      } catch (error) {
+        console.error("加载雷达列表失败:", error);
+      }
+    }
+    
+    loadAvailableRadars();
+  }, []);
+
+  // 根据选择的雷达ID加载数据
   useEffect(() => {
     async function loadData() {
+      if (!selectedRadarId) return;
+      
+      setIsLoading(true);
       try {
-        const initialData = await fetchRadarData();
+        const initialData = await fetchRadarData(selectedRadarId);
         setData(initialData);
       } catch (error) {
         console.error("加载数据失败:", error);
+        toast({
+          title: "加载数据失败",
+          description: error instanceof Error ? error.message : "未知错误",
+          variant: "destructive",
+        });
       } finally {
         setIsLoading(false);
       }
     }
     
-    loadData();
-  }, []);
+    if (selectedRadarId) {
+      loadData();
+    }
+  }, [selectedRadarId]);
+
+  // 处理雷达选择变更
+  const handleRadarChange = (value: string) => {
+    setSelectedRadarId(value);
+  };
 
   // 同步数据
   const handleSync = async () => {
@@ -75,12 +116,27 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center p-4 md:p-8">
       <header className="w-full max-w-6xl mb-8 text-center relative">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">Technology Radar</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2">{data.radarName}</h1>
         <p className="text-muted-foreground">An opinionated guide to technology frontiers</p>
         <div className="absolute right-0 top-0">
           <AdminAuthDialog />
         </div>
       </header>
+
+      <div className="w-full max-w-6xl mb-4">
+        <div className="flex justify-end">
+          <Select value={selectedRadarId} onValueChange={handleRadarChange}>
+            <SelectTrigger className="w-[250px]">
+              <SelectValue placeholder="选择雷达" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableRadars.map((radar) => (
+                <SelectItem key={radar.id} value={radar.id}>{radar.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       <TechRadar initialData={data} />
       <div className="w-full max-w-6xl mb-8 flex justify-end gap-2">
@@ -96,7 +152,10 @@ export default function Home() {
               <RefreshCw className="h-4 w-4" />
               {isSyncing ? "同步中..." : "同步数据"}
             </Button>
-            <AddBlipForm />
+            <AddBlipForm 
+              radarId={selectedRadarId}
+              quadrants={data.quadrants}
+            />
           </>
         )}
       </div>

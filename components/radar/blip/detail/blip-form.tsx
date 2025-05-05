@@ -8,7 +8,6 @@ import { Blip, Ring } from "@/lib/types"
 import { X, Plus } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
-import { TAGS } from "@/lib/data"
 import { 
   Command,
   CommandEmpty,
@@ -36,6 +35,7 @@ interface BlipFormProps {
   rings: Ring[]
   blip: Blip
   isSubmitting: boolean
+  availableTags?: string[]
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   onSelectChange: (name: string, value: string) => void
   onTagsChange: (tags: string[]) => void
@@ -48,6 +48,7 @@ export function BlipForm({
   rings, 
   blip, 
   isSubmitting, 
+  availableTags = [],
   onFormChange, 
   onSelectChange, 
   onTagsChange,
@@ -105,7 +106,7 @@ export function BlipForm({
 
   // 获取尚未使用的标签
   const getUnusedTags = () => {
-    return TAGS.filter(tag => !formData.tags.includes(tag));
+    return availableTags.filter(tag => !formData.tags.includes(tag));
   };
 
   return (

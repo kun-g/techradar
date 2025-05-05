@@ -1,6 +1,7 @@
-import type { RadarData, RecordChangeLog, Blip } from "./types"
+import type { RadarData, RecordChangeLog, Blip, RadarConfig } from "./types"
 import blips from "../data/blips.json"
 import logs from "../data/logs.json"
+import radarConfigs from "../data/radar_configs.json"
 
 // 明确声明导入的JSON数据类型
 type BlipJson = any;
@@ -11,10 +12,30 @@ export const ringRatios = [0.4, 0.3, 0.2, 0.1];
 // 圈环顺序，从内到外
 export const RING_ORDER = ['adopt', 'trial', 'assess', 'hold'];
 export const MAX_AGE_DAYS = 30;
-export const TAGS = [
-  "AI", "AI辅助开发", "前端", "后端", "DevOps/运维",
-  "自动化", "数据可视化", "测试与质量", "交付效能", "架构模式"
-];
+
+// 获取所有可用雷达配置
+export function getRadarConfigs(): RadarConfig[] {
+  return radarConfigs.map((config, index) => ({
+    id: index.toString(),
+    name: config.name,
+    quadrants: config.quadrants,
+    blip_db: config.blip_db,
+    log_db: config.log_db,
+    tags: config.tags || []
+  }));
+}
+
+// 根据雷达ID获取雷达配置
+export function getRadarConfigById(radarId: string): RadarConfig | undefined {
+  const configs = getRadarConfigs();
+  return configs.find(config => config.id === radarId);
+}
+
+// 获取默认雷达配置(第一个)
+export function getDefaultRadarConfig(): RadarConfig {
+  const configs = getRadarConfigs();
+  return configs[0];
+}
 
 /**
  * 计算数据新鲜度，返回0-1之间的值
@@ -136,33 +157,50 @@ function buildBlipLogsMap(): Map<string, RecordChangeLog[]> {
   return blipLogsMap;
 }
 
-export async function fetchRadarData(): Promise<RadarData> {
+/**
+ * 获取指定雷达的数据
+ * @param radarId 雷达ID，不提供则使用默认雷达
+ */
+export async function fetchRadarData(radarId?: string): Promise<RadarData> {
+  // 获取雷达配置
+  const radarConfig = radarId 
+    ? getRadarConfigById(radarId) 
+    : getDefaultRadarConfig();
+  
+  if (!radarConfig) {
+    throw new Error(`未找到ID为 ${radarId} 的雷达配置`);
+  }
+
   const blipLogsMap = buildBlipLogsMap();
-  const finalBlips = (blips as BlipJson[]).map((blip) => ({
-    id: blip.ID,
-    name: blip.Name,
-    quadrant: blip.Quadrant,
-    ring: blip.Ring,
-    description: blip.Description,
-    last_change: blip.LastChange,
-    updated: blip.updated,
-    tags: blip.Tags || [],
-    aliases: blip.Aliases ? (typeof blip.Aliases === 'string' 
-      ? blip.Aliases.split(',').map((s: string) => s.trim()).filter(Boolean) 
-      : blip.Aliases) : [],
-    // 按创建时间降序排序
-    history: blipLogsMap.get(blip.ID)?.sort((a, b) => new Date(b.created || '').getTime() - new Date(a.created || '').getTime()) || [],
-  }))
+  const finalBlips = (blips as BlipJson[])
+    // 根据quadrant筛选出属于当前雷达的blips
+    .filter(blip => radarConfig.quadrants.includes(blip.Quadrant))
+    .map((blip) => ({
+      id: blip.ID,
+      name: blip.Name,
+      quadrant: blip.Quadrant,
+      ring: blip.Ring,
+      description: blip.Description,
+      last_change: blip.LastChange,
+      updated: blip.updated,
+      tags: blip.Tags || [],
+      aliases: blip.Aliases ? (typeof blip.Aliases === 'string' 
+        ? blip.Aliases.split(',').map((s: string) => s.trim()).filter(Boolean) 
+        : blip.Aliases) : [],
+      // 按创建时间降序排序
+      history: blipLogsMap.get(blip.ID)?.sort((a, b) => new Date(b.created || '').getTime() - new Date(a.created || '').getTime()) || [],
+    }))
 
   const processedBlips = calculateBlipMovements(finalBlips);
 
   return {
-    quadrants: [
-      { id: "语言与框架", name: "语言与框架", order: 0 },
-      { id: "平台", name: "平台", order: 1 },
-      { id: "工具", name: "工具", order: 2 },
-      { id: "技术", name: "技术", order: 3 },
-    ],
+    radarId: radarConfig.id,
+    radarName: radarConfig.name,
+    quadrants: radarConfig.quadrants.map((quadrant, index) => ({
+      id: quadrant,
+      name: quadrant,
+      order: index,
+    })),
     rings: [
       { id: "adopt", name: "Adopt", order: 0, color: "green", stroke: "rgba(16, 185, 129, 0.7)" },
       { id: "trial", name: "Trial", order: 1, color: "blue", stroke: "rgba(59, 130, 246, 0.7)" },
@@ -170,5 +208,14 @@ export async function fetchRadarData(): Promise<RadarData> {
       { id: "hold", name: "Hold", order: 3, color: "red", stroke: "rgba(239, 68, 68, 0.7)" },
     ],
     blips: processedBlips,
+    availableTags: radarConfig.tags,
   }
+}
+
+// 获取所有可用雷达的基本信息
+export async function fetchAvailableRadars(): Promise<{ id: string, name: string }[]> {
+  return getRadarConfigs().map(config => ({
+    id: config.id,
+    name: config.name
+  }));
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,12 +10,18 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "@/lib/api-helpers";
+import { Quadrant, RadarConfig } from "@/lib/types";
+import { getRadarConfigById } from "@/lib/data";
 
-// 象限和环的选项
-const QUADRANTS = ["技术", "平台", "工具", "语言与框架"];
+// 环的选项
 const RINGS = ["adopt", "trial", "assess", "hold"];
 
-export function AddBlipForm() {
+interface AddBlipFormProps {
+  radarId?: string;
+  quadrants?: Quadrant[];
+}
+
+export function AddBlipForm({ radarId, quadrants = [] }: AddBlipFormProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +29,8 @@ export function AddBlipForm() {
     name: "",
     quadrant: "",
     ring: "assess",
-    description: ""
+    description: "",
+    radarId: radarId || "0"
   });
 
   // 处理表单字段变化
@@ -46,7 +53,8 @@ export function AddBlipForm() {
       name: "",
       quadrant: "",
       ring: "assess",
-      description: ""
+      description: "",
+      radarId: radarId || "0"
     });
   };
 
@@ -83,7 +91,8 @@ export function AddBlipForm() {
         name: "",
         quadrant: "",
         ring: "assess",
-        description: ""
+        description: "",
+        radarId: radarId || "0"
       });
       
       setOpen(false);
@@ -159,6 +168,51 @@ export function AddBlipForm() {
                   required
                 />
               </div>
+              
+              {quadrants.length > 0 && (
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="quadrant" className="text-right">
+                    象限
+                  </Label>
+                  <Select 
+                    value={formData.quadrant} 
+                    onValueChange={(value) => handleSelectChange("quadrant", value)}
+                  >
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="选择象限（可选）" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {quadrants.map((quadrant) => (
+                        <SelectItem key={quadrant.id} value={quadrant.id}>
+                          {quadrant.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="ring" className="text-right">
+                  环
+                </Label>
+                <Select 
+                  value={formData.ring} 
+                  onValueChange={(value) => handleSelectChange("ring", value)}
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="选择环" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {RINGS.map((ring) => (
+                      <SelectItem key={ring} value={ring}>
+                        {ring.charAt(0).toUpperCase() + ring.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="description" className="text-right">
                   描述

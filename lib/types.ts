@@ -47,4 +47,17 @@ export interface RadarData {
   blips: Blip[]
   quadrants: Quadrant[]
   rings: Ring[]
+  radarId: string
+  radarName: string
+  availableTags?: string[]
+}
+
+// 雷达配置类型
+export interface RadarConfig {
+  id: string
+  name: string
+  quadrants: string[]
+  blip_db: string
+  log_db: string
+  tags: string[]
 }
