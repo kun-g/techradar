@@ -11,7 +11,7 @@
   },
   {
     "updated": "2025-05-05T09:08:00.000+00:00",
-    "Quadrant": "工具",
+    "Quadrant": "平台",
     "Description": "https://firebase.studio/\n\nFirebase Studio accelerates your entire development lifecycle with AI agents. Build backends, front ends, and mobile apps, all in one place.",
     "ID": "34",
     "LastChange": "37",
@@ -71,7 +71,7 @@
   },
   {
     "updated": "2025-05-05T09:01:00.000+00:00",
-    "Quadrant": "工具",
+    "Quadrant": "技术",
     "Description": "在提示生成中，最大的挑战之一是确保 AI 工具能够访问与任务相关的所有上下文信息。这些上下文信息通常已经存在于我们每天使用的系统中，如维基、问题追踪器、数据库或可观察性系统。AI 工具与这些信息源的无缝集成可以显著提高 AI 生成输出的质量。\n\n[**模型上下文协议**](https://github.com/modelcontextprotocol)（MCP）是由 Anthropic 发布的开放标准，提供了一个标准化的框架，用于将 LLM 应用与外部数据源和工具集成。它定义了 MCP 服务器和客户端，服务器访问数据源，客户端则集成并使用这些数据来增强提示。许多编码助手已经实现了 MCP 集成，使其能够作为 MCP 客户端运行。MCP 服务器可以通过两种方式运行：本地运行，作为在用户机器上运行的 Python 或 Node 进程；或者远程运行，作为通过 SSE 连接的服务器（尽管我们尚未看到远程服务器的使用）。目前，MCP 主要以第一种方式使用，开发者通过克隆开源的 [MCP](https://mcpservers.org/) [服务器](https://mcp.so/) [实现](https://smithery.ai/) 来使用它。虽然本地运行的服务器提供了一种避免第三方依赖的简洁方式，但它们对于非技术用户仍然不够友好，并且带来了治理和更新管理等挑战。尽管如此，可以预见这一标准未来可能会发展成一个更成熟、更易于用户使用的生态系统。",
     "ID": "28",
     "LastChange": "31",
