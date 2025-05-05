@@ -10,6 +10,9 @@ import { toast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
 import type { Blip, Quadrant, Ring } from "@/lib/types"
 import { useState } from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import remarkBreaks from "remark-breaks"
 
 interface BlipDetailModalProps {
   blip: Blip | null
@@ -202,7 +205,28 @@ export default function BlipDetailModal({ blip, quadrants, rings, onClose, onDat
           <CardContent>
             {!isEditMode ? (
               <div className="prose prose-sm max-w-none">
-                <p>{blip.description}</p>
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm, remarkBreaks]}
+                  components={{
+                    // 自定义组件渲染
+                    p: ({node, ...props}) => <p className="mb-4" {...props} />,
+                    a: ({node, ...props}) => <a className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                    h1: ({node, ...props}) => <h1 className="text-2xl font-bold mb-4" {...props} />,
+                    h2: ({node, ...props}) => <h2 className="text-xl font-bold mb-3" {...props} />,
+                    h3: ({node, ...props}) => <h3 className="text-lg font-bold mb-2" {...props} />,
+                    ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4" {...props} />,
+                    ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-4" {...props} />,
+                    li: ({node, ...props}) => <li className="mb-1" {...props} />,
+                    blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-gray-200 pl-4 italic my-4" {...props} />,
+                    code: ({inline, className, children, ...props}: any) => {
+                      return inline 
+                        ? <code className="bg-gray-100 px-1 py-0.5 rounded" {...props}>{children}</code>
+                        : <pre className="bg-gray-100 p-4 rounded overflow-x-auto"><code {...props}>{children}</code></pre>
+                    }
+                  }}
+                >
+                  {blip.description}
+                </ReactMarkdown>
               </div>
             ) : (
               <form onSubmit={handleSubmitEdit} className="space-y-4">
@@ -230,14 +254,19 @@ export default function BlipDetailModal({ blip, quadrants, rings, onClose, onDat
                   <Label htmlFor="description" className="text-right">
                     描述
                   </Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    value={editFormData.description}
-                    onChange={handleFormChange}
-                    className="col-span-3"
-                    rows={6}
-                  />
+                  <div className="col-span-3">
+                    <Textarea
+                      id="description"
+                      name="description"
+                      value={editFormData.description}
+                      onChange={handleFormChange}
+                      rows={8}
+                      placeholder="支持Markdown格式，例如 **粗体**, *斜体*, `代码`, ## 标题, > 引用, [链接](https://example.com)"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      支持Markdown语法，包括表格、列表、链接和代码块等
+                    </p>
+                  </div>
                 </div>
                 <div className="flex justify-end mt-4">
                   <Button 

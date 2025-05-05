@@ -12,6 +12,20 @@ jest.mock('@/hooks/use-toast', () => ({
   toast: jest.fn()
 }))
 
+// 模拟ReactMarkdown组件
+jest.mock('react-markdown', () => {
+  return {
+    __esModule: true,
+    default: ({ children, components }: { children: string, components: any }) => (
+      <div data-testid="markdown-content">{children}</div>
+    )
+  }
+})
+
+// 模拟remark插件
+jest.mock('remark-gfm', () => () => {})
+jest.mock('remark-breaks', () => () => {})
+
 // 模拟全局fetch
 global.fetch = jest.fn(() =>
   Promise.resolve({

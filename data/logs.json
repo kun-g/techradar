@@ -1,7 +1,7 @@
 [
   {
-    "Processed": "Not started",
-    "BlipID": "",
+    "Processed": "Done",
+    "BlipID": "11",
     "LLMResult": "```json\n{\n  \"象限\": \"语言与框架\",\n  \"理由\": \"MDX 是一种将 JSX 嵌入 Markdown 的语法扩展，属于用于构建内容的开发框架。\"\n}\n```",
     "Description": "https://mdxjs.com/\nMDX lets you use JSX in your markdown content. You can import components, such as interactive charts or alerts, and embed them within your content. This makes writing long-form content with components a blast.",
     "ID": "14",

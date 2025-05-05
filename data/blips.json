@@ -1,5 +1,15 @@
 [
   {
+    "updated": "2025-05-05T03:45:00.000+00:00",
+    "Quadrant": "语言与框架",
+    "Description": "https://mdxjs.com/\nMDX lets you use JSX in your markdown content. You can import components, such as interactive charts or alerts, and embed them within your content. This makes writing long-form content with components a blast.",
+    "ID": "11",
+    "LastChange": "14",
+    "Ring": "assess",
+    "Name": "MDX",
+    "notion_page_id": "1ea0aea5-43e6-8153-aabd-d623ba290044"
+  },
+  {
     "updated": "2025-05-05T03:36:00.000+00:00",
     "Quadrant": "技术",
     "Description": "**Fuzz 测试** ，或称模糊测试，是一种已经存在很长时间但仍然较少被广泛了解的测试技术。其目标是向软件系统输入各种无效数据并观察其行为。例如，对于一个 HTTP 端点，错误的请求通常应返回 4_xx_ 错误，但 fuzz 测试往往会引发 5_xx_ 错误甚至更严重的问题。随着工具的完善以及文档支持的增强，fuzz 测试在如今显得尤为重要，尤其是在更多 AI 生成代码和[自满于 AI 生成的代码](https://www.thoughtworks.com/zh-cn/radar/techniques/complacency-with-ai-generated-code)的背景下。因此，现在是采用 fuzz 测试的好时机，以确保代码的健壮性和安全性。",
