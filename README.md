@@ -48,6 +48,9 @@ NOTION_LOGS_DATABASE_ID=your_notion_logs_database_id
 
 # DeepSeek API密钥用于自动分类
 DEEPSEEK_API_KEY=your_deepseek_api_key
+
+# 管理员模式密钥（注意：不要使用NEXT_PUBLIC_前缀）
+ADMIN_KEY=your_admin_key_here
 ```
 
 然后安装依赖并启动开发服务器：
@@ -154,3 +157,33 @@ techradar/
 ## 架构决策记录
 
 本项目使用架构决策记录(ADR)来记录重要的架构决策。详情请参见`doc/adr`目录。
+
+## 管理员模式功能
+
+本应用提供了一个简单的管理员模式，只有知道管理员密钥的用户才能使用添加、编辑和同步功能。其他用户只能查看雷达内容。
+
+### 设置管理员密钥
+
+在`.env.local`文件中添加以下环境变量：
+
+```bash
+# Notion API密钥和数据库ID
+NOTION_API_KEY=your_notion_api_key
+NOTION_BLIPS_DATABASE_ID=your_notion_blips_database_id
+NOTION_LOGS_DATABASE_ID=your_notion_logs_database_id
+
+# DeepSeek API密钥用于自动分类
+DEEPSEEK_API_KEY=your_deepseek_api_key
+
+# 管理员模式密钥（注意：不要使用NEXT_PUBLIC_前缀）
+ADMIN_KEY=your_admin_key_here
+```
+
+将`your_admin_key_here`替换为您希望使用的密钥。密钥是保存在服务器端的，不会暴露在前端代码中。
+
+### 使用管理员模式
+
+1. 在应用右上角点击锁图标
+2. 输入管理员密钥
+3. 验证成功后，添加和同步功能将会显示
+4. 使用完毕后可以点击注销图标退出管理员模式

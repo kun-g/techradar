@@ -1,5 +1,18 @@
 [
   {
+    "Processed": "Not started",
+    "BlipID": "",
+    "LLMResult": "```json\n{\n  \"象限\": \"工具\",\n  \"理由\": \"Figma 是一个用于协作设计的软件工具，支持多角色团队通过浏览器进行设计和评论，属于开发过程中的支持工具。\"\n}\n```",
+    "Description": "不论是对设计师，还是多角色团队而言，**[Figma](https://www.figma.com/)** 都已被证明是协作设计的首选工具。它允许开发人员和其他角色通过浏览器查看和评论设计，而无需使用桌面版本。和它的竞争对手（如Invision 或 Sketch）相比，Figma 将版本控制、协作设计和设计分享这些功能都集中到一个工具上，这使得我们的团队更容易一起想出新点子。除了实时设计和协作功能外，Figma 还提供了一个 API 以帮助改善 [DesignOps](https://www.thoughtworks.com/zh-cn/radar/techniques/designops) 流程 。",
+    "ID": "20",
+    "created": "2025-05-05T08:31:00.000+00:00",
+    "Quadrant": "工具",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "Figma",
+    "notion_page_id": "1ea0aea5-43e6-8197-a19a-f8bfa14ad63c"
+  },
+  {
     "Processed": "Done",
     "BlipID": "16",
     "LLMResult": "```json\n{\n  \"象限\": \"平台\",\n  \"理由\": \"边缘函数（Edge Functions）是一种在内容交付网络（CDNs）上运行的无服务器代码执行环境，属于基础设施或运行环境范畴。\"\n}\n```",
