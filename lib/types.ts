@@ -5,6 +5,7 @@ export interface Blip {
   ring: string
   description: string
   last_change: string
+  updated?: string
   movement?: 'new' | 'moved-in' | 'moved-out' | 'unchanged'
   position?: {
     x: number

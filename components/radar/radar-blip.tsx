@@ -4,6 +4,7 @@ import { useState } from "react"
 import { motion, useMotionValue, useTransform } from "framer-motion"
 import type { Blip, Ring } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { calculateFreshness, getFreshnessOpacity } from "@/lib/data"
 
 /**
  * 单个雷达图数据点组件
@@ -28,8 +29,35 @@ interface RadarBlipProps {
   onDragEnd?: (blip: Blip, newPosition: { x: number, y: number }) => void
 }
 
-// 计算圆弧路径的函数
+// 外环相关配置常量
+const RING_CONFIG = {
+  // 外环宽度，单位为像素
+  WIDTH: 4,
+  // 外环与数据点的间距系数(相对于blipSize的倍数)
+  SPACING: 2.5,
+  // 悬停时外环宽度放大系数
+  HOVER_SCALE: 1.5,
+  // 部分圆弧时的端点处理
+  LINE_CAP: "round" as "butt" | "round" | "square"
+}
+
+/**
+ * 计算圆弧路径的函数
+ * 
+ * 此函数用于创建SVG路径命令，用于绘制圆弧
+ * @param x - 圆心X坐标
+ * @param y - 圆心Y坐标
+ * @param radius - 圆弧半径
+ * @param startAngle - 起始角度（度）
+ * @param endAngle - 结束角度（度）
+ * @returns SVG路径命令字符串
+ */
 function describeArc(x: number, y: number, radius: number, startAngle: number, endAngle: number) {
+  // 如果起始角度等于结束角度，返回空路径
+  if (startAngle === endAngle) {
+    return "";
+  }
+  
   // 转换角度为弧度
   const startAngleRad = (startAngle - 90) * Math.PI / 180;
   const endAngleRad = (endAngle - 90) * Math.PI / 180;
@@ -103,9 +131,12 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
   // 获取当前blip所在的环的颜色
   const currentRing = rings.find((r) => r.id === blip.ring)
   
+  // 计算外环宽度，悬停时应用放大效果
+  const ringWidth = isHovered ? RING_CONFIG.WIDTH * RING_CONFIG.HOVER_SCALE : RING_CONFIG.WIDTH
+  
   // 计算弧形路径
-  const radius = blipSize*2.5 + 2
-  const svgSize = (radius * 2) + 4 // 添加一些边距
+  const radius = blipSize * RING_CONFIG.SPACING + ringWidth/2
+  const svgSize = (radius * 2) + ringWidth * 2 // 添加边距确保宽线条不被裁剪
   const center = svgSize / 2
   
   // 弧线路径
@@ -113,6 +144,13 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
   
   // 弧线是否为完整的圆
   const isFullCircle = arcEnd - arcStart >= 360
+  
+  // 计算基于更新日期的环颜色透明度
+  let strokeOpacity = isHovered ? 0.8 : 0.5
+  if (blip.updated) {
+    const freshness = calculateFreshness(blip.updated)
+    strokeOpacity = getFreshnessOpacity(freshness)
+  }
   
   // 处理拖拽结束事件
   const handleDragEnd = () => {
@@ -161,18 +199,19 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
             r={radius}
             fill="none"
             stroke={currentRing?.stroke || "#666"}
-            strokeWidth="2"
-            opacity={isHovered ? 0.8 : 0.5}
+            strokeWidth={ringWidth}
+            opacity={strokeOpacity}
           />
-        ) : (
+        ) : arcPath ? (
           <path
             d={arcPath}
             fill="none"
             stroke={currentRing?.stroke || "#666"}
-            strokeWidth="2"
-            opacity={isHovered ? 0.8 : 0.5}
+            strokeWidth={ringWidth}
+            strokeLinecap={RING_CONFIG.LINE_CAP}
+            opacity={strokeOpacity}
           />
-        )}
+        ) : null}
       </svg>
       
       <div
@@ -197,6 +236,11 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
           <div className="text-xs text-muted-foreground mt-1">
             {currentRing?.name}
           </div>
+          {blip.updated && (
+            <div className="text-xs text-gray-500">
+              更新: {new Date(blip.updated).toLocaleDateString()}
+            </div>
+          )}
           {draggable && (
             <div className="text-xs text-green-500 font-semibold">
               可拖动
