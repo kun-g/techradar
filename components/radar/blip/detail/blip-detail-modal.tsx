@@ -15,6 +15,7 @@ interface BlipDetailModalProps {
   quadrants: Quadrant[]
   rings: Ring[]
   availableTags?: string[]
+  radarId: string
   onClose: () => void
   onDataUpdate?: (blips: any) => void
 }
@@ -24,6 +25,7 @@ export function BlipDetailModal({
   quadrants, 
   rings, 
   availableTags = [],
+  radarId,
   onClose, 
   onDataUpdate 
 }: BlipDetailModalProps) {
@@ -103,10 +105,10 @@ export function BlipDetailModal({
     try {
       setIsSubmitting(true);
       
-      // 使用apiRequest替代fetch
       const responseData = await apiRequest<{success: boolean, data: any}>("/api/notion/blip/edit", {
         method: "POST",
         body: JSON.stringify({
+          radarId: radarId,
           blipId: blip.id,
           name: blip.name,
           quadrant: quadrants.find((q) => q.id === blip.quadrant)?.name || "",
@@ -133,7 +135,7 @@ export function BlipDetailModal({
       
       // 重新加载数据 - 也使用apiRequest
       try {
-        const syncData = await apiRequest<{blips: any, logs: any}>('/api/notion/sync');
+        const syncData = await apiRequest<{blips: any, logs: any}>(`/api/notion/sync?radar_id=${radarId}`);
         if (syncData.blips && syncData.blips.length > 0 && onDataUpdate) {
           onDataUpdate(syncData.blips);
         }

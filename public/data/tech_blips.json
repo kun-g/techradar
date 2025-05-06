@@ -1,5 +1,29 @@
 [
   {
+    "updated": "2025-05-05T15:41:00.000+00:00",
+    "Quadrant": "平台",
+    "Description": "在使用 数据产品思维 构建产品时，数据血缘、数据可发现性、数据治理非常重要。我们的团队发现 DataHub 在这些方面能提供非常有效的支持。DataHub 的早期版本在需要更新元数据模型时，要求用户手动复制管理来 自主产品的同步。近期的更新引入了通过插件实现的元数据模型定制。DataHub 的另一个有用功能是从源头到 处理再到消费的强大端到端数据脉络。DataHub 既支持基于推送的集成，也支持基于拉动的数据血缘提取，可 自动抓取跨数据源、调度器、协调器（通过扫描 Airflow DAG）、处理管道任务和仪表板等元数据。作为完整数 据目录的一个开源选项，DataHub 逐渐成为我们团队的默认选择。\n\n[数据产品思维 \\| Technology Radar \\| Thoughtworks China](https://www.thoughtworks.com/cn/radar/techniques/data-product-thinking-for-fair-data)\n[DataHub: #1 Open Source Metadata Platform for AI & Data](https://datahubproject.io/)\n[A Custom Metadata Model \\| DataHub](https://datahubproject.io/docs/metadata-models-custom/)\n",
+    "Tags": [],
+    "ID": "48",
+    "LastChange": "51",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "DataHub",
+    "notion_page_id": "1eb0aea5-43e6-8185-a517-fd715708028b"
+  },
+  {
+    "updated": "2025-05-06T00:15:00.000+00:00",
+    "Quadrant": "平台",
+    "Description": "## 一、什么是 Docker？\n\nDocker 是一个开源的**容器化平台**，用于打包、分发和运行应用程序。它通过将应用与其依赖环境打包到容器中，实现跨平台一致性部署。\n\n---\n\n## 二、核心概念\n\n| 概念         | 说明                                                             |\n|--------------|------------------------------------------------------------------|\n| 镜像（Image）| 应用及其环境的只读模板，类似系统快照                           |\n| 容器（Container）| 镜像运行时的实例，轻量、隔离、可移植                              |\n| Dockerfile   | 构建镜像的配置文件，定义安装步骤和环境                          |\n| Docker Hub   | 官方的镜像仓库，支持上传/下载公共或私有镜像                     |\n| Volume       | 容器与宿主机之间的数据持久化机制                                |\n| Network      | 管理容器之间的网络连接（bridge、host、overlay 等）             |\n\n---\n\n## 三、核心优势\n\n- 🧱 **一致性部署**：开发、测试、生产环境保持一致  \n- ⚡ **启动快速**：比虚拟机轻量，秒级启动  \n- 🚀 **资源隔离**：每个容器互不干扰，可单独管理  \n- 🔁 **易于集成 CI/CD**：自动化测试、构建、部署流程  \n- 🌐 **跨平台运行**：只要支持 Docker 的平台即可运行\n",
+    "Tags": [],
+    "ID": "47",
+    "LastChange": "52",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "Docker",
+    "notion_page_id": "1eb0aea5-43e6-8175-98a9-f9925071c526"
+  },
+  {
     "updated": "2025-05-05T13:17:00.000+00:00",
     "Quadrant": "平台",
     "Description": "Dify 是一个 UI 驱动的用于开发大语言模型应用程序的平台，它使原型设计更加容易访问。它支持用户使用提示 词模板开发聊天和文本生成应用。此外，Dify 支持使用导入数据集的检索增强生成（RAG），并且能够与多个模 型协同工作。我们对这类应用很感兴趣。不过，从我们的使用经验来看，Dify 还没有完全准备好投入大范围使 用，因为某些功能目前仍然存在缺陷或并不成熟。但目前，我们还没有发现更好的竞品\n[GitHub - langgenius/dify: Dify is an open-source LLM app development platform. Dify's intuitive interface combines AI workflow, RAG pipeline, agent capabilities, model management, observability features and more, letting you quickly...](https://github.com/langgenius/dify)",
@@ -72,14 +96,16 @@
     "notion_page_id": "1ea0aea5-43e6-8100-a6f5-d9c98a80daca"
   },
   {
-    "updated": "2025-05-05T11:56:00.000+00:00",
+    "updated": "2025-05-06T00:53:00.000+00:00",
     "Quadrant": "平台",
-    "Description": "LLM（大型语言模型）像黑箱一样运作，非常难以确定它的行为。可观察性对于打开这个黑箱并理解 LLM 应用程序在生产环境中的运作至关重要。我们团队在使用 [Langfuse](https://github.com/langfuse/langfuse) 方面有过积极的体验，我们曾用它来观察、监控和评估基于 LLM 的应用程序。它的追踪、分析和评估能力使我们能够分析完成性能和准确性，管理成本和延迟，并理解生产使用模式，从而促进持续的数据驱动改进。仪器数据提供了请求-响应流和中间步骤的完整可追溯性，这可以作为测试数据，在部署新变更之前验证应用程序。我们已将 Langfuse 与 [RAG（检索增强生成）](https://www.thoughtworks.com/zh-cn/radar/techniques/retrieval-augmented-generation-rag) 等 LLM 架构，以及 [大语言模型驱动的自主代理](https://www.thoughtworks.com/zh-cn/radar/techniques/llm-powered-autonomous-agents) 一起使用。 例如，在基于 RAG 的应用程序中，分析低评分的对话追踪有助于识别架构的哪个部分（如预检索、检索或生成）需要改进。当然，在这一领域，另一个值得考虑的选项是 [Langsmith](https://www.langchain.com/langsmith)。\n\n--- Via Thought Works",
-    "Tags": [],
+    "Description": "第一次尝试的感受：值得尝试，但是上手有点难度\n\nPros:\n- 产品级别的提示词管理\n- 可以平时积累数据集，对提示词的 Benchmark\n\nCons:\n- 对 TypeScript 生态支持有点一般\n- LLM Provider 支持有限，DeepSeek 都要自己维护，还要配置好 Tokenizer 才能正常计费\n- 操作有些繁琐，比如把记录添加到 Dataset 的操作\n- Prompt Experiments 折腾了 20 分钟，没跑通",
+    "Tags": [
+      "AI"
+    ],
     "ID": "40",
-    "LastChange": "43",
+    "LastChange": "53",
     "Aliases": "",
-    "Ring": "assess",
+    "Ring": "trial",
     "Name": "Langfuse",
     "notion_page_id": "1ea0aea5-43e6-81da-b29e-eca0c5f2ac88"
   },

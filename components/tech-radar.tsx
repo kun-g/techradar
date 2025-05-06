@@ -100,6 +100,7 @@ export default function TechRadar({ initialData }: TechRadarProps) {
             quadrants={data.quadrants}
             rings={data.rings}
             availableTags={data.availableTags}
+            radarId={data.radarId}
             onClose={closeBlipDetails}
             onDataUpdate={(blips) => {
               setData(prevData => ({
