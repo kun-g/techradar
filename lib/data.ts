@@ -21,7 +21,8 @@ export function getRadarConfigs(): RadarConfig[] {
     quadrants: config.quadrants,
     blip_db: config.blip_db,
     log_db: config.log_db,
-    tags: config.tags || []
+    tags: config.tags || [],
+    prompt_id: config.prompt_id
   }));
 }
 

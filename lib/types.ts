@@ -60,4 +60,5 @@ export interface RadarConfig {
   blip_db: string
   log_db: string
   tags: string[]
+  prompt_id: string
 }

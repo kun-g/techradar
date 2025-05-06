@@ -470,7 +470,8 @@ export async function addLogEntry(logData: {
     if (!quadrant && process.env.DEEPSEEK_API_KEY) {
       try {
         // 调用AI进行分类
-        const classification = await classifyWithAI(logData.name, logData.description || '');
+        console.log("AI分类开始", radarConfig.prompt_id);
+        const classification = await classifyWithAI(logData.name, logData.description || '', radarConfig.prompt_id);
         quadrant = classification.quadrant;
         llmResult = classification.rawResponse;
         
