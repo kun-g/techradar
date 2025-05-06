@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Story } from "@ladle/react";
 import RadarBlip from "./blip/radar-blip";
-import { BlipDetailModal } from "@/components/radar/blip/detail";
+import { BlipDetailModal } from "./blip/detail";
 import type { Blip, Ring, RecordChangeLog } from "@/lib/types";
 import { toast } from "sonner";
 import { calculateFreshness, getFreshnessOpacity } from "@/lib/data";
@@ -307,8 +307,10 @@ export const DetailModal: Story = () => {
           blip={selectedBlip}
           quadrants={mockQuadrants}
           rings={mockRings}
+          radarId="radar-demo"
           onClose={handleCloseModal}
           onDataUpdate={handleDataUpdate}
+          availableTags={[]}
         />
       )}
       

@@ -1,9 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// 默认管理密钥，实际应用中应该使用环境变量
-const ADMIN_KEY = process.env.NEXT_PUBLIC_ADMIN_KEY || 'admin_secret_key';
-
 interface AuthState {
   isAdmin: boolean;
   setAdminStatus: (status: boolean) => void;

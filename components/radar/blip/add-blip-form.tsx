@@ -10,8 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { apiRequest } from "@/lib/api-helpers";
-import { Quadrant, RadarConfig } from "@/lib/types";
-import { getRadarConfigById } from "@/lib/data";
+import { Quadrant } from "@/lib/types";
 
 // 环的选项
 const RINGS = ["adopt", "trial", "assess", "hold"];
