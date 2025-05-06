@@ -19,6 +19,8 @@ import {
 // 定义接口
 interface ExportedData {
   prompt: string;
+  radarId: string;
+  radarName: string;
   qas: Array<{
     name: string;
     description: string;
@@ -28,24 +30,30 @@ interface ExportedData {
 
 interface ClearResultResponse {
   success: boolean;
+  radarId?: string;
+  radarName?: string;
   message?: string;
   error?: string;
 }
 
-export function PromptExportButton() {
+interface PromptExportButtonProps {
+  radarId: string;
+}
+
+export function PromptExportButton({ radarId }: PromptExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
   const [showClearDialog, setShowClearDialog] = useState(false);
   const [exportedData, setExportedData] = useState<ExportedData | null>(null);
 
   const handleExport = async () => {
-    if (isExporting) return;
+    if (isExporting || !radarId) return;
     
     try {
       setIsExporting(true);
       
-      // 使用apiRequest获取数据
-      const data = await apiRequest<ExportedData>('/api/prompt/export', { method: 'GET' });
+      // 使用apiRequest获取数据，传递当前页面的雷达ID
+      const data = await apiRequest<ExportedData>(`/api/prompt/export?radar_id=${radarId}`, { method: 'GET' });
       
       // 保存导出的数据
       setExportedData(data);
@@ -57,7 +65,7 @@ export function PromptExportButton() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `prompt-evaluation-data-${new Date().toISOString().slice(0, 10)}.json`;
+      link.download = `${data.radarName}-prompt-data-${new Date().toISOString().slice(0, 10)}.json`;
       
       // 触发下载
       document.body.appendChild(link);
@@ -70,7 +78,7 @@ export function PromptExportButton() {
       // 显示成功提示
       toast({
         title: "导出成功",
-        description: "Prompt评估数据已下载"
+        description: `${data.radarName} 的Prompt评估数据已下载`
       });
       
       // 导出成功后询问是否要清空LLMResult数据
@@ -89,20 +97,20 @@ export function PromptExportButton() {
   };
 
   const handleClearLLMResults = async () => {
-    if (isClearing) return;
+    if (isClearing || !radarId) return;
     
     try {
       setIsClearing(true);
       
-      // 调用清空LLMResult的API
-      const result = await apiRequest<ClearResultResponse>('/api/prompt/clear-llm-results', { 
+      // 调用清空LLMResult的API，传递当前页面的雷达ID
+      const result = await apiRequest<ClearResultResponse>(`/api/prompt/clear-llm-results?radar_id=${radarId}`, { 
         method: 'POST',
       });
       
       // 显示成功提示
       toast({
         title: "清空成功",
-        description: result.message || "LLMResult字段已成功清空"
+        description: result.message || `${result.radarName} 的LLMResult字段已成功清空`
       });
       
       // 关闭对话框
@@ -123,23 +131,21 @@ export function PromptExportButton() {
   };
 
   return (
-    <>
-      <Button 
-        onClick={handleExport} 
-        disabled={isExporting || isClearing}
-        variant="outline"
-        className="flex items-center gap-2"
-      >
-        <DownloadIcon className="h-4 w-4" />
-        {isExporting ? "导出中..." : "导出Prompt数据"}
-      </Button>
-
+    <Button 
+      onClick={handleExport} 
+      disabled={isExporting || isClearing || !radarId}
+      variant="outline"
+      className="flex items-center gap-2"
+    >
+      <DownloadIcon className="h-4 w-4" />
+      {isExporting ? "导出中..." : "导出Prompt数据"}
+      
       <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>确认清空LLMResult数据</AlertDialogTitle>
             <AlertDialogDescription>
-              已成功导出{exportedData?.qas?.length || 0}条数据。是否要清空Notion数据库中的LLMResult字段？此操作不可撤销。
+              已成功导出 {exportedData?.radarName} 的 {exportedData?.qas?.length || 0} 条数据。是否要清空Notion数据库中的LLMResult字段？此操作不可撤销。
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -156,6 +162,6 @@ export function PromptExportButton() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </Button>
   );
 } 

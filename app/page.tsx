@@ -157,7 +157,7 @@ export default function Home() {
       <div className="w-full max-w-6xl mb-8 flex justify-end gap-2">
         {isAdmin && (
           <>
-            <PromptExportButton />
+            <PromptExportButton radarId={selectedRadarId} />
             <Button 
               onClick={handleSync} 
               disabled={isSyncing}
