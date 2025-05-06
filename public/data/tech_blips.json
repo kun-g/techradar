@@ -1,5 +1,29 @@
 [
   {
+    "updated": "2025-05-06T02:35:00.000+00:00",
+    "Quadrant": "技术",
+    "Description": "https://martinfowler.com/bliki/RefinementCodeReview.html",
+    "Tags": [],
+    "ID": "56",
+    "LastChange": "61",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "Code Review",
+    "notion_page_id": "1eb0aea5-43e6-8187-b070-f0abf103a260"
+  },
+  {
+    "updated": "2025-05-06T02:32:00.000+00:00",
+    "Quadrant": "技术",
+    "Description": "## 一、定义\n\n演化式架构是一种支持系统在不断变化中**持续适应和演进**的架构设计方式，强调**适应性优先于确定性**，以应对快速变化的业务和技术需求。\n\n---\n\n## 二、核心特征\n\n- 🔄 **持续变更友好**：架构设计预设变化，而非抗拒变化  \n- 🧪 **支持实验**：架构允许并鼓励在局部试验新方案  \n- 🧱 **架构守护（Fitness Functions）**：自动化指标确保演化过程中不偏离关键目标（如安全、性能）  \n- 🧠 **基于反馈**：架构调整基于实际运行反馈，而非一次性设计\n\n---\n\n## 三、设计原则\n\n| 原则             | 说明                                 |\n|------------------|--------------------------------------|\n| 最小耦合         | 降低模块间依赖，便于独立演进         |\n| 可替换性         | 任意组件都能被替换或重构              |\n| 自动化评估机制   | 使用 Fitness Functions 衡量系统质量   |\n| 版本化与渐进式交付 | 支持灰度发布、A/B 测试、金丝雀发布等   |\n| 实验驱动         | 技术选型基于快速试验与反馈循环        |\n\n---\n\n## 四、适用场景\n\n- 快速迭代的产品型企业  \n- 架构需频繁调整（如云原生、微服务架构）  \n- 希望实现长期技术可持续性的系统\n\n---\n\n## 五、相关概念\n\n- 微服务架构（Microservices）  \n- 架构守护机制（Fitness Functions）  \n- 可演化系统设计（Evolvability）  \n- 架构决策记录（ADR）\n\n---\n\n## 六、参考资料\n\n- *Building Evolutionary Architectures*（Neal Ford 等著）  \n- ThoughtWorks 技术雷达相关条目  \n- https://evolutionaryarchitecture.com/\n\n",
+    "Tags": [],
+    "ID": "55",
+    "LastChange": "60",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "演化式架构",
+    "notion_page_id": "1eb0aea5-43e6-813d-acb4-ed02135aa520"
+  },
+  {
     "updated": "2025-05-06T01:41:00.000+00:00",
     "Quadrant": "平台",
     "Description": "树莓派（Raspberry Pi）是一款低成本、体积小巧的单板计算机，由英国树莓派基金会开发，旨在推动编程与计算机教育普及。它搭载 ARM 架构处理器，支持运行 Linux 系统，可通过 GPIO 接口连接各种传感器与模块，广泛应用于编程学习、电子制作、智能家居、物联网（IoT）等领域。树莓派以其灵活性、能耗低、社区活跃而受到开发者与创客喜爱。",

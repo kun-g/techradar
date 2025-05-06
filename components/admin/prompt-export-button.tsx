@@ -131,15 +131,17 @@ export function PromptExportButton({ radarId }: PromptExportButtonProps) {
   };
 
   return (
-    <Button 
-      onClick={handleExport} 
-      disabled={isExporting || isClearing || !radarId}
-      variant="outline"
-      className="flex items-center gap-2"
-    >
-      <DownloadIcon className="h-4 w-4" />
-      {isExporting ? "导出中..." : "导出Prompt数据"}
-      
+    <>
+      <Button 
+        onClick={handleExport} 
+        disabled={isExporting || isClearing || !radarId}
+        variant="outline"
+        className="flex items-center gap-2"
+      >
+        <DownloadIcon className="h-4 w-4" />
+        {isExporting ? "导出中..." : "导出Prompt数据"}
+      </Button>
+
       <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -162,6 +164,6 @@ export function PromptExportButton({ radarId }: PromptExportButtonProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Button>
+    </>
   );
 } 
