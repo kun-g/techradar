@@ -2,6 +2,7 @@ import { Client } from '@notionhq/client';
 import fs from 'fs';
 import { classifyWithAI } from './ai-classifier';
 import { getRadarConfigById, getDefaultRadarConfig } from './data';
+import { getBlipsDB, getLogsDB, filterValidTags, BlipRecord, LogRecord } from './notionDB';
 // 初始化Notion客户端
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -18,109 +19,85 @@ export async function syncDatabase(radarId: string) {
     throw new Error(`未找到ID为 ${radarId} 的雷达配置`);
   }
 
-  const blips = await queryDatabase(radarConfig.blip_db);
-  const logs = await queryDatabase(radarConfig.log_db);
+  // 使用数据库API
+  const blipsDB = getBlipsDB(radarConfig);
+  const logsDB = getLogsDB(radarConfig);
+  
+  const blips = await blipsDB.query();
+  const logs = await logsDB.query();
 
-  for (const l of logs) {
-    if (l.Processed == "Done") {
+  for (const log of logs) {
+    if (log.Processed === "Done") {
       continue;
     }
-    if (l.BlipID == "") {
-      console.log("To be processed: ", l);
-      // 向Notion添加Blip
-      const blip = await createBlip(l, radarConfig);
-      await notion.pages.update({
-        page_id: l.notion_page_id,
-        properties: {
-          Processed: {
-            status: {
-              name: "Done",
-            }
-          },
-          BlipID: {
-            rich_text: [
-              { text: { content: parsePageProperties((blip as any).properties).ID } }
-            ]
-          }
-        }
-      });
+    
+    if (!log.BlipID) {
+      // 创建新的Blip记录
+      const blipData = {
+        Name: log.Name,
+        Quadrant: log.Quadrant,
+        Ring: "assess",
+        Description: log.Description,
+        LastChange: String(log.ID),
+        updated: log.created,
+        Tags: filterValidTags(log.Tags, radarConfig.tags),
+        Aliases: log.Aliases || []
+      };
+      
+      const blipResponse = await blipsDB.create(blipData);
+      
+      if (blipResponse && blipResponse.properties) {
+        const blipProps = blipResponse.properties as any;
+        await logsDB.update(log.notion_page_id, {
+          Processed: "Done",
+          BlipID: blipProps.ID || ''
+        });
+      }
     } else {
-      let matchedBlip = blips.find((b) => b.ID == l.BlipID);
+      // 查找匹配的Blip
+      const matchedBlip = blips.find(b => b.ID === log.BlipID);
       if (!matchedBlip) {
-        console.error("Blip not found: ", l);
+        console.error("Blip not found: ", log);
         continue;
       }
+      
+      // 检查并准备更新数据
+      const changes: Record<string, any> = {};
       let changed = false;
-      let changedProperties: any = {
-          LastChange: {
-            rich_text: [
-              { text: { content: String(l.ID) } }
-            ]
-          },
-          updated: {
-            date: {
-              start: l.created
-            }
-          }
-      };
-      if (l.Ring != matchedBlip.Ring) {
-        changedProperties.Ring = {
-          select: {
-            name: l.Ring
-          }
-        }
+      
+      // 基本变更
+      if (log.Ring !== matchedBlip.Ring) {
+        changes.Ring = log.Ring;
         changed = true;
       }
-      if (l.Description && l.Description != matchedBlip.Description) {
-        changedProperties.Description = {
-          rich_text: [
-            { text: { content: l.Description } }
-          ]
-        }
+      
+      if (log.Description && log.Description !== matchedBlip.Description) {
+        changes.Description = log.Description;
         changed = true;
       }
-      // 处理Tags字段的更新
-      if (l.Tags && JSON.stringify(l.Tags) !== JSON.stringify(matchedBlip.Tags)) {
-        // 过滤掉不在预定义标签列表中的标签
-        const validTags = l.Tags.filter((tag: string) => 
-          radarConfig.tags && radarConfig.tags.includes(tag)
-        );
-        changedProperties.Tags = {
-          multi_select: validTags.map((tag: string) => ({ name: tag }))
-        }
+      
+      // 处理Tags字段更新
+      if (log.Tags && JSON.stringify(log.Tags) !== JSON.stringify(matchedBlip.Tags)) {
+        changes.Tags = filterValidTags(log.Tags, radarConfig.tags);
         changed = true;
       }
-      // 处理Aliases字段的更新
-      if (l.Aliases && l.Aliases.join(', ') !== (matchedBlip.Aliases || []).join(', ')) {
-        changedProperties.Aliases = {
-          rich_text: [
-            { text: { content: l.Aliases.join(', ') } }
-          ]
-        }
+      
+      // 处理Aliases字段更新
+      if (log.Aliases && log.Aliases.join(', ') !== (matchedBlip.Aliases || []).join(', ')) {
+        changes.Aliases = log.Aliases;
         changed = true;
       }
+      
       if (changed) {
-        console.log("To be updated: ", l);
-        console.log(changedProperties);
-        console.log(matchedBlip);
-        await notion.pages.update({
-          page_id: matchedBlip.notion_page_id,
-          properties: changedProperties
-        });
-        await notion.pages.update({
-          page_id: l.notion_page_id,
-          properties: {
-            Processed: {
-              status: {
-                name: "Done",
-              }
-            },
-            PreviousRecord: {
-              rich_text: [
-                { text: { content: matchedBlip.LastChange } }
-              ]
-            }
-          }
+        // 添加更新日志相关字段
+        changes.LastChange = String(log.ID);
+        changes.updated = log.created;
+        
+        // 执行更新
+        await blipsDB.update(matchedBlip.notion_page_id, changes);
+        await logsDB.update(log.notion_page_id, {
+          Processed: "Done",
+          PreviousRecord: matchedBlip.LastChange
         });
       }
     }
@@ -130,72 +107,7 @@ export async function syncDatabase(radarId: string) {
   fs.writeFileSync(`./public/data/${radarConfig.id}_blips.json`, JSON.stringify(blips, null, 2));
   fs.writeFileSync(`./public/data/${radarConfig.id}_logs.json`, JSON.stringify(logs, null, 2));
 
-  return {
-    blips,
-    logs
-  };
-}
-
-/**
- * 创建Blip记录
- * @param log 日志记录
- * @param radarConfig 雷达配置
- */
-async function createBlip(log: any, radarConfig: any) {
-  if (!radarConfig || !radarConfig.blip_db) {
-    throw new Error('雷达配置错误或数据库ID未设置');
-  }
-  
-  // 使用雷达配置中的标签列表
-  const validTags = log.Tags ? log.Tags.filter((tag: string) => 
-    radarConfig.tags && radarConfig.tags.includes(tag)
-  ) : [];
-  
-  return await notion.pages.create({
-    parent: {
-      database_id: radarConfig.blip_db,
-    },
-    properties: {
-      Name: {
-        title: [
-          { text: { content: log.Name } }
-        ]
-      },
-      Quadrant: {
-        select: {
-          name: log.Quadrant
-        }
-      },
-      Ring: {
-        select: {
-          name: "assess"
-        }
-      },
-      Description: {
-        rich_text: [
-          { text: { content: log.Description } }
-        ]
-      },
-      LastChange: {
-        rich_text: [
-          { text: { content: String(log.ID) } }
-        ]
-      },
-      updated: {
-        date: {
-          start: log.created
-        }
-      },
-      Tags: {
-        multi_select: validTags.map((tag: string) => ({ name: tag }))
-      },
-      Aliases: {
-        rich_text: [
-          { text: { content: log.Aliases ? log.Aliases.join(', ') : '' } }
-        ]
-      }
-    }
-  });
+  return { blips, logs };
 }
 
 /**
@@ -227,42 +139,6 @@ export async function queryDatabase(
     return results;
   } catch (error) {
     console.error('查询Notion数据库时出错:', error);
-    throw error;
-  }
-}
-
-/**
- * 获取页面详细信息
- * @param pageId - Notion页面ID
- * @returns 页面详细信息
- */
-export async function getPageInfo(pageId: string) {
-  try {
-    const response = await notion.pages.retrieve({
-      page_id: pageId,
-    });
-    
-    return response;
-  } catch (error) {
-    console.error('获取Notion页面信息时出错:', error);
-    throw error;
-  }
-}
-
-/**
- * 获取页面内容
- * @param blockId - Notion块ID（通常是页面ID）
- * @returns 页面内容
- */
-export async function getPageContent(blockId: string) {
-  try {
-    const response = await notion.blocks.children.list({
-      block_id: blockId,
-    });
-    
-    return response;
-  } catch (error) {
-    console.error('获取Notion页面内容时出错:', error);
     throw error;
   }
 }
@@ -413,23 +289,6 @@ export function parsePage(page: any) {
 }
 
 /**
- * 解析数据库查询结果
- * @param response - Notion数据库查询响应
- * @returns 处理后的页面对象数组
- */
-export function parseDatabaseItems(response: any) {
-  if (!response || !response.results || !Array.isArray(response.results)) {
-    return [];
-  }
-  
-  return {
-    results: response.results.map(parsePage).filter(Boolean),
-    has_more: response.has_more || false,
-    next_cursor: response.next_cursor || null
-  };
-}
-
-/**
  * 向Logs数据库添加新的条目
  * @param logData - 包含新Log条目数据的对象
  * @param radarConfig - 雷达配置
@@ -442,24 +301,15 @@ export async function addLogEntry(logData: {
   description: string;
   llmResult?: string;
 }, radarConfig: any) {
-  if (!radarConfig || !radarConfig.log_db) {
-    throw new Error('雷达配置错误或数据库ID未设置');
-  }
-
+  // 使用数据库API
+  const logsDB = getLogsDB(radarConfig);
+  
   try {
     // 查询是否已存在相同名称的条目
-    const existingEntries = await queryDatabase(
-      radarConfig.log_db,
-      {
-        property: "Name",
-        title: {
-          equals: logData.name
-        }
-      }
-    );
+    const existingEntry = await logsDB.findOne('Name', logData.name);
 
     // 如果存在相同名称的条目，返回错误
-    if (existingEntries && existingEntries.length > 0) {
+    if (existingEntry) {
       throw new Error(`已存在名称为 "${logData.name}" 的记录`);
     }
 
@@ -482,68 +332,28 @@ export async function addLogEntry(logData: {
       }
     }
 
-    // 准备Notion属性对象
-    const properties: any = {
-      Name: {
-        title: [
-          { text: { content: logData.name } }
-        ]
-      },
-      Ring: {
-        select: {
-          name: logData.ring
-        }
-      },
-      Description: {
-        rich_text: [
-          { text: { content: logData.description } }
-        ]
-      },
-      BlipID: {
-        rich_text: [
-          { text: { content: "" } }
-        ]
-      },
-      Processed: {
-        status: {
-          name: "Not started"
-        }
-      },
-      created: {
-        date: {
-          start: new Date().toISOString()
-        }
-      }
+    // 准备数据对象
+    const data: Record<string, any> = {
+      Name: logData.name,
+      Ring: logData.ring,
+      Description: logData.description,
+      BlipID: "",
+      Processed: "Not started",
+      created: new Date().toISOString()
     };
 
     // 如果有象限，添加到属性中
     if (quadrant && quadrant !== "") {
-      properties.Quadrant = {
-        select: {
-          name: quadrant
-        }
-      };
+      data.Quadrant = quadrant;
     }
 
     // 如果有LLM响应，添加到记录中
     if (llmResult) {
-      properties.LLMResult = {
-        rich_text: [
-          { text: { content: llmResult } }
-        ]
-      };
+      data.LLMResult = llmResult;
     }
 
     // 创建新的Log条目
-    const response = await notion.pages.create({
-      parent: {
-        database_id: radarConfig.log_db,
-      },
-      properties: properties
-    });
-
-    // 解析并返回创建的Log信息
-    const createdLog = parsePage(response);
+    const createdLog = await logsDB.create(data);
     
     return createdLog;
   } catch (error) {
@@ -553,7 +363,7 @@ export async function addLogEntry(logData: {
 }
 
 /**
- * 创建Blip的修改记录并更新日志
+ * 创建Blip的修改记录
  * @param blipData - 包含Blip修改数据的对象
  * @param radarConfig - 雷达配置
  * @returns 创建的Log条目信息
@@ -571,15 +381,11 @@ export async function createBlipEditLog(blipData: {
   aliases?: string[];      // 别名
   prevAliases?: string[];  // 之前的别名
 }, radarConfig: any) {
-  if (!radarConfig || !radarConfig.log_db) {
-    throw new Error('雷达配置错误或数据库ID未设置');
-  }
-
+  const logsDB = getLogsDB(radarConfig);
+  
   try {
     // 过滤掉不在预定义标签列表中的标签
-    const validTags = blipData.tags?.filter(tag => 
-      radarConfig.tags && radarConfig.tags.includes(tag)
-    ) || [];
+    const validTags = filterValidTags(blipData.tags, radarConfig.tags);
     
     // 检查是否有实际变化
     const hasRingChange = blipData.prevRing && blipData.ring !== blipData.prevRing;
@@ -591,70 +397,29 @@ export async function createBlipEditLog(blipData: {
       throw new Error('没有检测到任何变化，请至少修改一项内容');
     }
 
-    // 创建修改记录到Logs数据库
-    const properties: any = {
-      Name: {
-        title: [
-          { text: { content: blipData.name } }
-        ]
-      },
-      Quadrant: {
-        select: {
-          name: blipData.quadrant
-        }
-      },
-      Ring: {
-        select: {
-          name: blipData.ring
-        }
-      },
-      Description: {
-        rich_text: [
-          { text: { content: blipData.description } }
-        ]
-      },
-      BlipID: {
-        rich_text: [
-          { text: { content: blipData.blipId } }
-        ]
-      },
-      Processed: {
-        status: {
-          name: "Not started"
-        }
-      },
-      created: {
-        date: {
-          start: new Date().toISOString()
-        }
-      }
+    // 准备数据对象
+    const data: Record<string, any> = {
+      Name: blipData.name,
+      Quadrant: blipData.quadrant,
+      Ring: blipData.ring,
+      Description: blipData.description,
+      BlipID: blipData.blipId,
+      Processed: "Not started",
+      created: new Date().toISOString()
     };
 
-    // 添加Tags字段（如果有）- 仅使用有效标签
+    // 添加Tags字段（如果有）
     if (validTags.length > 0) {
-      properties.Tags = {
-        multi_select: validTags.map(tag => ({ name: tag }))
-      };
+      data.Tags = validTags;
     }
 
     // 添加Aliases字段（如果有）
     if (blipData.aliases && blipData.aliases.length > 0) {
-      properties.Aliases = {
-        rich_text: [
-          { text: { content: blipData.aliases.join(', ') } }
-        ]
-      };
+      data.Aliases = blipData.aliases;
     }
 
-    const response = await notion.pages.create({
-      parent: {
-        database_id: radarConfig.log_db,
-      },
-      properties: properties
-    });
-
-    // 解析并返回创建的Log信息
-    const createdLog = parsePage(response);
+    // 创建新的Log条目
+    const createdLog = await logsDB.create(data);
     
     return createdLog;
   } catch (error) {

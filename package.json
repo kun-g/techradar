@@ -11,10 +11,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "ladle:serve": "ladle serve",
-    "ladle:build": "ladle build",
-    "sync-notion": "node --experimental-modules scripts/fetchNotionData.js",
-    "sync-notion:build": "tsc -p scripts/tsconfig.json && node dist/scripts/fetchNotionData.js",
-    "sync-notion:cjs": "node scripts/fetchFromNotion.cjs"
+    "ladle:build": "ladle build" 
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^0.2.13",
