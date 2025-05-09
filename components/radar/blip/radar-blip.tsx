@@ -34,7 +34,7 @@ const RING_CONFIG = {
   // 外环宽度，单位为像素
   WIDTH: 4,
   // 外环与数据点的间距系数(相对于blipSize的倍数)
-  SPACING: 2.5,
+  SPACING: 2.0,
   // 悬停时外环宽度放大系数
   HOVER_SCALE: 1.5,
   // 部分圆弧时的端点处理
@@ -105,7 +105,7 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
   const [isHovered, setIsHovered] = useState(false)
   const { x, y } = blip.position || { x: 0, y: 0 }
   const blipId = blip.id.split("-")[0]
-  const blipSize = 6
+  const blipSize = 8
   
   // 设置动作值用于拖拽
   const motionX = useMotionValue(x)
@@ -131,8 +131,8 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
   // 获取当前blip所在的环的颜色
   const currentRing = rings.find((r) => r.id === blip.ring)
   
-  // 计算外环宽度，悬停时应用放大效果
-  const ringWidth = isHovered ? RING_CONFIG.WIDTH * RING_CONFIG.HOVER_SCALE : RING_CONFIG.WIDTH
+  // 计算外环宽度
+  const ringWidth = RING_CONFIG.WIDTH
   
   // 计算弧形路径
   const radius = blipSize * RING_CONFIG.SPACING + ringWidth/2
@@ -146,7 +146,7 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
   const isFullCircle = arcEnd - arcStart >= 360
   
   // 计算基于更新日期的环颜色透明度
-  let strokeOpacity = isHovered ? 0.8 : 0.5
+  let strokeOpacity = 0.5
   if (blip.updated) {
     const freshness = calculateFreshness(blip.updated)
     strokeOpacity = getFreshnessOpacity(freshness)
@@ -188,9 +188,6 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
         width={svgSize} 
         height={svgSize} 
         className="absolute -translate-x-1/2 -translate-y-1/2 transition-all"
-        style={{
-            display: isHovered ? "none" : "block" ,
-        }}
       >
         {isFullCircle ? (
           <circle
@@ -222,9 +219,6 @@ export default function RadarBlip({ blip, rings, onBlipClick, factTo, draggable 
           `bg-${currentRing?.color}-500`,
           draggable ? "cursor-grab active:cursor-grabbing" : "",
         )}
-        style={{
-          transform: isHovered ? "scale(1.5) translate(-25%, -25%)" : "",
-        }}
       >
         {blipId}
       </div>
