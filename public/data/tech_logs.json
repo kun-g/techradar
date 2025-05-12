@@ -1,6 +1,23 @@
 [
   {
     "Aliases": "",
+    "Processed": "Not started",
+    "BlipID": "16",
+    "LLMResult": "",
+    "Description": "Pros:\n- 95% 的工作是专注的业务上\nCons:\n- 还不太熟悉，安装依赖，查 Log 都不熟悉\n\n整体感受：值得继续尝试\n\n今天使用 CloudFlare Worker + Email Routing 实现了无限邮箱+Github 验证码解析并转发到飞书群的功能\n\n[这里](https://github.com/cloudflare/dmarc-email-worker) 有个更复杂的例子。\n\n- [Worker Examples](https://developers.cloudflare.com/workers/examples/?languages=JavaScript)",
+    "Tags": [
+      "架构模式"
+    ],
+    "ID": "65",
+    "created": "2025-05-09T07:33:00.000+00:00",
+    "Quadrant": "平台",
+    "PreviousRecord": "",
+    "Ring": "assess",
+    "Name": "边缘函数",
+    "notion_page_id": "1ee0aea5-43e6-81bc-aaf6-c089eafb6349"
+  },
+  {
+    "Aliases": "",
     "Processed": "Done",
     "BlipID": "57",
     "LLMResult": "",
