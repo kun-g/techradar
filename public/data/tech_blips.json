@@ -509,12 +509,14 @@
     "notion_page_id": "1ea0aea5-43e6-81d2-866f-d149a817d877"
   },
   {
-    "updated": "2025-05-05T05:15:00.000+00:00",
+    "updated": "2025-05-09T07:33:00.000+00:00",
     "Quadrant": "平台",
-    "Description": "Edge Functions\n通过内容交付网络（CDNs）进行去中心化代码执行的可用性和使用量正在增长。诸如 Cloudflare Workers 或 Amazon CloudFront Edge Functions 这样的服务提供了一种机制，可以在靠近客户地理位置的地方执行无服务器代码片段。 边缘函数不仅可以在边缘生成响应时提供更低的延迟，还可以在请求和响应从区域服务器出发和返回的途中，以特定位置的方式重写它们。例如，你可能会重写请求的 URL， 以路由到一个特定服务器，该服务器拥有与请求正文中找到的字段相关的本地数据。这种方法最适合于短暂、快 速运行的无状态处理，因为边缘的计算能力是有限的。\n[Edge Functions](https://aws.amazon.com/developer/application-security-performance/articles/cloudfront-edge-functions/)\n[Cloudflare Workers \\| Technology Radar \\| Thoughtworks China](https://www.thoughtworks.com/cn/radar/platforms/cloudflare-workers)\n",
-    "Tags": [],
+    "Description": "Pros:\n- 95% 的工作是专注的业务上\nCons:\n- 还不太熟悉，安装依赖，查 Log 都不熟悉\n\n整体感受：值得继续尝试\n\n今天使用 CloudFlare Worker + Email Routing 实现了无限邮箱+Github 验证码解析并转发到飞书群的功能\n\n[这里](https://github.com/cloudflare/dmarc-email-worker) 有个更复杂的例子。\n\n- [Worker Examples](https://developers.cloudflare.com/workers/examples/?languages=JavaScript)",
+    "Tags": [
+      "架构模式"
+    ],
     "ID": "16",
-    "LastChange": "19",
+    "LastChange": "65",
     "Aliases": "",
     "Ring": "assess",
     "Name": "边缘函数",
