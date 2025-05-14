@@ -1,5 +1,17 @@
 [
   {
+    "updated": "2025-05-06T06:19:00.000+00:00",
+    "Quadrant": "思维框架",
+    "Description": "德雷福斯模型（Dreyfus Model） 是由Stuart & Hubert Dreyfus提出的技能发展五阶段模型：  \n新手 → 进阶新手 → 胜任者 → 精通者 → 专家\n\n研究如何超越新手层次、如何不断精通技术的有效方法。\n成为一名专家的关键要素：应用你自己的实践经验、理解情境和利用直觉。**从依赖规则升级到依赖直觉**",
+    "Tags": [],
+    "ID": "8",
+    "LastChange": "8",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "德雷福斯模型",
+    "notion_page_id": "1eb0aea5-43e6-81ea-a1b4-e880180a0546"
+  },
+  {
     "updated": "2025-05-06T05:59:00.000+00:00",
     "Quadrant": "策略工具",
     "Description": "",

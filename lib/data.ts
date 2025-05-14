@@ -1,5 +1,8 @@
 import type { RadarData, RecordChangeLog, Blip, RadarConfig } from "./types";
 import radarConfigs from "../data/radar_configs.json";
+import fs from 'fs';
+import path from 'path';
+import { getRadarDataFromBlob } from './blob-storage';
 
 export const ringRatios = [0.4, 0.3, 0.2, 0.1];
 export const RINGS = [
@@ -172,14 +175,30 @@ export async function fetchRadarData(radarId?: string): Promise<RadarData> {
     throw new Error(`未找到ID为 ${radarId} 的雷达配置`);
   }
 
-  // 读取 public/data 目录下的数据
-  const [blips, logs] = await Promise.all([
-    fetch(`/data/${radarConfig.id}_blips.json`),
-    fetch(`/data/${radarConfig.id}_logs.json`)
-  ]);
+  let blipData, logData;
+  
+  try {
+    // 优先尝试从Vercel Blob获取数据
+    [blipData, logData] = await Promise.all([
+      getRadarDataFromBlob(radarConfig.id, 'blips'),
+      getRadarDataFromBlob(radarConfig.id, 'logs')
+    ]);
+    console.log(`从Vercel Blob获取 ${radarConfig.id} 数据成功`);
+  } catch (error: any) {
+    console.warn(`从Vercel Blob获取数据失败，尝试从public目录读取: ${error.message}`);
+    
+    // 如果从Blob获取失败，则从public/data目录读取
+    const [blips, logs] = await Promise.all([
+      fetch(`/data/${radarConfig.id}_blips.json`),
+      fetch(`/data/${radarConfig.id}_logs.json`)
+    ]);
+    
+    blipData = await blips.json();
+    logData = await logs.json();
+  }
 
-  const blipLogsMap = buildBlipLogsMap(JSON.parse(await logs.text()));
-  const finalBlips = JSON.parse(await blips.text())
+  const blipLogsMap = buildBlipLogsMap(logData);
+  const finalBlips = blipData
     .map((blip: any) => ({
       id: blip.ID,
       name: blip.Name,

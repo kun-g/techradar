@@ -3,6 +3,8 @@ import fs from 'fs';
 import { classifyWithAI } from './ai-classifier';
 import { getRadarConfigById, getDefaultRadarConfig } from './data';
 import { getBlipsDB, getLogsDB, filterValidTags, BlipRecord, LogRecord } from './notionDB';
+import * as dotenv from 'dotenv';
+import { storeRadarDataToBlob } from './blob-storage';
 // 初始化Notion客户端
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -16,7 +18,7 @@ export async function syncDatabase(radarId: string) {
   const radarConfig = getRadarConfigById(radarId);
   
   if (!radarConfig) {
-    throw new Error(`未找到ID为 ${radarId} 的雷达配置`);
+    throw new Error(`找不到雷达配置: ${radarId}`);
   }
 
   // 使用数据库API
@@ -103,9 +105,22 @@ export async function syncDatabase(radarId: string) {
     }
   }
   
-  // 写入雷达特定的文件
-  fs.writeFileSync(`./public/data/${radarConfig.id}_blips.json`, JSON.stringify(blips, null, 2));
-  fs.writeFileSync(`./public/data/${radarConfig.id}_logs.json`, JSON.stringify(logs, null, 2));
+  // 使用Vercel Blob存储数据
+  try {
+    // 仍然保留本地文件写入用于兼容性
+    fs.writeFileSync(`./public/data/${radarConfig.id}_blips.json`, JSON.stringify(blips, null, 2));
+    fs.writeFileSync(`./public/data/${radarConfig.id}_logs.json`, JSON.stringify(logs, null, 2));
+    
+    // 同时存储到Vercel Blob
+    await Promise.all([
+      storeRadarDataToBlob(radarConfig.id, 'blips', blips),
+      storeRadarDataToBlob(radarConfig.id, 'logs', logs)
+    ]);
+
+    console.log(`雷达 ${radarId} 数据已同步到Vercel Blob`);
+  } catch (error) {
+    console.error(`存储雷达 ${radarId} 数据到Vercel Blob时出错:`, error);
+  }
 
   return { blips, logs };
 }

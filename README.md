@@ -43,8 +43,6 @@
 ```bash
 # Notion API密钥和数据库ID
 NOTION_API_KEY=your_notion_api_key
-NOTION_BLIPS_DATABASE_ID=your_notion_blips_database_id
-NOTION_LOGS_DATABASE_ID=your_notion_logs_database_id
 
 # DeepSeek API密钥用于自动分类
 DEEPSEEK_API_KEY=your_deepseek_api_key
@@ -169,8 +167,6 @@ techradar/
 ```bash
 # Notion API密钥和数据库ID
 NOTION_API_KEY=your_notion_api_key
-NOTION_BLIPS_DATABASE_ID=your_notion_blips_database_id
-NOTION_LOGS_DATABASE_ID=your_notion_logs_database_id
 
 # DeepSeek API密钥用于自动分类
 DEEPSEEK_API_KEY=your_deepseek_api_key
