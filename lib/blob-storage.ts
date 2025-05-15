@@ -1,5 +1,6 @@
 import { list, put, del } from '@vercel/blob';
 
+console.log('BLOB_READ_WRITE_URL:', process.env.BLOB_READ_WRITE_URL);
 /**
  * 将数据存储到Vercel Blob
  * @param radarId 雷达ID

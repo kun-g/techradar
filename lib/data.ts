@@ -1,7 +1,5 @@
 import type { RadarData, RecordChangeLog, Blip, RadarConfig } from "./types";
 import radarConfigs from "../data/radar_configs.json";
-import fs from 'fs';
-import path from 'path';
 import { getRadarDataFromBlob } from './blob-storage';
 
 export const ringRatios = [0.4, 0.3, 0.2, 0.1];
@@ -179,11 +177,12 @@ export async function fetchRadarData(radarId?: string): Promise<RadarData> {
   
   try {
     // 优先尝试从Vercel Blob获取数据
-    [blipData, logData] = await Promise.all([
-      getRadarDataFromBlob(radarConfig.id, 'blips'),
-      getRadarDataFromBlob(radarConfig.id, 'logs')
+    const [blips, logs] = await Promise.all([
+      fetch(`/api/blob?radarId=${radarId}&type=blips`),
+      fetch(`/api/blob?radarId=${radarId}&type=logs`)
     ]);
-    console.log(`从Vercel Blob获取 ${radarConfig.id} 数据成功`);
+    blipData = await blips.json();
+    logData = await logs.json();
   } catch (error: any) {
     console.warn(`从Vercel Blob获取数据失败，尝试从public目录读取: ${error.message}`);
     
@@ -192,7 +191,6 @@ export async function fetchRadarData(radarId?: string): Promise<RadarData> {
       fetch(`/data/${radarConfig.id}_blips.json`),
       fetch(`/data/${radarConfig.id}_logs.json`)
     ]);
-    
     blipData = await blips.json();
     logData = await logs.json();
   }
