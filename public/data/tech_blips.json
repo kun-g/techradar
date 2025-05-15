@@ -1,5 +1,65 @@
 [
   {
+    "updated": "2025-05-15T00:48:00.000+00:00",
+    "Quadrant": "工具",
+    "Description": "LLM Guardrails 是一套用于防止大语言模型（LLMs）生成有害、使人误解或不相关内容的指南、政策或过滤 器。Guardrails 也可用于保护 LLM 应用免受恶意用户通过操纵输入等技术对其滥用。它们通过为模型设定边界 来作为安全网，确保内容的处理和生成在可控范围内。在这一领域中，诸如 NeMo Guardrails 、Guardrails AI 和 Aporia Guardrails 等框架已经逐渐崭露头角，并被我们的团队认为非常有用。我们建议每个 LLM 应用都应 设置相应的安全护栏，并且不断改进其规则和政策。这对于构建负责任和值得信赖的 LLM 聊天应用至关重要\n[NeMo Guardrails \\| Technology Radar \\| Thoughtworks China](https://www.thoughtworks.com/cn/radar/tools/nemo-guardrails)\n[GitHub - guardrails-ai/guardrails: Adding guardrails to large language models.](https://github.com/guardrails-ai/guardrails)\n[Security](https://www.aporia.com/ai-security/)\n",
+    "Tags": [],
+    "ID": "64",
+    "LastChange": "72",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "LLM Guardrails",
+    "notion_page_id": "1f40aea5-43e6-815b-bb77-cb077aec7ae1"
+  },
+  {
+    "updated": "2025-05-15T00:47:00.000+00:00",
+    "Quadrant": "语言与框架",
+    "Description": "LiteLLM 是一个用于无缝集成各种大语言模型（LLM）提供商 API 的库，通过 OpenAI API 格式 交互。它支持多 种 提供方和模型，并为文本生成、嵌入和图像生成提供统一的接口。LiteLLM 简化了集成过程，通过匹配每个 提供商的特定端点要求来翻译输入。它还提供了实现生产应用中所需的操作功能的框架，如缓存、日志记录、 速率限制和负载均衡，从而确保不同 LLM 的一致操作。我们的团队使用 LiteLLM 来轻松切换各种模型，这在 模型快速演变的今天尤为必要。然而，值得注意的是，不同模型在相同提示下的响应会有所不同，这表明仅一 致的调用方式可能不足以优化生成性能。此外，每个模型对附加功能的实现方式也各不相同，单一接口可能无 法满足所有需求。例如，我们的一个团队在通过 LiteLLM 代理 AWS Bedrock 模型时，难以充分利用其函数调 用功能。\n\n[GitHub - BerriAI/litellm: Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI format - \\[Bedrock, Azure, OpenAI, VertexAI, Cohere, Anthropic, Sagemaker, HuggingFace, Replicate, Groq\\]](https://github.com/BerriAI/litellm)",
+    "Tags": [],
+    "ID": "63",
+    "LastChange": "71",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "LiteLLM",
+    "notion_page_id": "1f40aea5-43e6-81eb-b20b-f816da1b366b"
+  },
+  {
+    "updated": "2025-05-15T00:46:00.000+00:00",
+    "Quadrant": "语言与框架",
+    "Description": "当我们作为终端用户使用大语言模型（LLM）聊天机器人时，它们通常会返回给我们一个非结构化的自然语言答 案。在构建超越聊天机器人的生成 AI 应用时，请求 LLM 以 JSON、YAML 或其他格式返回结构化答案并在应 用中解析和使用该响应可能非常有用。然而，由于 LLM 是非确定性的，它们可能并不总是按照我们要求的方式 执行。Instructor 是一个可以帮助我们请求 从 LLMs 获取结构化输出 的库。您可以定义预期的输出结构，并 在 LLM 未返回您要求的结构时配置重试。由于与 LLM 进行交互时，最佳的终端用户体验往往是将结果流式传 输给他们，而不是等待完整响应，Instructor 还可以处理从流中解析部分结构的任务。\n[GitHub - instructor-ai/instructor: structured outputs for llms](https://github.com/jxnl/instructor)",
+    "Tags": [],
+    "ID": "62",
+    "LastChange": "70",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "Instructor",
+    "notion_page_id": "1f40aea5-43e6-814f-b36c-f9539914f6e8"
+  },
+  {
+    "updated": "2025-05-15T00:46:00.000+00:00",
+    "Quadrant": "语言与框架",
+    "Description": "使用 Playwright，您可以编写在 Chrome、Firefox 和 WebKit 中运行的端到端测试。 通过使用 Chrome 开发 者工具（DevTools）协议（CDP），Playwright 可以提供新功能并消除 WebDriver 中出现的许多问题。 基于 Chromium 的浏览器直接实现了 CDP。不过，为了支持 Firefox 和 Webkit，Playwright 团队不得不向这些浏览 器提交补丁，这有时可能会限制框架。 \n\nPlaywright 的功能包括：内置自动等待，这使得测试更可靠、更易于理解； 浏览器上下文，可让您测试跨标签 页的持久会话是否正常工作；以及模拟通知、地理位置和黑暗模式设置的能力。 Playwright 为测试套件带来的 稳定性给我们的团队留下了深刻印象，并且喜欢它可以并行运行测试以更快地获得反馈。 Playwright 的其他特 色包括更好地支持懒加载和追踪。 尽管 Playwright 有一些局限性（例如，组件支持目前处于实验阶段），但我 们的团队认为它是首选的测试框架，甚至在某些情况下会从 Cypress 和 Puppeteer 上迁移过来。\n[Fast and reliable end-to-end testing for modern web apps \\| Playwright](https://playwright.dev/)\n",
+    "Tags": [],
+    "ID": "61",
+    "LastChange": "69",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "Playwright",
+    "notion_page_id": "1f40aea5-43e6-81cb-b062-fca754f1c9b4"
+  },
+  {
+    "updated": "2025-05-15T00:44:00.000+00:00",
+    "Quadrant": "语言与框架",
+    "Description": "[**LangGraph**](https://github.com/langchain-ai/langgraph) 是一款面向基于 LLM 的[多 agent 应用](https://www.thoughtworks.com/zh-cn/radar/techniques/llm-powered-autonomous-agents)构建的编排（Orchestration）框架。与抽象程度较高的 [LangChain](https://www.thoughtworks.com/zh-cn/radar/languages-and-frameworks/langchain) 相比，它提供了更底层的节点（Nodes）和边（Edges）等基本原语，允许开发者精细地控制 agent 工作流、记忆管理与状态持久化。这种基于图的设计使工作流更加可控且易于定制，使得在生产级应用中的调试、扩展和维护变得更加容易。尽管其学习曲线较陡，但 LangGraph 凭借其轻量化与模块化设计，在开发 agent 应用时展现出了强大的灵活性和扩展性。",
+    "Tags": [],
+    "ID": "60",
+    "LastChange": "68",
+    "Aliases": "",
+    "Ring": "assess",
+    "Name": "LangGraph",
+    "notion_page_id": "1f40aea5-43e6-818d-9bb6-d8817c30ab6c"
+  },
+  {
     "updated": "2025-05-06T05:42:00.000+00:00",
     "Quadrant": "工具",
     "Description": "1Password 是一款跨平台的密码管理器，用于安全存储和自动填充密码、信用卡、身份信息、双因素验证码等敏感数据，提升数字账户安全性与使用效率。",
@@ -473,14 +533,14 @@
     "notion_page_id": "1ea0aea5-43e6-812f-908a-fe7aff4bcc90"
   },
   {
-    "updated": "2025-05-05T08:53:00.000+00:00",
+    "updated": "2025-05-15T00:21:00.000+00:00",
     "Quadrant": "语言与框架",
-    "Description": "",
+    "Description": "## 背景\nJavaScript 的局限性：\n- JS 是动态类型语言，缺乏类型约束，易出现运行时错误。\n- 项目一旦变大，难以维护、重构、协作。\n- 没有模块化、接口、访问修饰符等工程化特性。\n\nTypeScript 的诞生：\n微软为了解决上述问题，开发了 TS，目标是支持大型项目开发。\n借助类型系统和编译阶段的检查，提高开发效率和代码健壮性。\n\n| 分类       | 项目    | 描述                                              |\n| -------- | ----- | ----------------------------------------------- |\n| **语言定位** | 语言类型  | JavaScript 的超集，添加了类型系统和工程化能力                    |\n|          | 类型系统  | 支持可选的静态类型检查，提供类型推断、接口、泛型等                       |\n|          | 编译机制  | 编译型语言，需通过 `tsc` 编译为原生 JavaScript                |\n|          | 向后兼容性 | 兼容所有 JavaScript 语法，可渐进式引入                       |\n|          | 设计目标  | 面向中大型项目，提升代码可维护性、可读性和协作效率                       |\n| **核心特点** | 类型系统  | 静态类型检查、自定义类型、联合类型、类型推断、泛型支持                     |\n|          | OOP支持 | 支持类、接口、继承、访问修饰符（`public/private/protected`）等    |\n|          | 工程化能力 | 模块系统（ESM/CommonJS）、严格模式、类型配置文件（`tsconfig.json`） |\n|          | IDE支持 | 强大自动补全、类型跳转、错误提示、重构建议（VS Code 深度集成）             |\n|          | 开发生态  | 与现代主流前端/后端框架高度集成（如 Angular/Nest/Vue3/React 等）   |\n",
     "Tags": [],
     "ID": "19",
-    "LastChange": "22",
+    "LastChange": "67",
     "Aliases": "",
-    "Ring": "assess",
+    "Ring": "trial",
     "Name": "TypeScript",
     "notion_page_id": "1ea0aea5-43e6-8103-8878-ff596a7db99e"
   },
@@ -509,16 +569,16 @@
     "notion_page_id": "1ea0aea5-43e6-81d2-866f-d149a817d877"
   },
   {
-    "updated": "2025-05-09T07:33:00.000+00:00",
+    "updated": "2025-05-15T07:33:00.000+00:00",
     "Quadrant": "平台",
     "Description": "Pros:\n- 95% 的工作是专注的业务上\nCons:\n- 还不太熟悉，安装依赖，查 Log 都不熟悉\n\n整体感受：值得继续尝试\n\n今天使用 CloudFlare Worker + Email Routing 实现了无限邮箱+Github 验证码解析并转发到飞书群的功能\n\n[这里](https://github.com/cloudflare/dmarc-email-worker) 有个更复杂的例子。\n\n- [Worker Examples](https://developers.cloudflare.com/workers/examples/?languages=JavaScript)",
     "Tags": [
       "架构模式"
     ],
     "ID": "16",
-    "LastChange": "65",
+    "LastChange": "67",
     "Aliases": "",
-    "Ring": "assess",
+    "Ring": "trial",
     "Name": "边缘函数",
     "notion_page_id": "1ea0aea5-43e6-8196-9b2d-c8cf15d32a89"
   },

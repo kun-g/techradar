@@ -16,6 +16,7 @@ export async function storeRadarDataToBlob(radarId: string, type: 'blips' | 'log
     // 存储到Vercel Blob
     const { url } = await put(key, blob, {
       access: 'public', // 公开访问
+      allowOverwrite: true
     });
     
     console.log(`已将 ${radarId} 的 ${type} 数据存储到Blob: ${url}`);
