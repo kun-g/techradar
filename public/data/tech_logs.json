@@ -1,6 +1,40 @@
 [
   {
     "Aliases": "",
+    "Processed": "Not started",
+    "BlipID": "39",
+    "LLMResult": "",
+    "Description": "目前我们就是在 Notion 里弄了一张表，作为任务看板。我认为不能算统一远程团队墙，因为有几个我常关注的问题没有被回答：\n- 过去一天/一周/一个月，大家做了什么？\n- 产品数据有何变化？有什么响应的动作需要我们做？\n- 【日常工作】完成的如何？",
+    "Tags": [
+      "交付效能"
+    ],
+    "ID": "74",
+    "created": "2025-05-15T01:21:00.000+00:00",
+    "Quadrant": "技术",
+    "PreviousRecord": "",
+    "Ring": "trial",
+    "Name": "统一远程团队墙",
+    "notion_page_id": "1f40aea5-43e6-810e-b3c5-ce05ede3ffa3"
+  },
+  {
+    "Aliases": "",
+    "Processed": "Done",
+    "BlipID": "21",
+    "LLMResult": "",
+    "Description": "现在Cursor 基本是重度使用的状态，一周就能用完一个账号的额度。\n近期的实践经验：\n- 步步为营，改好一部分及时 Commit，再解决下一个问题、功能\n- Rules 是目前大家探索的方向，值得探索 [awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules)\n- 确实可以提高效率，从而提高开发欲望\n\nCons:\n- 我的工作内容主要集中在确认需求和确认代码，主要是在做 Review，这对我能力的成长有什么影响？\n- 有种在跟着代码走的感觉，而不是代码跟着我。就是怎么写、写什么，都是 Cursor 在做，出来之后我才看到，才知道要解决什么问题。过往，我脑子里有个图景，描绘了要做的东西，写代码就是一步步把图景里的东西实现。出现的错误，有的是图景设计缺陷，有的是现实缺陷。我能得到关于我自己的反馈，而现在，我得到的反馈是关于「如何用好 Cursor」的。\n- Cursor 很容易把我变成「Ctrl-C + Ctrl-V」程序员，工作循环就是「贴代码 -> 尝试 -> 搜问题 -> 特代码」",
+    "Tags": [
+      "AI辅助开发"
+    ],
+    "ID": "73",
+    "created": "2025-05-15T01:15:00.000+00:00",
+    "Quadrant": "工具",
+    "PreviousRecord": "24",
+    "Ring": "trial",
+    "Name": "Cursor",
+    "notion_page_id": "1f40aea5-43e6-8152-859c-f5f2bc3c69be"
+  },
+  {
+    "Aliases": "",
     "Processed": "Done",
     "BlipID": "64",
     "LLMResult": "```json\n{\n  \"象限\": \"工具\",\n  \"理由\": \"LLM Guardrails 是一套具体的软件工具或框架（如 NeMo Guardrails、Guardrails AI 和 Aporia Guardrails），用于在开发过程中为大语言模型提供安全过滤和边界控制功能，符合工具象限的定义。\"\n}\n```",
