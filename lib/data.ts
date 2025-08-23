@@ -1,6 +1,5 @@
 import type { RadarData, RecordChangeLog, Blip, RadarConfig } from "./types";
 import radarConfigs from "../data/radar_configs.json";
-import { getRadarDataFromBlob } from './blob-storage';
 
 export const ringRatios = [0.4, 0.3, 0.2, 0.1];
 export const RINGS = [
