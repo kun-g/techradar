@@ -57,8 +57,6 @@ export interface RadarConfig {
   id: string
   name: string
   quadrants: string[]
-  blip_db: string
-  log_db: string
   tags: string[]
   prompt_id: string
 }

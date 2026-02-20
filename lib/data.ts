@@ -15,12 +15,10 @@ export const MAX_AGE_DAYS = 30;
 
 // 获取所有可用雷达配置
 export function getRadarConfigs(): RadarConfig[] {
-  return radarConfigs.map((config, index) => ({
+  return radarConfigs.map((config) => ({
     id: config.id,
     name: config.name,
     quadrants: config.quadrants,
-    blip_db: config.blip_db,
-    log_db: config.log_db,
     tags: config.tags || [],
     prompt_id: config.prompt_id
   }));
@@ -173,26 +171,14 @@ export async function fetchRadarData(radarId?: string): Promise<RadarData> {
   }
 
   let blipData, logData;
-  
-  try {
-    // 优先尝试从Vercel Blob获取数据
-    const [blips, logs] = await Promise.all([
-      fetch(`/api/blob?radarId=${radarId}&type=blips`),
-      fetch(`/api/blob?radarId=${radarId}&type=logs`)
-    ]);
-    blipData = await blips.json();
-    logData = await logs.json();
-  } catch (error: any) {
-    console.warn(`从Vercel Blob获取数据失败，尝试从public目录读取: ${error.message}`);
-    
-    // 如果从Blob获取失败，则从public/data目录读取
-    const [blips, logs] = await Promise.all([
-      fetch(`/data/${radarConfig.id}_blips.json`),
-      fetch(`/data/${radarConfig.id}_logs.json`)
-    ]);
-    blipData = await blips.json();
-    logData = await logs.json();
+
+  const response = await fetch(`/api/radar/data?radar_id=${radarConfig.id}`);
+  if (!response.ok) {
+    throw new Error(`获取雷达数据失败: ${response.status}`);
   }
+  const data = await response.json();
+  blipData = data.blips;
+  logData = data.logs;
 
   const blipLogsMap = buildBlipLogsMap(logData);
   const finalBlips = blipData

@@ -27,3 +27,8 @@ yarn-error.log*
 next-env.d.ts
 
 coverage/
+
+# sqlite
+data/*.db
+data/*.db-wal
+data/*.db-shm

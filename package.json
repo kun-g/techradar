@@ -12,13 +12,12 @@
     "test:coverage": "jest --coverage",
     "ladle:serve": "ladle serve",
     "ladle:build": "ladle build",
-    "migrate-to-blob": "ts-node scripts/migrate-to-blob.ts"
+    "migrate-to-sqlite": "ts-node scripts/migrate-to-sqlite.ts"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^0.2.13",
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.9.1",
-    "@notionhq/client": "^2.3.0",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -47,9 +46,9 @@
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
     "@tailwindcss/typography": "latest",
-    "@vercel/blob": "^1.0.1",
     "ai": "^4.3.13",
     "autoprefixer": "^10.4.20",
+    "better-sqlite3": "^12.6.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
@@ -86,6 +85,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/jest": "^29.5.14",
     "@types/node": "^22",
     "@types/react": "^19",

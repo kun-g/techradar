@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import RadarVisualization from "./radar-visualization"
 import BlipList from "./blip-list"
 import BlipDetailModal from "@/components/radar/blip/detail"
+import { fetchRadarData } from "@/lib/data"
 import type { Blip, RadarData } from "@/lib/types"
 
 interface TechRadarProps {
@@ -15,6 +16,11 @@ interface TechRadarProps {
 export default function TechRadar({ initialData }: TechRadarProps) {
   const [data, setData] = useState<RadarData>(initialData)
   const [filteredBlips, setFilteredBlips] = useState<Blip[]>(initialData.blips)
+
+  // 当父组件传入新数据时同步内部状态
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedQuadrants, setSelectedQuadrants] = useState<string[]>([])
   const [selectedRings, setSelectedRings] = useState<string[]>([])
@@ -102,11 +108,9 @@ export default function TechRadar({ initialData }: TechRadarProps) {
             availableTags={data.availableTags}
             radarId={data.radarId}
             onClose={closeBlipDetails}
-            onDataUpdate={(blips) => {
-              setData(prevData => ({
-                ...prevData,
-                blips
-              }));
+            onDataUpdate={async () => {
+              const refreshed = await fetchRadarData(data.radarId);
+              setData(refreshed);
             }}
           />
         )}

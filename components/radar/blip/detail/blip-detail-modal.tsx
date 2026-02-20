@@ -17,7 +17,7 @@ interface BlipDetailModalProps {
   availableTags?: string[]
   radarId: string
   onClose: () => void
-  onDataUpdate?: (blips: any) => void
+  onDataUpdate?: () => void
 }
 
 export function BlipDetailModal({ 
@@ -105,7 +105,7 @@ export function BlipDetailModal({
     try {
       setIsSubmitting(true);
       
-      const responseData = await apiRequest<{success: boolean, data: any}>("/api/notion/blip/edit", {
+      const responseData = await apiRequest<{success: boolean, data: any}>("/api/radar/blip/edit", {
         method: "POST",
         body: JSON.stringify({
           radarId: radarId,
@@ -123,25 +123,14 @@ export function BlipDetailModal({
         }),
       });
       
-      // 显示成功提示
       toast({
         title: "编辑成功",
         description: `已成功更新 ${blip.name} 的信息`,
       });
-      
-      // 重置界面状态
+
       setIsEditMode(false);
       onClose();
-      
-      // 重新加载数据 - 也使用apiRequest
-      try {
-        const syncData = await apiRequest<{blips: any, logs: any}>(`/api/notion/sync?radar_id=${radarId}`);
-        if (syncData.blips && syncData.blips.length > 0 && onDataUpdate) {
-          onDataUpdate(syncData.blips);
-        }
-      } catch (syncError) {
-        console.error('同步数据失败:', syncError);
-      }
+      onDataUpdate?.();
         
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "发生未知错误";

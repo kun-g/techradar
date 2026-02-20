@@ -3,8 +3,6 @@
         "id": "tech",
         "name": "技术雷达",
         "quadrants": ["语言与框架", "平台", "工具", "技术"],
-        "blip_db": "1e90aea543e680499f60f37c64852368",
-        "log_db":  "1e90aea543e6806ebca3c512161e001a",
         "prompt_id": "技术象限分类",
         "tags": [ "AI", "AI辅助开发", "前端", "后端", "DevOps/运维", "自动化", "数据可视化", "测试与质量", "交付效能", "架构模式" ]
     },
@@ -12,8 +10,6 @@
         "id": "personal",
         "name": "个人成长雷达",
         "quadrants": ["思维框架", "策略工具", "行为习惯", "技能能力"],
-        "blip_db": "1ea0aea543e6809eac34f0180798828e",
-        "log_db":  "1ea0aea543e68069821ee56655f3f804",
         "prompt_id": "personal-radar-classifier",
         "tags": []
     }

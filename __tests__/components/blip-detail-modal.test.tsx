@@ -157,7 +157,7 @@ describe('BlipDetailModal 组件', () => {
     // 模拟表单提交
     const originalFetch = global.fetch
     global.fetch = jest.fn().mockImplementation((url) => {
-      if (url === '/api/notion/blip/edit') {
+      if (url === '/api/radar/blip/edit') {
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({ success: true })
@@ -230,7 +230,7 @@ describe('BlipDetailModal 组件', () => {
     // 模拟失败的API响应
     const originalFetch = global.fetch
     global.fetch = jest.fn().mockImplementation((url) => {
-      if (url === '/api/notion/blip/edit') {
+      if (url === '/api/radar/blip/edit') {
         return Promise.resolve({
           ok: false,
           json: () => Promise.resolve({ error: '服务器错误' })

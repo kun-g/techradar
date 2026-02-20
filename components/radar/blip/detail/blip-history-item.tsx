@@ -40,13 +40,13 @@ export function BlipHistoryItem({ record, nextRecord, rings, formatDate }: BlipH
             <div className="flex gap-3 items-center">
               <div className="flex-1">
                 <span className="line-through text-muted-foreground">
-                  {rings.find(r => r.id === record.ring)?.name || record.ring}
+                  {newRingName}
                 </span>
               </div>
               <div className="text-gray-500">→</div>
               <div className="flex-1">
                 <span className="text-blue-600">
-                  {newRingName}
+                  {rings.find(r => r.id === record.ring)?.name || record.ring}
                 </span>
               </div>
             </div>
@@ -60,8 +60,8 @@ export function BlipHistoryItem({ record, nextRecord, rings, formatDate }: BlipH
             <div className="flex gap-3 items-center">
               <div className="flex-1">
                 <div className="flex flex-wrap gap-1">
-                  {(record.tags && record.tags.length > 0) ? (
-                    record.tags.map(tag => (
+                  {(nextRecord?.tags && nextRecord.tags.length > 0) ? (
+                    nextRecord.tags.map(tag => (
                       <Badge key={tag} variant="secondary" className="line-through text-muted-foreground">
                         {tag}
                       </Badge>
@@ -74,8 +74,8 @@ export function BlipHistoryItem({ record, nextRecord, rings, formatDate }: BlipH
               <div className="text-gray-500">→</div>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-1">
-                  {(nextRecord?.tags && nextRecord.tags.length > 0) ? (
-                    nextRecord.tags.map(tag => (
+                  {(record.tags && record.tags.length > 0) ? (
+                    record.tags.map(tag => (
                       <Badge key={tag} variant="secondary">
                         {tag}
                       </Badge>
@@ -96,8 +96,8 @@ export function BlipHistoryItem({ record, nextRecord, rings, formatDate }: BlipH
             <div className="flex gap-3 items-center">
               <div className="flex-1">
                 <div className="flex flex-wrap gap-1">
-                  {(record.aliases && record.aliases.length > 0) ? (
-                    record.aliases.map(alias => (
+                  {(nextRecord?.aliases && nextRecord.aliases.length > 0) ? (
+                    nextRecord.aliases.map(alias => (
                       <Badge key={alias} variant="outline" className="line-through text-muted-foreground">
                         {alias}
                       </Badge>
@@ -110,8 +110,8 @@ export function BlipHistoryItem({ record, nextRecord, rings, formatDate }: BlipH
               <div className="text-gray-500">→</div>
               <div className="flex-1">
                 <div className="flex flex-wrap gap-1">
-                  {(nextRecord?.aliases && nextRecord.aliases.length > 0) ? (
-                    nextRecord.aliases.map(alias => (
+                  {(record.aliases && record.aliases.length > 0) ? (
+                    record.aliases.map(alias => (
                       <Badge key={alias} variant="outline">
                         {alias}
                       </Badge>

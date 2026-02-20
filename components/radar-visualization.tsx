@@ -44,6 +44,7 @@ export default function RadarVisualization({
 }: RadarVisualizationProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({ width: 600, height: 600 }) // Default size for initial render
+  const [, forceRender] = useState(0)
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -82,6 +83,7 @@ export default function RadarVisualization({
     if (size <= 0 || blips.length === 0) return
 
     updateBlipPositions(blips, quadrants, rings, center)
+    forceRender(v => v + 1)
   }, [blips, size, center, quadrants, rings])
 
   if (size <= 0) {
