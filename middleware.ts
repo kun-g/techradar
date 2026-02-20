@@ -1,35 +1,30 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { verifyToken } from '@/lib/session';
 
-// 需要保护的管理员API路径
 const PROTECTED_PATHS = [
-  '/api/radar/blip',   // 添加/编辑技术点
-  '/api/prompt/export', // 导出Prompt数据
-  '/api/prompt/clear-llm-results', // 清空LLMResult数据
+  '/api/radar/blip',
+  '/api/prompt/export',
+  '/api/prompt/clear-llm-results',
 ];
 
-// 此函数可以被标记为 `async`，如果需要等待Promise
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 如果是受保护的路径，但不是验证路径本身
   if (PROTECTED_PATHS.some(path => pathname.startsWith(path))) {
-    // 只检查请求头中的X-Admin-Auth
-    const headerAuth = request.headers.get('X-Admin-Auth');
+    const authHeader = request.headers.get('Authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
-    // 如果认证头为true，允许访问
-    if (headerAuth === 'true') {
+    if (token && verifyToken(token)) {
       return NextResponse.next();
     }
 
-    // 未验证为管理员，返回未授权错误
     return new NextResponse(
       JSON.stringify({ success: false, message: '未授权访问' }),
       { status: 401, headers: { 'Content-Type': 'application/json' } }
     );
   }
 
-  // 不需要保护的路径，直接通过
   return NextResponse.next();
 }
 

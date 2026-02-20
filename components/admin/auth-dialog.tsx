@@ -20,7 +20,7 @@ export function AdminAuthDialog() {
   const [key, setKey] = useState("");
   const [error, setError] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
-  const { isAdmin, setAdminStatus, logout } = useAuth();
+  const { isAdmin, setAuth, logout } = useAuth();
 
   const handleVerify = async () => {
     if (!key.trim()) return;
@@ -29,22 +29,19 @@ export function AdminAuthDialog() {
       setIsVerifying(true);
       setError(false);
       
-      // 使用apiRequest函数处理API请求
-      const response = await apiRequest<{ success: boolean }>(
+      const response = await apiRequest<{ success: boolean; token: string }>(
         '/api/admin/verify',
         {
           method: 'POST',
           body: JSON.stringify({ key }),
         },
         {
-          // 这里不需要显示未授权提示，因为是验证过程
           showUnauthorizedToast: false
         }
       );
-      
-      if (response.success) {
-        // 验证成功，设置管理员状态
-        setAdminStatus(true);
+
+      if (response.success && response.token) {
+        setAuth(response.token);
         setKey("");
         setOpen(false);
         

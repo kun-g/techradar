@@ -3,20 +3,21 @@ import { persist } from 'zustand/middleware';
 
 interface AuthState {
   isAdmin: boolean;
-  setAdminStatus: (status: boolean) => void;
+  token: string | null;
+  setAuth: (token: string) => void;
   logout: () => void;
 }
 
-// 使用zustand创建一个持久化的状态管理
 export const useAuth = create<AuthState>()(
   persist(
     (set) => ({
       isAdmin: false,
-      setAdminStatus: (status: boolean) => set({ isAdmin: status }),
-      logout: () => set({ isAdmin: false }),
+      token: null,
+      setAuth: (token: string) => set({ isAdmin: true, token }),
+      logout: () => set({ isAdmin: false, token: null }),
     }),
     {
       name: 'admin-auth',
     }
   )
-); 
+);

@@ -41,7 +41,7 @@ SQLite (data/techradar.db) ← /api/radar/sync → 前端渲染
 
 ### 认证机制
 
-管理员操作（添加/编辑/同步）受 `middleware.ts` 保护，检查请求头 `X-Admin-Auth: true`。前端通过 `/api/admin/verify` 验证密钥，Zustand 管理状态。
+管理员操作（添加/编辑）受 `middleware.ts` 保护，验证 `Authorization: Bearer <token>` 中的 HMAC 签名 token。前端通过 `/api/admin/verify` 验证密钥获取 token，Zustand 持久化存储 token。Token 有效期 7 天。
 
 ### 多雷达支持
 

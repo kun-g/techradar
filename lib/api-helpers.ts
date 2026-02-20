@@ -68,18 +68,19 @@ export async function apiRequest<T>(
     unauthorizedMessage?: string;
   } = {}
 ): Promise<T> {
-  // 获取当前的认证状态
-  const { isAdmin } = useAuth.getState();
-  
-  // 合并默认选项
+  const { token } = useAuth.getState();
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options.headers as Record<string, string> || {})
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const fetchOptions: RequestInit = {
-    headers: {
-      "Content-Type": "application/json",
-      // 添加认证信息到请求头
-      "X-Admin-Auth": isAdmin ? "true" : "false",
-      ...(options.headers || {})
-    },
-    ...options
+    ...options,
+    headers,
   };
   
   // 发送请求
