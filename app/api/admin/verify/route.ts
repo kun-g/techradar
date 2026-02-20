@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { generateToken } from '@/lib/session';
 
-const ADMIN_KEY = process.env.ADMIN_KEY || 'admin_secret_key';
+const ADMIN_KEY = process.env.ADMIN_KEY;
 
 export async function POST(request: Request) {
   try {
+    if (!ADMIN_KEY) {
+      return NextResponse.json({ success: false, message: '管理员功能未配置' }, { status: 503 });
+    }
+
     const { key } = await request.json();
 
     if (key !== ADMIN_KEY) {

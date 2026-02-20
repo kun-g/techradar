@@ -1,4 +1,5 @@
 import { classifyWithAI } from './ai-classifier';
+import { getDb } from './db';
 import {
   getAllBlips,
   getAllLogs,
@@ -47,37 +48,39 @@ export async function addBlip(
   }
 
   const now = new Date().toISOString();
+  const db = getDb();
 
-  // 1. 创建 log
-  const log = createLog(radarConfig.id, {
-    name: logData.name,
-    quadrant: quadrant || '',
-    ring: logData.ring,
-    description: logData.description,
-    blipId: '',
-    processed: 'Not started',
-    created: now,
-    llmResult: llmResult || '',
+  const runInTransaction = db.transaction(() => {
+    const log = createLog(radarConfig.id, {
+      name: logData.name,
+      quadrant: quadrant || '',
+      ring: logData.ring,
+      description: logData.description,
+      blipId: '',
+      processed: 'Not started',
+      created: now,
+      llmResult: llmResult || '',
+    });
+
+    const newBlip = createBlip(radarConfig.id, {
+      name: log.Name,
+      quadrant: log.Quadrant,
+      ring: logData.ring,
+      description: log.Description,
+      lastChange: log.ID,
+      updated: now,
+      tags: filterValidTags(log.Tags, radarConfig.tags),
+    });
+
+    updateLog(radarConfig.id, log.ID, {
+      Processed: 'Done',
+      BlipID: newBlip.ID,
+    });
+
+    return newBlip;
   });
 
-  // 2. 立即创建 blip
-  const newBlip = createBlip(radarConfig.id, {
-    name: log.Name,
-    quadrant: log.Quadrant,
-    ring: logData.ring,
-    description: log.Description,
-    lastChange: log.ID,
-    updated: now,
-    tags: filterValidTags(log.Tags, radarConfig.tags),
-  });
-
-  // 3. 标记 log 已处理
-  updateLog(radarConfig.id, log.ID, {
-    Processed: 'Done',
-    BlipID: newBlip.ID,
-  });
-
-  return newBlip;
+  return runInTransaction();
 }
 
 /**
@@ -111,45 +114,46 @@ export function editBlip(
   }
 
   const now = new Date().toISOString();
+  const db = getDb();
 
-  // 获取当前 blip（用于 PreviousRecord）
-  const currentBlip = getBlipById(radarConfig.id, blipData.blipId);
-  if (!currentBlip) {
-    throw new Error(`找不到 Blip: ${blipData.blipId}`);
-  }
+  const runInTransaction = db.transaction(() => {
+    const currentBlip = getBlipById(radarConfig.id, blipData.blipId);
+    if (!currentBlip) {
+      throw new Error(`找不到 Blip: ${blipData.blipId}`);
+    }
 
-  // 1. 创建 log
-  const log = createLog(radarConfig.id, {
-    name: blipData.name,
-    quadrant: blipData.quadrant,
-    ring: blipData.ring,
-    description: blipData.description,
-    blipId: blipData.blipId,
-    processed: 'Not started',
-    created: now,
-    tags: validTags,
-    aliases: blipData.aliases,
+    const log = createLog(radarConfig.id, {
+      name: blipData.name,
+      quadrant: blipData.quadrant,
+      ring: blipData.ring,
+      description: blipData.description,
+      blipId: blipData.blipId,
+      processed: 'Not started',
+      created: now,
+      tags: validTags,
+      aliases: blipData.aliases,
+    });
+
+    const changes: Record<string, any> = {
+      LastChange: log.ID,
+      updated: now,
+    };
+    if (hasRingChange) changes.Ring = blipData.ring;
+    if (hasDescriptionChange) changes.Description = blipData.description;
+    if (hasTagsChange) changes.Tags = validTags;
+    if (hasAliasesChange) changes.Aliases = blipData.aliases;
+
+    updateBlip(radarConfig.id, blipData.blipId, changes);
+
+    updateLog(radarConfig.id, log.ID, {
+      Processed: 'Done',
+      PreviousRecord: currentBlip.LastChange,
+    });
+
+    return getBlipById(radarConfig.id, blipData.blipId)!;
   });
 
-  // 2. 立即更新 blip
-  const changes: Record<string, any> = {
-    LastChange: log.ID,
-    updated: now,
-  };
-  if (hasRingChange) changes.Ring = blipData.ring;
-  if (hasDescriptionChange) changes.Description = blipData.description;
-  if (hasTagsChange) changes.Tags = validTags;
-  if (hasAliasesChange) changes.Aliases = blipData.aliases;
-
-  updateBlip(radarConfig.id, blipData.blipId, changes);
-
-  // 3. 标记 log 已处理
-  updateLog(radarConfig.id, log.ID, {
-    Processed: 'Done',
-    PreviousRecord: currentBlip.LastChange,
-  });
-
-  return getBlipById(radarConfig.id, blipData.blipId)!;
+  return runInTransaction();
 }
 
 /**
